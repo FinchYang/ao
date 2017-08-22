@@ -1,52 +1,49 @@
-# Prerequisites
-*.d
+# http://www.gnu.org/software/automake
 
-# Object files
-*.o
-*.ko
-*.obj
-*.elf
+Makefile.in
 
-# Linker output
-*.ilk
-*.map
-*.exp
+# http://www.gnu.org/software/autoconf
 
-# Precompiled Headers
-*.gch
-*.pch
+/autom4te.cache
+/autoscan.log
+/autoscan-*.log
+/aclocal.m4
+/compile
+/config.h.in
+/configure
+/configure.scan
+/depcomp
+/install-sh
+/missing
+/stamp-h1
 
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
+/.vs/
+Backup/
 
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
+shadowsocks-csharp/3rd/*
+*/packages/*
 
-# Executables
+[Bb]in/
+[Oo]bj/
+[Ww]orking*/
+Build/Temp/
+Doc/doc.shfbproj_*
+TestResults/
+AppPackages/
 *.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
-
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
-
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
+*.sdf
+*.opensdf
+*.dll
+*.suo
+*.zip
+*.user
+*.userprefs
+_ReSharper.*
+*.ReSharper.user
+*.resharper.user
+.vs/
+*.lock.json
+*.nuget.props
+*.nuget.targets
+*.orig
+.DS_Store
