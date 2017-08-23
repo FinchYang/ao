@@ -11,7 +11,7 @@ namespace mvc104
     {
         public static void Main(string[] args)
         {
-            var host = new WebHostBuilder()
+            var host = new WebHostBuilder().UseUrls("http://*:8080")
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
