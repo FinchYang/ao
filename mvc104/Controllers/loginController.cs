@@ -21,6 +21,7 @@ namespace mvc104.Controllers
         private readonly blahContext _db1 = new blahContext();
         static List<Ptoken> tokens = new List<Ptoken>();
         static tokenticket _tt = new tokenticket();
+        static string _picpath="pictures";
         class Ptoken
         {
             public string Identity { get; set; }
@@ -47,6 +48,65 @@ namespace mvc104.Controllers
             var seed = Guid.NewGuid().ToString("N");
             return seed;
         }
+         [Route("ChangeLicense")]
+        [HttpPost]
+        public commonresponse ChangeLicense([FromBody]changelicenserequest input)
+        {
+            if (input == null)
+            {
+                return new commonresponse { status = responseStatus.requesterror };
+            }
+             var identity = string.Empty;
+            try
+            {
+                var htoken = Request.Headers["token"].First();
+                if (string.IsNullOrEmpty(htoken))
+                {
+                    return new commonresponse { status = responseStatus.tokenerror };
+                }
+                var found = false;
+               
+                foreach (var a in tokens)
+                {
+                    if (a.Token == htoken)
+                    {
+                        identity = a.Identity;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    return new commonresponse { status = responseStatus.tokenerror };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new commonresponse { status = responseStatus.tokenerror };
+            }
+
+            // if (string.IsNullOrEmpty(input.id_back))
+            // {
+            //     return new commonresponse { status = responseStatus.imageerror };
+            // }
+
+            try
+            {               
+                var fpath=Path.Combine(_picpath,identity);
+                if(!Directory.Exists(fpath)) Directory.CreateDirectory(fpath);
+                 var fname = Path.Combine(fpath,identity+"id_back");
+                var index = input.id_back.IndexOf("base64,");
+                System.IO.File.WriteAllBytes(fname, Convert.FromBase64String(input.id_back.Substring(index + 7)));
+              //  _db1.User.FirstOrDefault(b=>b.)
+            }
+            catch (Exception ex)
+            {
+                _log.LogInformation("error: {0}", ex);
+                return new commonresponse { status = responseStatus.fileprocesserror };
+            }
+            return new commonresponse { status = responseStatus.ok };
+        }
+
         [Route("login")]
         [HttpGet]
         public loginresponse login(string name, string identify, string phone)
@@ -93,34 +153,41 @@ namespace mvc104.Controllers
         {
             if (input == null)
             {
-
                 return new commonresponse { status = responseStatus.requesterror };
             }
-            var htoken = Request.Headers["token"].First();
-            if (string.IsNullOrEmpty(htoken))
+            try
             {
-                return new commonresponse { status = responseStatus.tokenerror };
+                var htoken = Request.Headers["token"].First();
+                if (string.IsNullOrEmpty(htoken))
+                {
+                    return new commonresponse { status = responseStatus.tokenerror };
+                }
+                var found = false;
+                var identity = string.Empty;
+                foreach (var a in tokens)
+                {
+                    if (a.Token == htoken)
+                    {
+                        identity = a.Identity;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    return new commonresponse { status = responseStatus.tokenerror };
+                }
             }
+            catch (Exception ex)
+            {
+                return new wxconfigresponse { status = responseStatus.tokenerror };
+            }
+
             if (string.IsNullOrEmpty(input.image))
             {
                 return new commonresponse { status = responseStatus.imageerror };
             }
-            var found = false;
-            var identity = string.Empty;
-            foreach (var a in tokens)
-            {
-                if (a.Token == htoken)
-                {
-                    identity = a.Identity;
-                    found = true;
-                    break;
-                }
-            }
-            if (!found)
-            {
 
-                return new commonresponse { status = responseStatus.tokenerror };
-            }
             try
             {
                 var fname = Path.GetTempFileName();
@@ -138,26 +205,34 @@ namespace mvc104.Controllers
         [HttpGet]
         public wxconfigresponse getwxconfig(string url)
         {
-            var htoken = Request.Headers["token"].First();
-            if (string.IsNullOrEmpty(htoken))
+            try
             {
-                return new wxconfigresponse { status = responseStatus.tokenerror };
-            }
-            var found = false;
-            var identity = string.Empty;
-            foreach (var a in tokens)
-            {
-                if (a.Token == htoken)
+                var htoken = Request.Headers["token"].First();
+                if (string.IsNullOrEmpty(htoken))
                 {
-                    identity = a.Identity;
-                    found = true;
-                    break;
+                    return new wxconfigresponse { status = responseStatus.tokenerror };
+                }
+                var found = false;
+                var identity = string.Empty;
+                foreach (var a in tokens)
+                {
+                    if (a.Token == htoken)
+                    {
+                        identity = a.Identity;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    return new wxconfigresponse { status = responseStatus.tokenerror };
                 }
             }
-            if (!found)
+            catch (Exception ex)
             {
                 return new wxconfigresponse { status = responseStatus.tokenerror };
             }
+
             var ret = getAccessToken();
             _log.LogInformation("ret={0}", ret.access_token);
             if (ret.access_token == "000001")

@@ -598,50 +598,58 @@ namespace mvc104
                     .HasColumnName("completed")
                     .HasColumnType("varchar(1)");
 
-                entity.Property(e => e.Completelog)
-                    .HasColumnName("completelog")
-                    .HasColumnType("varchar(80)");
-
-                entity.Property(e => e.Deductedmarks)
-                    .HasColumnName("deductedmarks")
-                    .HasColumnType("int(11)");
-
-                entity.Property(e => e.Drivinglicense)
-                    .HasColumnName("drivinglicense")
-                    .HasColumnType("varchar(45)");
-
-                entity.Property(e => e.Drugrelated)
-                    .HasColumnName("drugrelated")
-                    .HasColumnType("varchar(1)");
-
-                entity.Property(e => e.Firstsigned)
-                    .HasColumnName("firstsigned")
-                    .HasColumnType("varchar(1)");
-
-                entity.Property(e => e.Fullmark)
-                    .HasColumnName("fullmark")
-                    .HasColumnType("varchar(1)");
-
-                entity.Property(e => e.Inspect)
-                    .HasColumnName("inspect")
+                entity.Property(e => e.DelayPic)
+                    .HasColumnName("delay_pic")
                     .HasColumnType("varchar(1)")
-                    .HasDefaultValueSql("1");
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.Driver)
+                    .HasColumnName("driver")
+                    .HasColumnType("varchar(1)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.Expire)
+                    .HasColumnName("expire")
+                    .HasColumnType("varchar(1)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.Health)
+                    .HasColumnName("health")
+                    .HasColumnType("varchar(1)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.HukouPic)
+                    .HasColumnName("hukou_pic")
+                    .HasColumnType("varchar(1)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.IdBack)
+                    .HasColumnName("id_back")
+                    .HasColumnType("varchar(1)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.IdFront)
+                    .HasColumnName("id_front")
+                    .HasColumnType("varchar(1)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.IdInhand)
+                    .HasColumnName("id_inhand")
+                    .HasColumnType("varchar(1)")
+                    .HasDefaultValueSql("0");
 
                 entity.Property(e => e.Lasttoken)
                     .HasColumnName("lasttoken")
                     .HasColumnType("varchar(45)");
 
-                entity.Property(e => e.Licensetype)
-                    .HasColumnName("licensetype")
-                    .HasColumnType("varchar(1)");
-
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
                     .HasColumnType("varchar(45)");
 
-                entity.Property(e => e.Noticedate)
-                    .HasColumnName("noticedate")
-                    .HasColumnType("datetime");
+                entity.Property(e => e.Overage)
+                    .HasColumnName("overage")
+                    .HasColumnType("varchar(1)")
+                    .HasDefaultValueSql("0");
 
                 entity.Property(e => e.Phone)
                     .HasColumnName("phone")
@@ -651,33 +659,17 @@ namespace mvc104
                     .HasColumnName("photofile")
                     .HasColumnType("varchar(45)");
 
-                entity.Property(e => e.Photostatus)
-                    .HasColumnName("photostatus")
-                    .HasColumnType("varchar(1)");
-
-                entity.Property(e => e.Postaladdress)
-                    .HasColumnName("postaladdress")
-                    .HasColumnType("varchar(100)");
+                entity.Property(e => e.Postaddr)
+                    .HasColumnName("postaddr")
+                    .HasColumnType("varchar(500)");
 
                 entity.Property(e => e.Signed)
                     .HasColumnName("signed")
                     .HasColumnType("varchar(1)");
 
-                entity.Property(e => e.Startdate)
-                    .HasColumnName("startdate")
-                    .HasColumnType("datetime");
-
                 entity.Property(e => e.Status)
                     .HasColumnName("status")
                     .HasColumnType("varchar(45)");
-
-                entity.Property(e => e.Stoplicense)
-                    .HasColumnName("stoplicense")
-                    .HasColumnType("varchar(1)");
-
-                entity.Property(e => e.Studylog)
-                    .HasColumnName("studylog")
-                    .HasColumnType("varchar(500)");
 
                 entity.Property(e => e.Syncdate)
                     .HasColumnName("syncdate")
@@ -689,10 +681,6 @@ namespace mvc104
 
                 entity.Property(e => e.Token)
                     .HasColumnName("token")
-                    .HasColumnType("varchar(45)");
-
-                entity.Property(e => e.Wechat)
-                    .HasColumnName("wechat")
                     .HasColumnType("varchar(45)");
             });
         }

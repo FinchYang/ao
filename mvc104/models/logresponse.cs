@@ -7,6 +7,11 @@ namespace mvc104.models
         ok, iderror, nameerror, phoneerror, tokenerror,
         requesterror, imageerror, fileprocesserror, access_tokenerror, ticketerror
     };
+      public enum businessType
+    {
+        ChangeLicense, delay, lost, damage, overage,
+        expire, changeaddr, basicinfo, first, network,three,five
+    };
     public class loginresponse
     {
         public responseStatus status { get; set; }
@@ -49,6 +54,22 @@ namespace mvc104.models
         public int errcode { get; set; }
         public string errmsg { get; set; }
         public string ticket { get; set; }
+
+        public int expires_in { get; set; }
+    }
+       public class changelicenserequest
+    {
+
+        public bool lost { get; set; }
+        public string postaddr { get; set; }
+        public string id_front { get; set; }
+         public string id_back { get; set; }
+          public string id_inhand { get; set; }
+           public string license_pic { get; set; }
+
+ public string sign_pic { get; set; }
+ public string hukou_pic { get; set; }
+
 
         public int expires_in { get; set; }
     }
