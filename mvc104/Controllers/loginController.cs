@@ -48,9 +48,46 @@ namespace mvc104.Controllers
             var seed = Guid.NewGuid().ToString("N");
             return seed;
         }
-         [Route("ChangeLicense")]
+           private async void LogRequest(string content, string method = null, string ip = null,short businessType=0)
+        {
+            var dbtext = string.Empty;
+            var dbmethod = string.Empty;
+            var dbip = string.Empty;
+            var contentlenth = 150;
+            var shortlength = 44;
+            if (!string.IsNullOrEmpty(content))
+            {
+                var lenth = content.Length;
+                dbtext = lenth > contentlenth ? content.Substring(0, contentlenth) : content;
+            }
+            if (!string.IsNullOrEmpty(method))
+            {
+
+                dbmethod = method.Length > shortlength ? method.Substring(0, shortlength) : method;
+            }
+            if (!string.IsNullOrEmpty(ip))
+            {
+                dbip = ip.Length > shortlength ? ip.Substring(0, shortlength) : ip;
+            }
+            await Task.Run(() =>
+            {
+                using(var logdb=new blahContext()){
+                logdb.Request.Add(new Request
+                {
+                    Content = dbtext,
+                   Businesstype=businessType,
+                    Ip = dbip,
+                    Method = dbmethod,
+                    Time = DateTime.Now
+                });
+                logdb.SaveChanges();
+                }
+            });
+
+        }
+             [Route("declarationSign")]
         [HttpPost]
-        public commonresponse ChangeLicense([FromBody]changelicenserequest input)
+        public commonresponse declarationSign([FromBody]declarationsignrequest input)
         {
             if (input == null)
             {
@@ -89,27 +126,91 @@ namespace mvc104.Controllers
             // {
             //     return new commonresponse { status = responseStatus.imageerror };
             // }
-
+          
+               if(!savePic(input.sign_pic,picType.declaration_sign,identity))
+                 return new commonresponse { status = responseStatus.fileprocesserror };
+            return new commonresponse { status = responseStatus.ok };
+        }
+         [Route("ChangeLicense")]
+        [HttpPost]
+        public commonresponse ChangeLicense([FromBody]changelicenserequest input)
+        {
+             LogRequest("ChangeLicense","ChangeLicense",Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            if (input == null)
+            {
+                return new commonresponse { status = responseStatus.requesterror };
+            }
+             var identity = string.Empty;
             try
-            {               
-                var fpath=Path.Combine(_picpath,identity);
-                if(!Directory.Exists(fpath)) Directory.CreateDirectory(fpath);
-                 var fname = Path.Combine(fpath,identity+"id_back");
-                var index = input.id_back.IndexOf("base64,");
-                System.IO.File.WriteAllBytes(fname, Convert.FromBase64String(input.id_back.Substring(index + 7)));
-              //  _db1.User.FirstOrDefault(b=>b.)
+            {
+                var htoken = Request.Headers["token"].First();
+                if (string.IsNullOrEmpty(htoken))
+                {
+                    return new commonresponse { status = responseStatus.tokenerror };
+                }
+                var found = false;
+               
+                foreach (var a in tokens)
+                {
+                    if (a.Token == htoken)
+                    {
+                        identity = a.Identity;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    return new commonresponse { status = responseStatus.tokenerror };
+                }
             }
             catch (Exception ex)
             {
-                _log.LogInformation("error: {0}", ex);
-                return new commonresponse { status = responseStatus.fileprocesserror };
+                return new commonresponse { status = responseStatus.tokenerror };
             }
+
+            // if (string.IsNullOrEmpty(input.id_back))
+            // {
+            //     return new commonresponse { status = responseStatus.imageerror };
+            // }
+            if(input.lost) {
+                if(!savePic(input.sign_pic,picType.sign_pic,identity))
+                 return new commonresponse { status = responseStatus.fileprocesserror };
+            }
+            else{
+                 if(!savePic(input.license_pic,picType.driver,identity))
+                 return new commonresponse { status = responseStatus.fileprocesserror };
+            }
+             if(!savePic(input.id_back,picType.id_back,identity))
+                 return new commonresponse { status = responseStatus.fileprocesserror };
+                  if(!savePic(input.id_front,picType.id_front,identity))
+                 return new commonresponse { status = responseStatus.fileprocesserror };
+                  if(!savePic(input.id_inhand,picType.id_inhand,identity))
+                 return new commonresponse { status = responseStatus.fileprocesserror };
+               if(!savePic(input.hukou_pic,picType.hukou_pic,identity))
+                 return new commonresponse { status = responseStatus.fileprocesserror };
             return new commonresponse { status = responseStatus.ok };
+        }
+        private bool savePic(string picstr,picType picType,string identity){
+             try
+            {               
+                var fpath=Path.Combine(_picpath,identity);
+                if(!Directory.Exists(fpath)) Directory.CreateDirectory(fpath);
+                 var fname = Path.Combine(fpath,identity+picType+".jpg");
+                var index =picstr.IndexOf("base64,");
+                System.IO.File.WriteAllBytes(fname, Convert.FromBase64String(picstr.Substring(index + 7)));
+            }
+            catch (Exception ex)
+            {
+                _log.LogInformation("savePic error: {0}", ex);
+                return false;
+            }
+            return true;
         }
 
         [Route("login")]
         [HttpGet]
-        public loginresponse login(string name, string identify, string phone)
+        public loginresponse login(string name, string identify, string phone,businessType businessType)
         {
             if (string.IsNullOrEmpty(identify))
             {
@@ -125,6 +226,7 @@ namespace mvc104.Controllers
             }
             _log.LogInformation("{3}-{0} from {1}, input is {2}", DateTime.Now, "login", Request.HttpContext.Connection.RemoteIpAddress.ToString() + HttpContext.Connection.RemoteIpAddress,
             identify + name + phone);
+
             var theuser = _db1.User.FirstOrDefault(i => i.Identity == identify);
             if (theuser == null)
             {
@@ -145,6 +247,7 @@ namespace mvc104.Controllers
             {
                 tokens.Add(new Ptoken { Identity = identify, Token = token });
             }
+            LogRequest(name+phone+identify,"login",Request.HttpContext.Connection.RemoteIpAddress.ToString(),(short)businessType);
             return new loginresponse { status = responseStatus.ok, token = token };
         }
         [Route("FaceCompare")]
@@ -157,6 +260,8 @@ namespace mvc104.Controllers
             }
             try
             {
+                var inin=JsonConvert.SerializeObject(input);
+                _log.LogInformation("input ={1},{0}",inin.Length);
                 var htoken = Request.Headers["token"].First();
                 if (string.IsNullOrEmpty(htoken))
                 {
@@ -190,8 +295,9 @@ namespace mvc104.Controllers
 
             try
             {
-                var fname = Path.GetTempFileName();
+                var fname = Path.GetTempFileName()+".jpg";
                 var index = input.image.IndexOf("base64,");
+                  _log.LogInformation("length: {0}", input.image.Length);
                 System.IO.File.WriteAllBytes(fname, Convert.FromBase64String(input.image.Substring(index + 7)));
             }
             catch (Exception ex)

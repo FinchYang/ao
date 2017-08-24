@@ -566,6 +566,11 @@ namespace mvc104
                     .HasColumnName("ordinal")
                     .HasColumnType("int(11)");
 
+                entity.Property(e => e.Businesstype)
+                    .HasColumnName("businesstype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("0");
+
                 entity.Property(e => e.Content)
                     .HasColumnName("content")
                     .HasColumnType("varchar(4500)");
