@@ -1,8 +1,7 @@
 namespace mvc104.models
 {
-    public class loginresponse
+    public class commonresponse
     {
         public responseStatus status { get; set; }
-        public string token { get; set; }
     }
 }

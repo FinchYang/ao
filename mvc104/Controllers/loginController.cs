@@ -336,7 +336,16 @@ namespace mvc104.Controllers
             {
                 return new loginresponse { status = responseStatus.iderror };
             }
+            theuser.Name=name;
+            theuser.Phone=phone;
+            _db1.SaveChanges();
+
             var token = GetToken();
+            var redisdb=highlevel.redis.GetDatabase();
+        //    var memtoken= redisdb.StringGet(identify);
+        //    if(memtoken=="nil") {
+               redisdb.StringSet(identify,token);
+         //  }
             var found = false;
             foreach (var a in tokens)
             {
@@ -534,7 +543,7 @@ namespace mvc104.Controllers
         }
         private string getSignature(string ticket, string noncestr, string url, long stamp)
         {
-            //建立SHA1对象
+     //   highlevel.redis.GetDatabase();
 
             SHA1 sha = SHA1.Create();
 
