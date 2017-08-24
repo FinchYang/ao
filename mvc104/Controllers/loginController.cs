@@ -131,6 +131,110 @@ namespace mvc104.Controllers
                  return new commonresponse { status = responseStatus.fileprocesserror };
             return new commonresponse { status = responseStatus.ok };
         }
+           [Route("uploadpic")]
+        [HttpPost]
+        public commonresponse uploadpic([FromBody]uploadpicrequest input)
+        {
+             LogRequest("uploadpic","uploadpic",Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            if (input == null)
+            {
+                return new commonresponse { status = responseStatus.requesterror };
+            }
+             var identity = string.Empty;
+            try
+            {
+                var htoken = Request.Headers["token"].First();
+                if (string.IsNullOrEmpty(htoken))
+                {
+                    return new commonresponse { status = responseStatus.tokenerror };
+                }
+                var found = false;
+               
+                foreach (var a in tokens)
+                {
+                    if (a.Token == htoken)
+                    {
+                        identity = a.Identity;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    return new commonresponse { status = responseStatus.tokenerror };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new commonresponse { status = responseStatus.tokenerror };
+            }
+
+            // if (string.IsNullOrEmpty(input.id_back))
+            // {
+            //     return new commonresponse { status = responseStatus.imageerror };
+            // }
+            
+               if(!savePic(input.picture,input.picType,identity))
+                 return new commonresponse { status = responseStatus.fileprocesserror };
+            return new commonresponse { status = responseStatus.ok };
+        }
+            [Route("updateinfo")]
+        [HttpPost]
+        public commonresponse updateinfo([FromBody]updateinforequest input)
+        {
+             LogRequest("updateinfo","updateinfo",Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            if (input == null)
+            {
+                return new commonresponse { status = responseStatus.requesterror };
+            }
+             var identity = string.Empty;
+            try
+            {
+                var htoken = Request.Headers["token"].First();
+                if (string.IsNullOrEmpty(htoken))
+                {
+                    return new commonresponse { status = responseStatus.tokenerror };
+                }
+                var found = false;
+               
+                foreach (var a in tokens)
+                {
+                    if (a.Token == htoken)
+                    {
+                        identity = a.Identity;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    return new commonresponse { status = responseStatus.tokenerror };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new commonresponse { status = responseStatus.tokenerror };
+            }
+
+            if (string.IsNullOrEmpty(input.postaddr))
+            {
+                return new commonresponse { status = responseStatus.postaddrerror };
+            }
+            
+            try{
+              var theuser = _db1.User.FirstOrDefault(i => i.Identity == identity);
+            if (theuser == null)
+            {
+                return new commonresponse { status = responseStatus.iderror };
+            }
+            theuser.Postaddr=input.postaddr;
+            _db1.SaveChanges();
+            }catch(Exception ex){
+                _log.LogError("db error:{0}",ex.Message);
+                return new commonresponse { status = responseStatus.dberror };
+            }
+            return new commonresponse { status = responseStatus.ok };
+        }
          [Route("ChangeLicense")]
         [HttpPost]
         public commonresponse ChangeLicense([FromBody]changelicenserequest input)
