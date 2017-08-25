@@ -24,8 +24,13 @@ namespace mvc104.Controllers
         static string _picpath = "pictures";
         class Ptoken
         {
-            public string Identity { get; set; }
+            public idinfo idinfo { get; set; }
             public string Token { get; set; }
+        }
+        class idinfo
+        {
+            public string Identity { get; set; }
+            public businessType businessType { get; set; }
         }
 
 
@@ -95,6 +100,7 @@ namespace mvc104.Controllers
                 return new commonresponse { status = responseStatus.requesterror };
             }
             var identity = string.Empty;
+            var btype = businessType.basicinfo;
             try
             {
                 var htoken = Request.Headers["token"].First();
@@ -108,14 +114,23 @@ namespace mvc104.Controllers
                 {
                     if (a.Token == htoken)
                     {
-                        identity = a.Identity;
+                        identity = a.idinfo.Identity;
+                        btype = a.idinfo.businessType;
                         found = true;
                         break;
                     }
                 }
                 if (!found)
                 {
-                    return new commonresponse { status = responseStatus.tokenerror };
+                    var redisdb = highlevel.redis.GetDatabase();
+                    var cacheidinfo = redisdb.StringGet(htoken);
+                    if (cacheidinfo == "nil")
+                    {
+                        return new commonresponse { status = responseStatus.tokenerror };
+                    }
+                    var ci = JsonConvert.DeserializeObject<idinfo>(cacheidinfo);
+                    identity = ci.Identity;
+                    btype = ci.businessType;
                 }
             }
             catch (Exception ex)
@@ -128,9 +143,68 @@ namespace mvc104.Controllers
             //     return new commonresponse { status = responseStatus.imageerror };
             // }
 
-            if (!savePic(input.sign_pic, picType.declaration_sign, identity))
+            if (!savePic(input.sign_pic, picType.declaration_sign, identity, btype))
                 return new commonresponse { status = responseStatus.fileprocesserror };
             return new commonresponse { status = responseStatus.ok };
+        }
+        //   public tokenProcess(HttpRequest header)
+        [Route("downloadpic")]
+        [HttpGet]
+        public commonresponse downloadpic(picType picType)
+        {
+            LogRequest("downloadpic", "downloadpic", Request.HttpContext.Connection.RemoteIpAddress.ToString());
+
+            var identity = string.Empty;
+            var btype = businessType.basicinfo;
+            try
+            {
+                var htoken = Request.Headers["token"].First();
+                if (string.IsNullOrEmpty(htoken))
+                {
+                    return new commonresponse { status = responseStatus.tokenerror };
+                }
+                var found = false;
+
+                foreach (var a in tokens)
+                {
+                    if (a.Token == htoken)
+                    {
+                        identity = a.idinfo.Identity;
+                        btype = a.idinfo.businessType;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    var redisdb = highlevel.redis.GetDatabase();
+                    var cacheidinfo = redisdb.StringGet(htoken);
+                    if (cacheidinfo == "nil")
+                    {
+                        return new commonresponse { status = responseStatus.tokenerror };
+                    }
+                    var ci = JsonConvert.DeserializeObject<idinfo>(cacheidinfo);
+                    identity = ci.Identity;
+                    btype = ci.businessType;
+                }
+            }
+            catch (Exception ex)
+            {
+                return new commonresponse { status = responseStatus.tokenerror };
+            }
+
+            try
+            {
+                var fname = Path.Combine(_picpath, identity, btype.ToString(), picType + ".jpg");
+                var bbytes = System.IO.File.ReadAllBytes(fname);
+                var retstr = Convert.ToBase64String(bbytes);
+                return new downloadresponse { status = responseStatus.ok, picture = retstr };
+            }
+            catch (Exception ex)
+            {
+                return new commonresponse { status = responseStatus.processerror };
+            }
+
         }
         [Route("uploadpic")]
         [HttpPost]
@@ -142,6 +216,7 @@ namespace mvc104.Controllers
                 return new commonresponse { status = responseStatus.requesterror };
             }
             var identity = string.Empty;
+            var btype = businessType.basicinfo;
             try
             {
                 var htoken = Request.Headers["token"].First();
@@ -155,14 +230,23 @@ namespace mvc104.Controllers
                 {
                     if (a.Token == htoken)
                     {
-                        identity = a.Identity;
+                        identity = a.idinfo.Identity;
+                        btype = a.idinfo.businessType;
                         found = true;
                         break;
                     }
                 }
                 if (!found)
                 {
-                    return new commonresponse { status = responseStatus.tokenerror };
+                    var redisdb = highlevel.redis.GetDatabase();
+                    var cacheidinfo = redisdb.StringGet(htoken);
+                    if (cacheidinfo == "nil")
+                    {
+                        return new commonresponse { status = responseStatus.tokenerror };
+                    }
+                    var ci = JsonConvert.DeserializeObject<idinfo>(cacheidinfo);
+                    identity = ci.Identity;
+                    btype = ci.businessType;
                 }
             }
             catch (Exception ex)
@@ -175,8 +259,18 @@ namespace mvc104.Controllers
             //     return new commonresponse { status = responseStatus.imageerror };
             // }
 
-            if (!savePic(input.picture, input.picType, identity))
+            if (!savePic(input.picture, input.picType, identity, btype))
                 return new commonresponse { status = responseStatus.fileprocesserror };
+
+            _db1.Businesspic.Add(new Businesspic
+            {
+                Identity = identity,
+                Businesstype = (short)btype,
+                Pictype = (short)input.picType,
+                Uploaded = true
+            });
+            _db1.SaveChanges();
+
             return new commonresponse { status = responseStatus.ok };
         }
         [Route("updateinfo")]
@@ -202,13 +296,19 @@ namespace mvc104.Controllers
                 {
                     if (a.Token == htoken)
                     {
-                        identity = a.Identity;
+                        identity = a.idinfo.Identity;
                         found = true;
                         break;
                     }
                 }
                 if (!found)
                 {
+                    var redisdb = highlevel.redis.GetDatabase();
+                    var cacheidinfo = redisdb.StringGet(htoken);
+                    if (cacheidinfo == "nil")
+                    {
+                        return new commonresponse { status = responseStatus.tokenerror };
+                    }
                     return new commonresponse { status = responseStatus.tokenerror };
                 }
             }
@@ -248,6 +348,7 @@ namespace mvc104.Controllers
             {
                 return new commonresponse { status = responseStatus.requesterror };
             }
+            var btype = businessType.basicinfo;
             var identity = string.Empty;
             try
             {
@@ -262,14 +363,23 @@ namespace mvc104.Controllers
                 {
                     if (a.Token == htoken)
                     {
-                        identity = a.Identity;
+                        identity = a.idinfo.Identity;
+                        btype = a.idinfo.businessType;
                         found = true;
                         break;
                     }
                 }
                 if (!found)
                 {
-                    return new commonresponse { status = responseStatus.tokenerror };
+                    var redisdb = highlevel.redis.GetDatabase();
+                    var cacheidinfo = redisdb.StringGet(htoken);
+                    if (cacheidinfo == "nil")
+                    {
+                        return new commonresponse { status = responseStatus.tokenerror };
+                    }
+                    var ci = JsonConvert.DeserializeObject<idinfo>(cacheidinfo);
+                    identity = ci.Identity;
+                    btype = ci.businessType;
                 }
             }
             catch (Exception ex)
@@ -283,31 +393,31 @@ namespace mvc104.Controllers
             // }
             if (input.lost)
             {
-                if (!savePic(input.sign_pic, picType.sign_pic, identity))
+                if (!savePic(input.sign_pic, picType.sign_pic, identity, btype))
                     return new commonresponse { status = responseStatus.fileprocesserror };
             }
             else
             {
-                if (!savePic(input.license_pic, picType.driver, identity))
+                if (!savePic(input.license_pic, picType.driver, identity, btype))
                     return new commonresponse { status = responseStatus.fileprocesserror };
             }
-            if (!savePic(input.id_back, picType.id_back, identity))
+            if (!savePic(input.id_back, picType.id_back, identity, btype))
                 return new commonresponse { status = responseStatus.fileprocesserror };
-            if (!savePic(input.id_front, picType.id_front, identity))
+            if (!savePic(input.id_front, picType.id_front, identity, btype))
                 return new commonresponse { status = responseStatus.fileprocesserror };
-            if (!savePic(input.id_inhand, picType.id_inhand, identity))
+            if (!savePic(input.id_inhand, picType.id_inhand, identity, btype))
                 return new commonresponse { status = responseStatus.fileprocesserror };
-            if (!savePic(input.hukou_pic, picType.hukou_pic, identity))
+            if (!savePic(input.hukou_pic, picType.hukou_pic, identity, btype))
                 return new commonresponse { status = responseStatus.fileprocesserror };
             return new commonresponse { status = responseStatus.ok };
         }
-        private bool savePic(string picstr, picType picType, string identity)
+        private bool savePic(string picstr, picType picType, string identity, businessType btype)
         {
             try
             {
                 var fpath = Path.Combine(_picpath, identity);
                 if (!Directory.Exists(fpath)) Directory.CreateDirectory(fpath);
-                var fname = Path.Combine(fpath, identity + picType + ".jpg");
+                var fname = Path.Combine(fpath, identity, btype.ToString(), picType + ".jpg");
                 var index = picstr.IndexOf("base64,");
                 System.IO.File.WriteAllBytes(fname, Convert.FromBase64String(picstr.Substring(index + 7)));
             }
@@ -335,7 +445,8 @@ namespace mvc104.Controllers
             {
                 return new loginresponse { status = responseStatus.phoneerror };
             }
-            _log.LogInformation("{3}-{0} from {1}, input is {2}", DateTime.Now, "login", Request.HttpContext.Connection.RemoteIpAddress.ToString() + HttpContext.Connection.RemoteIpAddress,
+            _log.LogInformation("{3}-{0} from {1}, input is {2}", DateTime.Now, "login",
+             Request.HttpContext.Connection.RemoteIpAddress.ToString() + HttpContext.Connection.RemoteIpAddress,
             identify + name + phone);
 
             var theuser = _db1.User.FirstOrDefault(i => i.Identity == identify);
@@ -347,27 +458,50 @@ namespace mvc104.Controllers
             theuser.Phone = phone;
             _db1.SaveChanges();
 
+            var btype = (short)businessType;
+            var picsl = new List<short>();
+            // var unbusiness = _db1.Business.FirstOrDefault(c => c.Completed == false && c.Businesstype == btype);
+            // if(_db1.Businesspic.Count(c=>c.Businesstype==(short)businessType&&c.Identity==identify&&c.Uploaded)<global.businesscount[businessType])
+            //  if (unbusiness != null)
+            // {
+            var pics = _db1.Businesspic.Where(c => c.Businesstype == btype && c.Identity == identify && c.Uploaded == true);
+            if (pics.Count() < global.businesscount[businessType])
+                foreach (var a in pics)
+                {
+                    picsl.Add(a.Pictype);
+                }
+            //  }
             var token = GetToken();
-            var redisdb = highlevel.redis.GetDatabase();
-            redisdb.StringSet(token, identify);
-            redisdb.KeyExpire(token,TimeSpan.FromDays(30));
+            try
+            {
+                var redisdb = highlevel.redis.GetDatabase();
+                redisdb.StringSet(token, JsonConvert.SerializeObject(new idinfo { Identity = identify, businessType = businessType }));
+                redisdb.KeyExpire(token, TimeSpan.FromDays(30));
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("redis key process error:{0}", ex.Message);
+            }
+
             var found = false;
             foreach (var a in tokens)
             {
-                if (a.Identity == identify)
+                if (a.idinfo.Identity == identify && a.idinfo.businessType == businessType)
                 {
                     a.Token = token;
+
                     found = true;
                     break;
                 }
             }
             if (!found)
             {
-                tokens.Add(new Ptoken { Identity = identify, Token = token });
+                tokens.Add(new Ptoken { idinfo = new idinfo { Identity = identify, businessType = businessType }, Token = token });
             }
             LogRequest(name + phone + identify, "login", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)businessType);
-            return new loginresponse { status = responseStatus.ok, token = token };
+            return new loginresponse { status = responseStatus.ok, token = token, okpic = picsl.ToArray() };
         }
+
         [Route("FaceCompare")]
         [HttpPost]
         public commonresponse FaceCompare([FromBody]facerequest input)
@@ -391,13 +525,19 @@ namespace mvc104.Controllers
                 {
                     if (a.Token == htoken)
                     {
-                        identity = a.Identity;
+                        identity = a.idinfo.Identity;
                         found = true;
                         break;
                     }
                 }
                 if (!found)
                 {
+                    var redisdb = highlevel.redis.GetDatabase();
+                    var cacheidinfo = redisdb.StringGet(htoken);
+                    if (cacheidinfo == "nil")
+                    {
+                        return new commonresponse { status = responseStatus.tokenerror };
+                    }
                     return new commonresponse { status = responseStatus.tokenerror };
                 }
             }
@@ -410,10 +550,10 @@ namespace mvc104.Controllers
             {
                 return new commonresponse { status = responseStatus.imageerror };
             }
-
+            var fname = Path.GetTempFileName() + ".jpg";
             try
             {
-                var fname = Path.GetTempFileName() + ".jpg";
+
                 var index = input.image.IndexOf("base64,");
                 _log.LogInformation("length: {0}", input.image.Length);
                 System.IO.File.WriteAllBytes(fname, Convert.FromBase64String(input.image.Substring(index + 7)));
@@ -423,7 +563,131 @@ namespace mvc104.Controllers
                 _log.LogInformation("error: {0}", ex);
                 return new commonresponse { status = responseStatus.fileprocesserror };
             }
+
+            try
+            {
+                //  var fname = @"d:\ycl.jpg";
+                // var req=new livingbodyrequest(){
+                var api_id = "9a4c8ff73d6642d886c537403a0a736d";
+                var api_secret = "d5f2e07d025b4bc8bdc8e4774f904fbf";
+                //     file=System.IO.File.ReadAllBytes(fname)
+                // };
+
+                //     var bbytes=System.IO.File.ReadAllBytes(fname);
+                //     var str64=Convert.ToBase64String(bbytes);
+                //      var req=new livingbodyrequest2(){
+                //         api_id="9a4c8ff73d6642d886c537403a0a736d",
+                //         api_secret="d5f2e07d025b4bc8bdc8e4774f904fbf",
+                //         file=str64
+                //     };
+                //    var theUrl="https://cloudapi.linkface.cn/hackness/selfie_hack_detect";
+                //    var ret= SendRestHttpClientRequest(theUrl,JsonConvert.SerializeObject(req));
+                var ret = living(api_id, api_secret, fname);
+                _log.LogInformation("ret={0}", ret);
+                var retsta = JsonConvert.DeserializeObject<okcheck>(ret);
+                if (retsta.status != "OK")
+                {
+                    return new commonresponse { status = responseStatus.livingerror, content = ret };
+                }
+                var retok = JsonConvert.DeserializeObject<okcheck2>(ret);
+                var score = double.Parse(retok.score);
+                if (score >= 0.98)
+                {
+                    return new commonresponse { status = responseStatus.livingerror, content = ret };
+                }
+                var history = "test.jpg";
+                var rettwo = living22(api_id, api_secret, fname, history);
+                var twoc = JsonConvert.DeserializeObject<okcheck>(rettwo);
+                if (twoc.status != "OK")
+                {
+                    return new commonresponse { status = responseStatus.compareerror, content = rettwo };
+                }
+                var twook = JsonConvert.DeserializeObject<okchecktwo>(rettwo);
+                var confidence = double.Parse(twook.confidence);
+                if (confidence <= 0.78)
+                {
+                    return new commonresponse { status = responseStatus.compareerror, content = rettwo };
+                }
+                return new commonresponse { status = responseStatus.ok, content = rettwo };
+            }
+            catch (Exception ex)
+            {
+                _log.LogInformation("error: {0}", ex);
+                return new commonresponse { status = responseStatus.fileprocesserror };
+            }
             return new commonresponse { status = responseStatus.ok };
+        }
+        private string living22(string api_id, string api_secret, string path, string historypath)
+        {
+            HttpContent apiId = new StringContent(api_id);
+            HttpContent apiSecret = new StringContent(api_secret);
+            HttpContent photo = new ByteArrayContent(System.IO.File.ReadAllBytes(path));
+            HttpContent historyphoto = new ByteArrayContent(System.IO.File.ReadAllBytes(historypath));
+            using (var client = new HttpClient())
+            using (var formData = new MultipartFormDataContent())
+            {
+                formData.Add(apiId, "api_id");
+                formData.Add(apiSecret, "api_secret");
+                formData.Add(photo, "selfie_file", path);
+                formData.Add(historyphoto, "historical_selfie_file", historypath);
+                var response = client.PostAsync(
+                    "https://cloudapi.linkface.cn/identity/historical_selfie_verification",
+                    formData).Result;
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.Write(response.ToString());
+                    return string.Empty;
+                }
+                return response.Content.ReadAsStringAsync().Result;
+            }
+        }
+        private string living(string api_id, string api_secret, string path)
+        {
+            HttpContent apiId = new StringContent(api_id);
+            HttpContent apiSecret = new StringContent(api_secret);
+            HttpContent photo = new ByteArrayContent(System.IO.File.ReadAllBytes(path));
+            using (var client = new HttpClient())
+            using (var formData = new MultipartFormDataContent())
+            {
+                formData.Add(apiId, "api_id");
+                formData.Add(apiSecret, "api_secret");
+                formData.Add(photo, "file", path);
+                var response = client.PostAsync(
+                    "https://cloudapi.linkface.cn/hackness/selfie_hack_detect",
+                    formData).Result;
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.Write(response.ToString());
+                    return string.Empty;
+                }
+                return response.Content.ReadAsStringAsync().Result;
+            }
+        }
+        private static string CompareWidthIdetify(string api_id, string api_secret, string identify, string name, string newpicpath, string idpicpath)
+        {
+            HttpContent apiId = new StringContent(api_id);
+            HttpContent apiSecret = new StringContent(api_secret);
+            HttpContent n = new StringContent(name);
+            HttpContent id = new StringContent(identify);
+            HttpContent photo = new ByteArrayContent(System.IO.File.ReadAllBytes(newpicpath));
+            using (var client = new HttpClient())
+            using (var formData = new MultipartFormDataContent())
+            {
+                formData.Add(apiId, "api_id");
+                formData.Add(apiSecret, "api_secret");
+                formData.Add(n, "name");
+                formData.Add(id, "id_number");
+                formData.Add(photo, "selfie_file", "test.jpg");
+                var response = client.PostAsync(
+                    "https://cloudapi.linkface.cn/identity/selfie_idnumber_verification",
+                    formData).Result;
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.Write(response.ToString());
+                    return "";
+                }
+                return response.Content.ReadAsStringAsync().Result;
+            }
         }
         [Route("getwxconfig")]
         [HttpGet]
@@ -438,30 +702,31 @@ namespace mvc104.Controllers
                 }
                 var found = false;
                 var identity = string.Empty;
-                var redisdb = highlevel.redis.GetDatabase();
-                identity = redisdb.StringGet(htoken);
-                if (identity == "nil")
-                {
-                    return new wxconfigresponse { status = responseStatus.tokenerror };
-                }
-
 
                 foreach (var a in tokens)
                 {
                     if (a.Token == htoken)
                     {
-                        identity = a.Identity;
+                        identity = a.idinfo.Identity;
                         found = true;
                         break;
                     }
                 }
                 if (!found)
                 {
-                    return new wxconfigresponse { status = responseStatus.tokenerror };
+                    var redisdb = highlevel.redis.GetDatabase();
+                    var cacheidinfo = redisdb.StringGet(htoken);
+                    if (cacheidinfo == "nil")
+                    {
+                        return new wxconfigresponse { status = responseStatus.tokenerror };
+                    }
+                    var cacheid = JsonConvert.DeserializeObject<idinfo>(cacheidinfo);
+                    identity = cacheid.Identity;
                 }
             }
             catch (Exception ex)
             {
+                _log.LogError("getwxconfig error:{0}", ex.Message);
                 return new wxconfigresponse { status = responseStatus.tokenerror };
             }
 

@@ -9,6 +9,8 @@ namespace mvc104
         public virtual DbSet<Abstudy> Abstudy { get; set; }
         public virtual DbSet<Blahuser> Blahuser { get; set; }
         public virtual DbSet<Bug> Bug { get; set; }
+        public virtual DbSet<Business> Business { get; set; }
+        public virtual DbSet<Businesspic> Businesspic { get; set; }
         public virtual DbSet<Count> Count { get; set; }
         public virtual DbSet<History> History { get; set; }
         public virtual DbSet<Huji> Huji { get; set; }
@@ -182,6 +184,63 @@ namespace mvc104
                     .IsRequired()
                     .HasColumnName("submitter")
                     .HasColumnType("varchar(45)");
+            });
+
+            modelBuilder.Entity<Business>(entity =>
+            {
+                entity.HasKey(e => new { e.Identity, e.Businesstype })
+                    .HasName("PK_business");
+
+                entity.ToTable("business");
+
+                entity.Property(e => e.Identity)
+                    .HasColumnName("identity")
+                    .HasColumnType("varchar(50)");
+
+                entity.Property(e => e.Businesstype)
+                    .HasColumnName("businesstype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.Completed)
+                    .HasColumnName("completed")
+                    .HasColumnType("tinyint(1)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.Time)
+                    .HasColumnName("time")
+                    .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Businesspic>(entity =>
+            {
+                entity.HasKey(e => new { e.Identity, e.Businesstype, e.Pictype })
+                    .HasName("PK_businesspic");
+
+                entity.ToTable("businesspic");
+
+                entity.Property(e => e.Identity)
+                    .HasColumnName("identity")
+                    .HasColumnType("varchar(50)");
+
+                entity.Property(e => e.Businesstype)
+                    .HasColumnName("businesstype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.Pictype)
+                    .HasColumnName("pictype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.Time)
+                    .HasColumnName("time")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Uploaded)
+                    .HasColumnName("uploaded")
+                    .HasColumnType("tinyint(1)")
+                    .HasDefaultValueSql("0");
             });
 
             modelBuilder.Entity<Count>(entity =>
@@ -670,7 +729,8 @@ namespace mvc104
 
                 entity.Property(e => e.Signed)
                     .HasColumnName("signed")
-                    .HasColumnType("varchar(1)");
+                    .HasColumnType("varchar(1)")
+                    .HasDefaultValueSql("0");
 
                 entity.Property(e => e.Status)
                     .HasColumnName("status")
