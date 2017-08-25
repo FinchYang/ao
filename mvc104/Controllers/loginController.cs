@@ -21,7 +21,7 @@ namespace mvc104.Controllers
         private readonly blahContext _db1 = new blahContext();
         static List<Ptoken> tokens = new List<Ptoken>();
         static tokenticket _tt = new tokenticket();
-        static string _picpath="pictures";
+        static string _picpath = "pictures";
         class Ptoken
         {
             public string Identity { get; set; }
@@ -48,7 +48,7 @@ namespace mvc104.Controllers
             var seed = Guid.NewGuid().ToString("N");
             return seed;
         }
-           private async void LogRequest(string content, string method = null, string ip = null,short businessType=0)
+        private async void LogRequest(string content, string method = null, string ip = null, short businessType = 0)
         {
             var dbtext = string.Empty;
             var dbmethod = string.Empty;
@@ -71,21 +71,22 @@ namespace mvc104.Controllers
             }
             await Task.Run(() =>
             {
-                using(var logdb=new blahContext()){
-                logdb.Request.Add(new Request
+                using (var logdb = new blahContext())
                 {
-                    Content = dbtext,
-                   Businesstype=businessType,
-                    Ip = dbip,
-                    Method = dbmethod,
-                    Time = DateTime.Now
-                });
-                logdb.SaveChanges();
+                    logdb.Request.Add(new Request
+                    {
+                        Content = dbtext,
+                        Businesstype = businessType,
+                        Ip = dbip,
+                        Method = dbmethod,
+                        Time = DateTime.Now
+                    });
+                    logdb.SaveChanges();
                 }
             });
 
         }
-             [Route("declarationSign")]
+        [Route("declarationSign")]
         [HttpPost]
         public commonresponse declarationSign([FromBody]declarationsignrequest input)
         {
@@ -93,7 +94,7 @@ namespace mvc104.Controllers
             {
                 return new commonresponse { status = responseStatus.requesterror };
             }
-             var identity = string.Empty;
+            var identity = string.Empty;
             try
             {
                 var htoken = Request.Headers["token"].First();
@@ -102,7 +103,7 @@ namespace mvc104.Controllers
                     return new commonresponse { status = responseStatus.tokenerror };
                 }
                 var found = false;
-               
+
                 foreach (var a in tokens)
                 {
                     if (a.Token == htoken)
@@ -126,21 +127,21 @@ namespace mvc104.Controllers
             // {
             //     return new commonresponse { status = responseStatus.imageerror };
             // }
-          
-               if(!savePic(input.sign_pic,picType.declaration_sign,identity))
-                 return new commonresponse { status = responseStatus.fileprocesserror };
+
+            if (!savePic(input.sign_pic, picType.declaration_sign, identity))
+                return new commonresponse { status = responseStatus.fileprocesserror };
             return new commonresponse { status = responseStatus.ok };
         }
-           [Route("uploadpic")]
+        [Route("uploadpic")]
         [HttpPost]
         public commonresponse uploadpic([FromBody]uploadpicrequest input)
         {
-             LogRequest("uploadpic","uploadpic",Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            LogRequest("uploadpic", "uploadpic", Request.HttpContext.Connection.RemoteIpAddress.ToString());
             if (input == null)
             {
                 return new commonresponse { status = responseStatus.requesterror };
             }
-             var identity = string.Empty;
+            var identity = string.Empty;
             try
             {
                 var htoken = Request.Headers["token"].First();
@@ -149,7 +150,7 @@ namespace mvc104.Controllers
                     return new commonresponse { status = responseStatus.tokenerror };
                 }
                 var found = false;
-               
+
                 foreach (var a in tokens)
                 {
                     if (a.Token == htoken)
@@ -173,21 +174,21 @@ namespace mvc104.Controllers
             // {
             //     return new commonresponse { status = responseStatus.imageerror };
             // }
-            
-               if(!savePic(input.picture,input.picType,identity))
-                 return new commonresponse { status = responseStatus.fileprocesserror };
+
+            if (!savePic(input.picture, input.picType, identity))
+                return new commonresponse { status = responseStatus.fileprocesserror };
             return new commonresponse { status = responseStatus.ok };
         }
-            [Route("updateinfo")]
+        [Route("updateinfo")]
         [HttpPost]
         public commonresponse updateinfo([FromBody]updateinforequest input)
         {
-             LogRequest("updateinfo","updateinfo",Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            LogRequest("updateinfo", "updateinfo", Request.HttpContext.Connection.RemoteIpAddress.ToString());
             if (input == null)
             {
                 return new commonresponse { status = responseStatus.requesterror };
             }
-             var identity = string.Empty;
+            var identity = string.Empty;
             try
             {
                 var htoken = Request.Headers["token"].First();
@@ -196,7 +197,7 @@ namespace mvc104.Controllers
                     return new commonresponse { status = responseStatus.tokenerror };
                 }
                 var found = false;
-               
+
                 foreach (var a in tokens)
                 {
                     if (a.Token == htoken)
@@ -220,31 +221,34 @@ namespace mvc104.Controllers
             {
                 return new commonresponse { status = responseStatus.postaddrerror };
             }
-            
-            try{
-              var theuser = _db1.User.FirstOrDefault(i => i.Identity == identity);
-            if (theuser == null)
+
+            try
             {
-                return new commonresponse { status = responseStatus.iderror };
+                var theuser = _db1.User.FirstOrDefault(i => i.Identity == identity);
+                if (theuser == null)
+                {
+                    return new commonresponse { status = responseStatus.iderror };
+                }
+                theuser.Postaddr = input.postaddr;
+                _db1.SaveChanges();
             }
-            theuser.Postaddr=input.postaddr;
-            _db1.SaveChanges();
-            }catch(Exception ex){
-                _log.LogError("db error:{0}",ex.Message);
+            catch (Exception ex)
+            {
+                _log.LogError("db error:{0}", ex.Message);
                 return new commonresponse { status = responseStatus.dberror };
             }
             return new commonresponse { status = responseStatus.ok };
         }
-         [Route("ChangeLicense")]
+        [Route("ChangeLicense")]
         [HttpPost]
         public commonresponse ChangeLicense([FromBody]changelicenserequest input)
         {
-             LogRequest("ChangeLicense","ChangeLicense",Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            LogRequest("ChangeLicense", "ChangeLicense", Request.HttpContext.Connection.RemoteIpAddress.ToString());
             if (input == null)
             {
                 return new commonresponse { status = responseStatus.requesterror };
             }
-             var identity = string.Empty;
+            var identity = string.Empty;
             try
             {
                 var htoken = Request.Headers["token"].First();
@@ -253,7 +257,7 @@ namespace mvc104.Controllers
                     return new commonresponse { status = responseStatus.tokenerror };
                 }
                 var found = false;
-               
+
                 foreach (var a in tokens)
                 {
                     if (a.Token == htoken)
@@ -277,31 +281,34 @@ namespace mvc104.Controllers
             // {
             //     return new commonresponse { status = responseStatus.imageerror };
             // }
-            if(input.lost) {
-                if(!savePic(input.sign_pic,picType.sign_pic,identity))
-                 return new commonresponse { status = responseStatus.fileprocesserror };
+            if (input.lost)
+            {
+                if (!savePic(input.sign_pic, picType.sign_pic, identity))
+                    return new commonresponse { status = responseStatus.fileprocesserror };
             }
-            else{
-                 if(!savePic(input.license_pic,picType.driver,identity))
-                 return new commonresponse { status = responseStatus.fileprocesserror };
+            else
+            {
+                if (!savePic(input.license_pic, picType.driver, identity))
+                    return new commonresponse { status = responseStatus.fileprocesserror };
             }
-             if(!savePic(input.id_back,picType.id_back,identity))
-                 return new commonresponse { status = responseStatus.fileprocesserror };
-                  if(!savePic(input.id_front,picType.id_front,identity))
-                 return new commonresponse { status = responseStatus.fileprocesserror };
-                  if(!savePic(input.id_inhand,picType.id_inhand,identity))
-                 return new commonresponse { status = responseStatus.fileprocesserror };
-               if(!savePic(input.hukou_pic,picType.hukou_pic,identity))
-                 return new commonresponse { status = responseStatus.fileprocesserror };
+            if (!savePic(input.id_back, picType.id_back, identity))
+                return new commonresponse { status = responseStatus.fileprocesserror };
+            if (!savePic(input.id_front, picType.id_front, identity))
+                return new commonresponse { status = responseStatus.fileprocesserror };
+            if (!savePic(input.id_inhand, picType.id_inhand, identity))
+                return new commonresponse { status = responseStatus.fileprocesserror };
+            if (!savePic(input.hukou_pic, picType.hukou_pic, identity))
+                return new commonresponse { status = responseStatus.fileprocesserror };
             return new commonresponse { status = responseStatus.ok };
         }
-        private bool savePic(string picstr,picType picType,string identity){
-             try
-            {               
-                var fpath=Path.Combine(_picpath,identity);
-                if(!Directory.Exists(fpath)) Directory.CreateDirectory(fpath);
-                 var fname = Path.Combine(fpath,identity+picType+".jpg");
-                var index =picstr.IndexOf("base64,");
+        private bool savePic(string picstr, picType picType, string identity)
+        {
+            try
+            {
+                var fpath = Path.Combine(_picpath, identity);
+                if (!Directory.Exists(fpath)) Directory.CreateDirectory(fpath);
+                var fname = Path.Combine(fpath, identity + picType + ".jpg");
+                var index = picstr.IndexOf("base64,");
                 System.IO.File.WriteAllBytes(fname, Convert.FromBase64String(picstr.Substring(index + 7)));
             }
             catch (Exception ex)
@@ -314,7 +321,7 @@ namespace mvc104.Controllers
 
         [Route("login")]
         [HttpGet]
-        public loginresponse login(string name, string identify, string phone,businessType businessType)
+        public loginresponse login(string name, string identify, string phone, businessType businessType)
         {
             if (string.IsNullOrEmpty(identify))
             {
@@ -336,16 +343,14 @@ namespace mvc104.Controllers
             {
                 return new loginresponse { status = responseStatus.iderror };
             }
-            theuser.Name=name;
-            theuser.Phone=phone;
+            theuser.Name = name;
+            theuser.Phone = phone;
             _db1.SaveChanges();
 
             var token = GetToken();
-            var redisdb=highlevel.redis.GetDatabase();
-        //    var memtoken= redisdb.StringGet(identify);
-        //    if(memtoken=="nil") {
-               redisdb.StringSet(identify,token);
-         //  }
+            var redisdb = highlevel.redis.GetDatabase();
+            redisdb.StringSet(token, identify);
+            redisdb.KeyExpire(token,TimeSpan.FromDays(30));
             var found = false;
             foreach (var a in tokens)
             {
@@ -360,7 +365,7 @@ namespace mvc104.Controllers
             {
                 tokens.Add(new Ptoken { Identity = identify, Token = token });
             }
-            LogRequest(name+phone+identify,"login",Request.HttpContext.Connection.RemoteIpAddress.ToString(),(short)businessType);
+            LogRequest(name + phone + identify, "login", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)businessType);
             return new loginresponse { status = responseStatus.ok, token = token };
         }
         [Route("FaceCompare")]
@@ -373,8 +378,8 @@ namespace mvc104.Controllers
             }
             try
             {
-                var inin=JsonConvert.SerializeObject(input);
-                _log.LogInformation("input ={1},{0}",inin.Length);
+                var inin = JsonConvert.SerializeObject(input);
+                _log.LogInformation("input ={1},{0}", inin.Length);
                 var htoken = Request.Headers["token"].First();
                 if (string.IsNullOrEmpty(htoken))
                 {
@@ -408,9 +413,9 @@ namespace mvc104.Controllers
 
             try
             {
-                var fname = Path.GetTempFileName()+".jpg";
+                var fname = Path.GetTempFileName() + ".jpg";
                 var index = input.image.IndexOf("base64,");
-                  _log.LogInformation("length: {0}", input.image.Length);
+                _log.LogInformation("length: {0}", input.image.Length);
                 System.IO.File.WriteAllBytes(fname, Convert.FromBase64String(input.image.Substring(index + 7)));
             }
             catch (Exception ex)
@@ -433,6 +438,14 @@ namespace mvc104.Controllers
                 }
                 var found = false;
                 var identity = string.Empty;
+                var redisdb = highlevel.redis.GetDatabase();
+                identity = redisdb.StringGet(htoken);
+                if (identity == "nil")
+                {
+                    return new wxconfigresponse { status = responseStatus.tokenerror };
+                }
+
+
                 foreach (var a in tokens)
                 {
                     if (a.Token == htoken)
@@ -543,7 +556,7 @@ namespace mvc104.Controllers
         }
         private string getSignature(string ticket, string noncestr, string url, long stamp)
         {
-     //   highlevel.redis.GetDatabase();
+            //   highlevel.redis.GetDatabase();
 
             SHA1 sha = SHA1.Create();
 
