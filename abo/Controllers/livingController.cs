@@ -18,20 +18,14 @@ namespace mvc104.Controllers
     {
         public readonly ILogger<livingController> _log;
 
-        static tokenticket _tt = new tokenticket();
+        private readonly string facepath = "face";
+        private readonly string residencepicturepath = "residentpicture";
         private readonly blahContext _db1 = new blahContext();
-        static List<Ptoken> tokens = new List<Ptoken>();
-        class Ptoken
-        {
-            public string Identity { get; set; }
-            public string Token { get; set; }
-        }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-
                 _db1.Dispose();
             }
             base.Dispose(disposing);
@@ -40,7 +34,7 @@ namespace mvc104.Controllers
         {
             _log = log;
         }
-     
+
         [Route("FaceCompare")]
         [HttpPost]
         public commonresponse FaceCompare([FromBody]facerequest input)
@@ -49,50 +43,21 @@ namespace mvc104.Controllers
             {
                 return new commonresponse { status = responseStatus.requesterror };
             }
-            try
-            {
-                var inin = JsonConvert.SerializeObject(input);
-                _log.LogInformation("input ={1},{0}", inin.Length);
-                var htoken = Request.Headers["token"].First();
-                if (string.IsNullOrEmpty(htoken))
-                {
-                    return new commonresponse { status = responseStatus.tokenerror };
-                }
-                var found = false;
-                var identity = string.Empty;
-                foreach (var a in global. tokens)
-                {
-                    if (a.Token == htoken)
-                    {
-                        identity = a.idinfo.Identity;
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found)
-                {
-                    var redisdb = highlevel.redis.GetDatabase();
-                    var cacheidinfo = redisdb.StringGet(htoken);
-                    if (cacheidinfo == "nil")
-                    {
-                        return new commonresponse { status = responseStatus.tokenerror };
-                    }
-                    return new commonresponse { status = responseStatus.tokenerror };
-                }
-            }
-            catch (Exception ex)
-            {
-                return new wxconfigresponse { status = responseStatus.tokenerror };
-            }
+            highlevel.infolog(_log, "FaceCompare", input.image.Length.ToString());
+            var accinfo = highlevel.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
 
             if (string.IsNullOrEmpty(input.image))
             {
                 return new commonresponse { status = responseStatus.imageerror };
             }
-            var fname = Path.GetTempFileName() + ".jpg";
+            var fp = Path.Combine(facepath, accinfo.Identity);
+            if (!Directory.Exists(fp)) Directory.CreateDirectory(fp);
+            var now = DateTime.Now;
+            var fbase = string.Format("{0}-{1}-{2}-{3}-{4}-{5}", now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
+            var fname = Path.Combine(fp, fbase);
             try
             {
-
                 var index = input.image.IndexOf("base64,");
                 _log.LogInformation("length: {0}", input.image.Length);
                 System.IO.File.WriteAllBytes(fname, Convert.FromBase64String(input.image.Substring(index + 7)));
@@ -105,24 +70,11 @@ namespace mvc104.Controllers
 
             try
             {
-                //  var fname = @"d:\ycl.jpg";
-                // var req=new livingbodyrequest(){
                 var api_id = "9a4c8ff73d6642d886c537403a0a736d";
                 var api_secret = "d5f2e07d025b4bc8bdc8e4774f904fbf";
-                //     file=System.IO.File.ReadAllBytes(fname)
-                // };
 
-                //     var bbytes=System.IO.File.ReadAllBytes(fname);
-                //     var str64=Convert.ToBase64String(bbytes);
-                //      var req=new livingbodyrequest2(){
-                //         api_id="9a4c8ff73d6642d886c537403a0a736d",
-                //         api_secret="d5f2e07d025b4bc8bdc8e4774f904fbf",
-                //         file=str64
-                //     };
-                //    var theUrl="https://cloudapi.linkface.cn/hackness/selfie_hack_detect";
-                //    var ret= SendRestHttpClientRequest(theUrl,JsonConvert.SerializeObject(req));
                 var ret = living(api_id, api_secret, fname);
-                _log.LogInformation("ret={0}", ret);
+                _log.LogInformation("living check ret={0}", ret);
                 var retsta = JsonConvert.DeserializeObject<okcheck>(ret);
                 if (retsta.status != "OK")
                 {
@@ -132,10 +84,22 @@ namespace mvc104.Controllers
                 var score = double.Parse(retok.score);
                 if (score >= 0.98)
                 {
-                    return new commonresponse { status = responseStatus.livingerror, content = ret };
+                    return new commonresponse { status = responseStatus.livingerror, content = retok.score };
                 }
-                var history = "test.jpg";
-                var rettwo = living22(api_id, api_secret, fname, history);
+
+                var theuser = _db1.Aouser.FirstOrDefault(c => c.Identity == accinfo.Identity);
+                if (theuser == null)
+                {
+                    return new commonresponse { status = responseStatus.nouser, content = accinfo.Identity };
+                }
+                if (string.IsNullOrEmpty(theuser.Photofile))
+                {
+                    return new commonresponse { status = responseStatus.residencepictureerror };
+                }
+                var history =Path.Combine(residencepicturepath, theuser.Photofile+ ".jpg");
+
+                highlevel.infolog(_log,"historpic",fname);
+                var rettwo = CompareWitdIdFace(api_id, api_secret, fname, history);
                 var twoc = JsonConvert.DeserializeObject<okcheck>(rettwo);
                 if (twoc.status != "OK")
                 {
@@ -145,18 +109,17 @@ namespace mvc104.Controllers
                 var confidence = double.Parse(twook.confidence);
                 if (confidence <= 0.78)
                 {
-                    return new commonresponse { status = responseStatus.compareerror, content = rettwo };
+                    return new commonresponse { status = responseStatus.compareerror, content = twook.confidence };
                 }
-                return new commonresponse { status = responseStatus.ok, content = rettwo };
+                return new commonresponse { status = responseStatus.ok, content = twook.confidence };
             }
             catch (Exception ex)
             {
                 _log.LogInformation("error: {0}", ex);
                 return new commonresponse { status = responseStatus.fileprocesserror };
             }
-            return new commonresponse { status = responseStatus.ok };
         }
-        private string living22(string api_id, string api_secret, string path, string historypath)
+        private string CompareWitdIdFace(string api_id, string api_secret, string path, string historypath)
         {
             HttpContent apiId = new StringContent(api_id);
             HttpContent apiSecret = new StringContent(api_secret);
@@ -228,45 +191,41 @@ namespace mvc104.Controllers
                 return response.Content.ReadAsStringAsync().Result;
             }
         }
-      
-            [Route("livingbody")]
-        [HttpPost]
-        public commonresponse livingbody()
-        {         
-            try
-            {
-                var fname = @"d:\ycl.jpg";
-                // var req=new livingbodyrequest(){
-                var     api_id="9a4c8ff73d6642d886c537403a0a736d";
-                var     api_secret="d5f2e07d025b4bc8bdc8e4774f904fbf";
-                //     file=System.IO.File.ReadAllBytes(fname)
-                // };
 
-            //     var bbytes=System.IO.File.ReadAllBytes(fname);
-            //     var str64=Convert.ToBase64String(bbytes);
-            //      var req=new livingbodyrequest2(){
-            //         api_id="9a4c8ff73d6642d886c537403a0a736d",
-            //         api_secret="d5f2e07d025b4bc8bdc8e4774f904fbf",
-            //         file=str64
-            //     };
-            //    var theUrl="https://cloudapi.linkface.cn/hackness/selfie_hack_detect";
-           //    var ret= SendRestHttpClientRequest(theUrl,JsonConvert.SerializeObject(req));
-           var ret=living(api_id,api_secret,fname);
-               _log.LogInformation("ret={0}",ret);
-                return new commonresponse { status = responseStatus.ok ,content=ret};
-            }
-            catch (Exception ex)
-            {
-                _log.LogInformation("error: {0}", ex);
-                return new commonresponse { status = responseStatus.fileprocesserror };
-            }
-           
-        }
-        private string GetToken()
-        {
-            var seed = Guid.NewGuid().ToString("N");
-            return seed;
-        }
-       
+        //     [Route("livingbody")]
+        // [HttpPost]
+        // public commonresponse livingbody()
+        // {         
+        //     try
+        //     {
+        //         var fname = @"d:\ycl.jpg";
+        //         // var req=new livingbodyrequest(){
+        //         var     api_id="9a4c8ff73d6642d886c537403a0a736d";
+        //         var     api_secret="d5f2e07d025b4bc8bdc8e4774f904fbf";
+        //         //     file=System.IO.File.ReadAllBytes(fname)
+        //         // };
+
+        //     //     var bbytes=System.IO.File.ReadAllBytes(fname);
+        //     //     var str64=Convert.ToBase64String(bbytes);
+        //     //      var req=new livingbodyrequest2(){
+        //     //         api_id="9a4c8ff73d6642d886c537403a0a736d",
+        //     //         api_secret="d5f2e07d025b4bc8bdc8e4774f904fbf",
+        //     //         file=str64
+        //     //     };
+        //     //    var theUrl="https://cloudapi.linkface.cn/hackness/selfie_hack_detect";
+        //    //    var ret= SendRestHttpClientRequest(theUrl,JsonConvert.SerializeObject(req));
+        //    var ret=living(api_id,api_secret,fname);
+        //        _log.LogInformation("ret={0}",ret);
+        //         return new commonresponse { status = responseStatus.ok ,content=ret};
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         _log.LogInformation("error: {0}", ex);
+        //         return new commonresponse { status = responseStatus.fileprocesserror };
+        //     }
+
+        // }
+
+
     }
 }

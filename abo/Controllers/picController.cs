@@ -21,7 +21,7 @@ namespace mvc104.Controllers
 
         private readonly blahContext _db1 = new blahContext();
         static string _picpath = "pictures";
-       
+
 
         protected override void Dispose(bool disposing)
         {
@@ -37,8 +37,6 @@ namespace mvc104.Controllers
             _log = log;
         }
 
-        
-      
         [Route("declarationSign")]
         [HttpPost]
         public commonresponse declarationSign([FromBody]declarationsignrequest input)
@@ -47,38 +45,36 @@ namespace mvc104.Controllers
             {
                 return new commonresponse { status = responseStatus.requesterror };
             }
-            var accinfo= highlevel.GetInfoByToken(Request.Headers);
-           if(accinfo.status!= responseStatus.ok) return accinfo;   
-
-        //  var acc=(access_idinfo)accinfo;
+            var accinfo = highlevel.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
 
             if (!savePic(input.sign_pic, picType.declaration_sign, accinfo.Identity, accinfo.businessType))
                 return new commonresponse { status = responseStatus.fileprocesserror };
             return new commonresponse { status = responseStatus.ok };
         }
-        
-        
+
+
         [Route("downloadpic")]
         [HttpGet]
         public commonresponse downloadpic(picType picType)
         {
-           highlevel. LogRequest("downloadpic", "downloadpic", Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            highlevel.LogRequest("downloadpic", "downloadpic", Request.HttpContext.Connection.RemoteIpAddress.ToString());
 
-             var accinfo= highlevel.GetInfoByToken(Request.Headers);
-           if(accinfo.status!= responseStatus.ok) return accinfo;   
-
+            var accinfo = highlevel.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
 
             try
             {
                 var fname = Path.Combine(_picpath, accinfo.Identity, accinfo.businessType.ToString(), picType + ".jpg");
+                highlevel.infolog(_log,"downloadpic",fname);
                 var bbytes = System.IO.File.ReadAllBytes(fname);
                 var retstr = Convert.ToBase64String(bbytes);
                 return new downloadresponse { status = responseStatus.ok, picture = retstr };
             }
             catch (Exception ex)
             {
-                _log.LogError("{0}-{1}-{2}",DateTime.Now,"downloadpic",ex.Message);
-                return new commonresponse { status = responseStatus.processerror,content=ex.Message };
+                _log.LogError("{0}-{1}-{2}", DateTime.Now, "downloadpic", ex.Message);
+                return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
 
         }
@@ -86,13 +82,13 @@ namespace mvc104.Controllers
         [HttpPost]
         public commonresponse uploadpic([FromBody]uploadpicrequest input)
         {
-           highlevel. LogRequest("uploadpic", "uploadpic", Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            highlevel.LogRequest("uploadpic", "uploadpic", Request.HttpContext.Connection.RemoteIpAddress.ToString());
             if (input == null)
             {
                 return new commonresponse { status = responseStatus.requesterror };
             }
-              var accinfo= highlevel.GetInfoByToken(Request.Headers);
-           if(accinfo.status!= responseStatus.ok) return accinfo;   
+            var accinfo = highlevel.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
 
             if (!savePic(input.picture, input.picType, accinfo.Identity, accinfo.businessType))
                 return new commonresponse { status = responseStatus.fileprocesserror };
@@ -112,15 +108,15 @@ namespace mvc104.Controllers
         [HttpPost]
         public commonresponse ChangeLicense([FromBody]changelicenserequest input)
         {
-           highlevel. LogRequest("ChangeLicense", "ChangeLicense", Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            highlevel.LogRequest("ChangeLicense", "ChangeLicense", Request.HttpContext.Connection.RemoteIpAddress.ToString());
             if (input == null)
             {
                 return new commonresponse { status = responseStatus.requesterror };
             }
-            var accinfo= highlevel.GetInfoByToken(Request.Headers);
-           if(accinfo.status!= responseStatus.ok) return accinfo; 
-           var identity=accinfo.Identity;
-           var btype=accinfo.businessType;
+            var accinfo = highlevel.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+            var identity = accinfo.Identity;
+            var btype = accinfo.businessType;
             if (input.lost)
             {
                 if (!savePic(input.sign_pic, picType.sign_pic, identity, btype))
@@ -148,6 +144,7 @@ namespace mvc104.Controllers
                 var fpath = Path.Combine(_picpath, identity);
                 if (!Directory.Exists(fpath)) Directory.CreateDirectory(fpath);
                 var fname = Path.Combine(fpath, identity, btype.ToString(), picType + ".jpg");
+                highlevel.infolog(_log,"savepic",fname);
                 var index = picstr.IndexOf("base64,");
                 System.IO.File.WriteAllBytes(fname, Convert.FromBase64String(picstr.Substring(index + 7)));
             }
@@ -159,7 +156,7 @@ namespace mvc104.Controllers
             return true;
         }
 
-      
+
 
     }
 }

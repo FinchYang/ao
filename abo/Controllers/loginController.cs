@@ -19,15 +19,13 @@ namespace mvc104.Controllers
     {
         public readonly ILogger<loginController> _log;
 
-        private readonly blahContext _db1 = new blahContext();
-        static string _picpath = "pictures";
+        private readonly blahContext _db1 = new blahContext();      
        
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-
                 _db1.Dispose();
             }
             base.Dispose(disposing);
@@ -41,8 +39,7 @@ namespace mvc104.Controllers
         {
             var seed = Guid.NewGuid().ToString("N");
             return seed;
-        }
-      
+        }      
 
         [Route("login")]
         [HttpGet]
@@ -62,13 +59,14 @@ namespace mvc104.Controllers
             }
             _log.LogInformation("{3}-{0} from {1}, input is {2}", DateTime.Now, "login",
              Request.HttpContext.Connection.RemoteIpAddress.ToString() + HttpContext.Connection.RemoteIpAddress,
-            identify + name + phone);
+            identify + name + phone+businessType);
 
-            var theuser = _db1.User.FirstOrDefault(i => i.Identity == identify);
+            var theuser = _db1.Aouser.FirstOrDefault(i => i.Identity == identify);
             if (theuser == null)
             {
                 return new loginresponse { status = responseStatus.iderror };
             }
+
             theuser.Name = name;
             theuser.Phone = phone;
             _db1.SaveChanges();
@@ -104,7 +102,6 @@ namespace mvc104.Controllers
                 if (a.idinfo.Identity == identify && a.idinfo.businessType == businessType)
                 {
                     a.Token = token;
-
                     found = true;
                     break;
                 }
@@ -116,7 +113,5 @@ namespace mvc104.Controllers
            highlevel. LogRequest(name + phone + identify, "login", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)businessType);
             return new loginresponse { status = responseStatus.ok, token = token, okpic = picsl.ToArray() };
         }
-
-
     }
 }

@@ -6,10 +6,10 @@ namespace mvc104.models
         public int expires_in { get; set; }
     }
 
-    
-        public class access_idinfo:commonresponse
-        {
-            public string Identity { get; set; }
-            public businessType businessType { get; set; }
-        }
+
+    public class access_idinfo : commonresponse
+    {
+        public string Identity { get; set; }
+        public businessType businessType { get; set; }
+    }
 }

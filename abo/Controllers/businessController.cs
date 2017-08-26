@@ -20,8 +20,7 @@ namespace mvc104.Controllers
         public readonly ILogger<businessController> _log;
 
         private readonly blahContext _db1 = new blahContext();
-        static string _picpath = "pictures";
-       
+
 
         protected override void Dispose(bool disposing)
         {
@@ -37,18 +36,18 @@ namespace mvc104.Controllers
             _log = log;
         }
 
-        
+
         [Route("updateinfo")]
         [HttpPost]
         public commonresponse updateinfo([FromBody]updateinforequest input)
         {
-           highlevel. LogRequest("updateinfo", "updateinfo", Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            highlevel.LogRequest("updateinfo", "updateinfo", Request.HttpContext.Connection.RemoteIpAddress.ToString());
             if (input == null)
             {
                 return new commonresponse { status = responseStatus.requesterror };
             }
-              var accinfo= highlevel.GetInfoByToken(Request.Headers);
-           if(accinfo.status!= responseStatus.ok) return accinfo; 
+            var accinfo = highlevel.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
 
             if (string.IsNullOrEmpty(input.postaddr))
             {
@@ -72,7 +71,6 @@ namespace mvc104.Controllers
             }
             return new commonresponse { status = responseStatus.ok };
         }
-      
 
 
 

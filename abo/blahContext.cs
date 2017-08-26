@@ -7,6 +7,7 @@ namespace mvc104
     public partial class blahContext : DbContext
     {
         public virtual DbSet<Abstudy> Abstudy { get; set; }
+        public virtual DbSet<Aouser> Aouser { get; set; }
         public virtual DbSet<Blahuser> Blahuser { get; set; }
         public virtual DbSet<Bug> Bug { get; set; }
         public virtual DbSet<Business> Business { get; set; }
@@ -96,6 +97,30 @@ namespace mvc104
                 entity.Property(e => e.Time)
                     .HasColumnName("TIME")
                     .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<Aouser>(entity =>
+            {
+                entity.HasKey(e => e.Identity)
+                    .HasName("identity_UNIQUE");
+
+                entity.ToTable("aouser");
+
+                entity.Property(e => e.Identity)
+                    .HasColumnName("identity")
+                    .HasColumnType("varchar(50)");
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .HasColumnType("varchar(45)");
+
+                entity.Property(e => e.Phone)
+                    .HasColumnName("phone")
+                    .HasColumnType("varchar(45)");
+
+                entity.Property(e => e.Photofile)
+                    .HasColumnName("photofile")
+                    .HasColumnType("varchar(145)");
             });
 
             modelBuilder.Entity<Blahuser>(entity =>

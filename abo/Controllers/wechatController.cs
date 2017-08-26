@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,12 +21,7 @@ namespace mvc104.Controllers
 
         static tokenticket _tt = new tokenticket();
         private readonly blahContext _db1 = new blahContext();
-        static List<Ptoken> tokens = new List<Ptoken>();
-        class Ptoken
-        {
-            public string Identity { get; set; }
-            public string Token { get; set; }
-        }
+
 
         protected override void Dispose(bool disposing)
         {
@@ -41,37 +37,13 @@ namespace mvc104.Controllers
             _log = log;
         }
 
-
-        private string living(string api_id, string api_secret, string path)
-        {
-            HttpContent apiId = new StringContent(api_id);
-            HttpContent apiSecret = new StringContent(api_secret);
-            HttpContent photo = new ByteArrayContent(System.IO. File.ReadAllBytes(path));
-            using (var client = new HttpClient())
-            using (var formData = new MultipartFormDataContent())
-            {
-                formData.Add(apiId, "api_id");
-                formData.Add(apiSecret, "api_secret");
-                formData.Add(photo, "file", path);
-                var response = client.PostAsync(
-                    "https://cloudapi.linkface.cn/hackness/selfie_hack_detect",
-                    formData).Result;
-                if (!response.IsSuccessStatusCode)
-                {
-                    Console.Write(response.ToString());
-                    return string.Empty;
-                }
-                return response.Content.ReadAsStringAsync().Result;
-            }
-        }
-
-          [Route("getwxconfig")]
+        [Route("getwxconfig")]
         [HttpGet]
         public commonresponse getwxconfig(string url)
         {
-           var accinfo= highlevel.GetInfoByToken(Request.Headers);
-           if(accinfo.status!= responseStatus.ok) return accinfo;         
-            
+            highlevel.infolog(_log, "wxconfig", url);
+            var accinfo = highlevel.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
 
             var ret = getAccessToken();
             _log.LogInformation("ret={0}", ret.access_token);
@@ -132,6 +104,7 @@ namespace mvc104.Controllers
             }
             catch (Exception ex)
             {
+                highlevel.errorlog(_log, "getaccesstoken", ex);
                 return new accesstoken { access_token = "000001" };
             }
         }
@@ -159,6 +132,7 @@ namespace mvc104.Controllers
             }
             catch (Exception ex)
             {
+                highlevel.errorlog(_log, "getTicket", ex);
                 return new jsticket { ticket = "000001" };
             }
         }
@@ -185,44 +159,6 @@ namespace mvc104.Controllers
 
             return hash;
         }
-            [Route("livingbody")]
-        [HttpPost]
-        public commonresponse livingbody()
-        {         
-            try
-            {
-                var fname = @"d:\ycl.jpg";
-                // var req=new livingbodyrequest(){
-                var     api_id="9a4c8ff73d6642d886c537403a0a736d";
-                var     api_secret="d5f2e07d025b4bc8bdc8e4774f904fbf";
-                //     file=System.IO.File.ReadAllBytes(fname)
-                // };
 
-            //     var bbytes=System.IO.File.ReadAllBytes(fname);
-            //     var str64=Convert.ToBase64String(bbytes);
-            //      var req=new livingbodyrequest2(){
-            //         api_id="9a4c8ff73d6642d886c537403a0a736d",
-            //         api_secret="d5f2e07d025b4bc8bdc8e4774f904fbf",
-            //         file=str64
-            //     };
-            //    var theUrl="https://cloudapi.linkface.cn/hackness/selfie_hack_detect";
-           //    var ret= SendRestHttpClientRequest(theUrl,JsonConvert.SerializeObject(req));
-           var ret=living(api_id,api_secret,fname);
-               _log.LogInformation("ret={0}",ret);
-                return new commonresponse { status = responseStatus.ok ,content=ret};
-            }
-            catch (Exception ex)
-            {
-                _log.LogInformation("error: {0}", ex);
-                return new commonresponse { status = responseStatus.fileprocesserror };
-            }
-           
-        }
-        private string GetToken()
-        {
-            var seed = Guid.NewGuid().ToString("N");
-            return seed;
-        }
-       
     }
 }
