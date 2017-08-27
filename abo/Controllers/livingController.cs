@@ -54,7 +54,7 @@ namespace mvc104.Controllers
             var fp = Path.Combine(facepath, accinfo.Identity);
             if (!Directory.Exists(fp)) Directory.CreateDirectory(fp);
             var now = DateTime.Now;
-            var fbase = string.Format("{0}-{1}-{2}-{3}-{4}-{5}", now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
+            var fbase = string.Format("{0}-{1}-{2}-{3}-{4}-{5}.jpg", now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
             var fname = Path.Combine(fp, fbase);
             try
             {
