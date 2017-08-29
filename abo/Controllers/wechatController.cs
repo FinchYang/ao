@@ -89,7 +89,9 @@ namespace mvc104.Controllers
                     return new accesstoken { access_token = _tt.access_token };
                 }
             }
-            var url = string.Format("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}", "wx7fc046cc9adb13e4", "b299bac11729dd892f903115be3aabd9");
+            var url = string.Format("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}", 
+            "wx774a9869c14f1647", "7f94f888c5e5c32bba9239230f46a827");
+            //  var url = string.Format("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}", "wx7fc046cc9adb13e4", "b299bac11729dd892f903115be3aabd9");
             try
             {
                 var handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip };
