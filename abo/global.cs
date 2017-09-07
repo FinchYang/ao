@@ -97,6 +97,12 @@ namespace mvc104
         {
             log.LogError("{0}-{1}-{2}", DateTime.Now, method, ex.Message);
         }
+
+        //
+         public static commonresponse commonreturn(responseStatus rs)
+        {
+            return new commonresponse { status = rs,content=rs.ToString() };
+        }
         public static void infolog(ILogger log, string method, string msg)
         {
             log.LogInformation("{0}-{1}-{2}", DateTime.Now, method, msg);

@@ -15,9 +15,9 @@ using static mvc104.global;
 
 namespace mvc104.Controllers
 {
-    public class loginController : Controller
+    public class examController : Controller
     {
-        public readonly ILogger<loginController> _log;
+        public readonly ILogger<examController> _log;
 
         private readonly blahContext _db1 = new blahContext();      
        
@@ -30,7 +30,7 @@ namespace mvc104.Controllers
             }
             base.Dispose(disposing);
         }
-        public loginController(ILogger<loginController> log)
+        public examController(ILogger<examController> log)
         {
             _log = log;
         }
@@ -41,10 +41,38 @@ namespace mvc104.Controllers
             return seed;
         }      
 
-        [Route("login")]
+  private string exam()
+        {
+           
+            var url = string.Format("http://jisujiakao.market.alicloudapi.com/driverexam/query?pagenum=1&pagesize=1&sort=rand&subject=1&type=A1", 
+            "wx774a9869c14f1647", "7f94f888c5e5c32bba9239230f46a827");
+            try
+            {
+                var handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip };
+
+                using (var restget = new HttpClient(handler))
+                {
+                    var auth=new List<string>();
+                    auth.Add("APPCODE a7686da69b354d78b1cd97b49ebd4490");
+                    restget.DefaultRequestHeaders.Add("Authorization",auth);
+                    var response = restget.GetAsync(url).Result;
+                    string srcString = response.Content.ReadAsStringAsync().Result;
+                   
+                    return srcString;
+                }
+            }
+            catch (Exception ex)
+            {
+                highlevel.errorlog(_log, "exam", ex);
+                return  "000001" ;
+            }
+        }
+        [Route("lo77gin")]
         [HttpGet]
         public loginresponse login(string name, string identify, string phone, businessType businessType)
         {
+           var ret= exam();
+            return new loginresponse { status = responseStatus.ok,token=ret };
             if (string.IsNullOrEmpty(identify))
             {
                 return new loginresponse { status = responseStatus.iderror };
@@ -64,16 +92,11 @@ namespace mvc104.Controllers
             var theuser = _db1.Aouser.FirstOrDefault(i => i.Identity == identify);
             if (theuser == null)
             {
-              //  return new loginresponse { status = responseStatus.iderror };
-              _db1.Aouser.Add(new Aouser{
-                  Identity=identify,Phone=phone,Name =name
-              });
+                return new loginresponse { status = responseStatus.iderror };
             }
-            else {
-theuser.Name = name;
+
+            theuser.Name = name;
             theuser.Phone = phone;
-            }
-            
             _db1.SaveChanges();
 
             var btype = (short)businessType;

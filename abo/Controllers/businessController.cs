@@ -72,6 +72,49 @@ namespace mvc104.Controllers
             return new commonresponse { status = responseStatus.ok };
         }
 
+        [Route("postaddr")]
+        [HttpPost]
+        public commonresponse postaddr([FromBody]postaddrrequest input)
+        {
+            highlevel.LogRequest("postaddr", "postaddr", Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            if (input == null)
+            {
+                return highlevel.commonreturn(responseStatus.requesterror);
+            }
+            var accinfo = highlevel.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+
+            if (string.IsNullOrEmpty(input.postaddr))
+            {
+                return highlevel.commonreturn(responseStatus.postaddrerror);
+            }
+            // if (string.IsNullOrEmpty(input.acceptingplace))
+            // {
+            //     return highlevel.commonreturn(responseStatus.acceptingplaceerror);
+            // }
+            try
+            {
+                var theuser = _db1.Business.FirstOrDefault(i => i.Identity == accinfo.Identity && i.Businesstype == (short)accinfo.businessType);
+                if (theuser == null)
+                {
+                    return highlevel.commonreturn(responseStatus.iderror);
+                }
+                theuser.Postaddr = input.postaddr;
+                
+                if (!string.IsNullOrEmpty(input.acceptingplace))
+                theuser.Acceptingplace = input.acceptingplace;
+
+                 if (!string.IsNullOrEmpty(input.quasiDrivingLicense))
+                theuser.QuasiDrivingLicense = input.quasiDrivingLicense;
+                _db1.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("db error:{0}", ex.Message);
+                return highlevel.commonreturn(responseStatus.dberror);
+            }
+            return highlevel.commonreturn(responseStatus.ok);
+        }
 
 
     }

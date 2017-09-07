@@ -9,6 +9,7 @@ namespace mvc104
         public virtual DbSet<Abstudy> Abstudy { get; set; }
         public virtual DbSet<Aouser> Aouser { get; set; }
         public virtual DbSet<Blahuser> Blahuser { get; set; }
+        public virtual DbSet<Blogs> Blogs { get; set; }
         public virtual DbSet<Bug> Bug { get; set; }
         public virtual DbSet<Business> Business { get; set; }
         public virtual DbSet<Businesspic> Businesspic { get; set; }
@@ -173,6 +174,22 @@ namespace mvc104
                     .HasColumnType("varchar(45)");
             });
 
+            modelBuilder.Entity<Blogs>(entity =>
+            {
+                entity.HasKey(e => e.BlogId)
+                    .HasName("BlogID_UNIQUE");
+
+                entity.Property(e => e.BlogId)
+                    .HasColumnName("BlogID")
+                    .HasColumnType("int(10) unsigned");
+
+                entity.Property(e => e.Blogcol)
+                    .HasColumnName("blogcol")
+                    .HasColumnType("varchar(45)");
+
+                entity.Property(e => e.Url).HasColumnType("text");
+            });
+
             modelBuilder.Entity<Bug>(entity =>
             {
                 entity.HasKey(e => e.Idbug)
@@ -227,10 +244,22 @@ namespace mvc104
                     .HasColumnType("smallint(2)")
                     .HasDefaultValueSql("0");
 
+                entity.Property(e => e.Acceptingplace)
+                    .HasColumnName("acceptingplace")
+                    .HasColumnType("varchar(145)");
+
                 entity.Property(e => e.Completed)
                     .HasColumnName("completed")
                     .HasColumnType("tinyint(1)")
                     .HasDefaultValueSql("0");
+
+                entity.Property(e => e.Postaddr)
+                    .HasColumnName("postaddr")
+                    .HasColumnType("varchar(145)");
+
+                entity.Property(e => e.QuasiDrivingLicense)
+                    .HasColumnName("quasiDrivingLicense")
+                    .HasColumnType("varchar(45)");
 
                 entity.Property(e => e.Time)
                     .HasColumnName("time")

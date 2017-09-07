@@ -5,6 +5,6 @@ namespace mvc104.models
         ok, iderror, nameerror, phoneerror, tokenerror,
         requesterror, imageerror, fileprocesserror, access_tokenerror, ticketerror
         ,postaddrerror,dberror,processerror,livingerror,compareerror
-        ,nouser,residencepictureerror
+        ,nouser,residencepictureerror,acceptingplaceerror
     }; 
 }
