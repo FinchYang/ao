@@ -18,16 +18,13 @@ namespace mvc104.Controllers
     public class picController : Controller
     {
         public readonly ILogger<picController> _log;
-
         private readonly blahContext _db1 = new blahContext();
         static string _picpath = "pictures";
-
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-
                 _db1.Dispose();
             }
             base.Dispose(disposing);
@@ -66,7 +63,7 @@ namespace mvc104.Controllers
             try
             {
                 var fname = Path.Combine(_picpath, accinfo.Identity, accinfo.businessType.ToString(), picType + ".jpg");
-                highlevel.infolog(_log,"downloadpic",fname);
+                highlevel.infolog(_log, "downloadpic", fname);
                 var bbytes = System.IO.File.ReadAllBytes(fname);
                 var retstr = Convert.ToBase64String(bbytes);
                 return new downloadresponse { status = responseStatus.ok, picture = retstr };
@@ -82,26 +79,55 @@ namespace mvc104.Controllers
         [HttpPost]
         public commonresponse uploadpic([FromBody]uploadpicrequest input)
         {
-            highlevel.LogRequest("uploadpic", "uploadpic", Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            //  highlevel.LogRequest("uploadpic", "uploadpic", Request.HttpContext.Connection.RemoteIpAddress.ToString());
             if (input == null)
             {
-                return new commonresponse { status = responseStatus.requesterror };
+               return  highlevel.commonreturn( responseStatus.requesterror );
             }
             var accinfo = highlevel.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
 
             if (!savePic(input.picture, input.picType, accinfo.Identity, accinfo.businessType))
-                return new commonresponse { status = responseStatus.fileprocesserror };
+             return    highlevel.commonreturn( responseStatus.fileprocesserror );
 
-            _db1.Businesspic.Add(new Businesspic
+            if (input.picType == picType.unknown)
             {
-                Identity = accinfo.Identity,
-                Businesstype = (short)accinfo.businessType,
-                Pictype = (short)input.picType,
-                Uploaded = true
-            });
-            _db1.SaveChanges();
+              return  highlevel.commonreturn(responseStatus.pictypeerror);
+            }
+            if (accinfo.businessType == businessType.unknown)
+            {
+              return  highlevel.commonreturn(responseStatus.businesstypeerror);
+            }
+            try
+            {
+                using (var ddbb = new blahContext())
+                {
+                    var already=ddbb.Businesspic.FirstOrDefault(i =>i.Businesstype==(int)accinfo.businessType&&i.Identity==accinfo.Identity&&i.Pictype==(short)input.picType);
+                    if(already==null){
+                        var newpic = new Businesspic
+                    {
+                        Identity = accinfo.Identity,
+                        Businesstype = (int)accinfo.businessType,
+                        Pictype = (short)input.picType,
+                        Uploaded = true,
+                        Time = DateTime.Now
+                    };
+                    highlevel.infolog(_log, "uploadpic", JsonConvert.SerializeObject(newpic));
+                    var ret = ddbb.Businesspic.Add(newpic);
+                    highlevel.infolog(_log, "uploadpic88", JsonConvert.SerializeObject(ret.Entity));
 
+                    }
+                    else {
+                        already.Uploaded=true;
+                        already.Time=DateTime.Now;
+                    }
+                    ddbb.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                highlevel.errorlog(_log, "uploadpic", ex);
+            }
             return new commonresponse { status = responseStatus.ok };
         }
         [Route("ChangeLicense")]
@@ -141,12 +167,13 @@ namespace mvc104.Controllers
         {
             try
             {
-                var fpath = Path.Combine(_picpath, identity);
+                var fpath = Path.Combine(_picpath, identity, btype.ToString());
                 if (!Directory.Exists(fpath)) Directory.CreateDirectory(fpath);
-                var fname = Path.Combine(fpath, identity, btype.ToString(), picType + ".jpg");
-                highlevel.infolog(_log,"savepic",fname);
+                var fname = Path.Combine(fpath, picType + ".jpg");
+                highlevel.infolog(_log, "savepic", fname);
                 var index = picstr.IndexOf("base64,");
                 System.IO.File.WriteAllBytes(fname, Convert.FromBase64String(picstr.Substring(index + 7)));
+             //   System.IO.File.WriteAllBytes(fname,new byte[1]);
             }
             catch (Exception ex)
             {
@@ -155,8 +182,5 @@ namespace mvc104.Controllers
             }
             return true;
         }
-
-
-
     }
 }

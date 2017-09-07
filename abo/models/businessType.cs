@@ -2,6 +2,7 @@ namespace mvc104.models
 {
     public enum businessType
     {
+         unknown,
         ChangeLicense,//变更户籍姓名
 
         delay,//延期换证

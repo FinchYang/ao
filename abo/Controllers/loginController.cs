@@ -19,8 +19,8 @@ namespace mvc104.Controllers
     {
         public readonly ILogger<loginController> _log;
 
-        private readonly blahContext _db1 = new blahContext();      
-       
+        private readonly blahContext _db1 = new blahContext();
+
 
         protected override void Dispose(bool disposing)
         {
@@ -39,7 +39,7 @@ namespace mvc104.Controllers
         {
             var seed = Guid.NewGuid().ToString("N");
             return seed;
-        }      
+        }
 
         [Route("login")]
         [HttpGet]
@@ -59,36 +59,47 @@ namespace mvc104.Controllers
             }
             _log.LogInformation("{3}-{0} from {1}, input is {2}", DateTime.Now, "login",
              Request.HttpContext.Connection.RemoteIpAddress.ToString() + HttpContext.Connection.RemoteIpAddress,
-            identify + name + phone+businessType);
-
-            var theuser = _db1.Aouser.FirstOrDefault(i => i.Identity == identify);
-            if (theuser == null)
+            identify + name + phone + businessType);
+            try
             {
-              //  return new loginresponse { status = responseStatus.iderror };
-              _db1.Aouser.Add(new Aouser{
-                  Identity=identify,Phone=phone,Name =name
-              });
-            }
-            else {
-theuser.Name = name;
-            theuser.Phone = phone;
-            }
-            
-            _db1.SaveChanges();
+                var theuser = _db1.Aouser.FirstOrDefault(i => i.Identity == identify);
+                if (theuser == null)
+                {
+                    //  return new loginresponse { status = responseStatus.iderror };
+                    _db1.Aouser.Add(new Aouser
+                    {
+                        Identity = identify,
+                        Phone = phone,
+                        Name = name
+                    });
+                }
+                else
+                {
+                    theuser.Name = name;
+                    theuser.Phone = phone;
+                }
 
+                _db1.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("login user process error:{0}", ex.Message);
+            }
             var btype = (short)businessType;
             var picsl = new List<short>();
-            // var unbusiness = _db1.Business.FirstOrDefault(c => c.Completed == false && c.Businesstype == btype);
-            // if(_db1.Businesspic.Count(c=>c.Businesstype==(short)businessType&&c.Identity==identify&&c.Uploaded)<global.businesscount[businessType])
-            //  if (unbusiness != null)
-            // {
-            var pics = _db1.Businesspic.Where(c => c.Businesstype == btype && c.Identity == identify && c.Uploaded == true);
-            if (pics.Count() < global.businesscount[businessType])
-                foreach (var a in pics)
-                {
-                    picsl.Add(a.Pictype);
-                }
-            //  }
+            try
+            {
+                var pics = _db1.Businesspic.Where(c => c.Businesstype == btype && c.Identity == identify && c.Uploaded == true);
+                if (pics.Count() < global.businesscount[businessType])
+                    foreach (var a in pics)
+                    {
+                        picsl.Add(a.Pictype);
+                    }
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("login businesspic process error:{0}", ex.Message);
+            }
             var token = GetToken();
             try
             {
@@ -102,7 +113,7 @@ theuser.Name = name;
             }
 
             var found = false;
-            foreach (var a in global. tokens)
+            foreach (var a in global.tokens)
             {
                 if (a.idinfo.Identity == identify && a.idinfo.businessType == businessType)
                 {
@@ -113,9 +124,9 @@ theuser.Name = name;
             }
             if (!found)
             {
-                global. tokens.Add(new Ptoken { idinfo = new idinfo { Identity = identify, businessType = businessType }, Token = token });
+                global.tokens.Add(new Ptoken { idinfo = new idinfo { Identity = identify, businessType = businessType }, Token = token });
             }
-           highlevel. LogRequest(name + phone + identify, "login", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)businessType);
+            highlevel.LogRequest(name + phone + identify, "login", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)businessType);
             return new loginresponse { status = responseStatus.ok, token = token, okpic = picsl.ToArray() };
         }
     }

@@ -116,6 +116,8 @@ namespace mvc104
         public static List<Ptoken> tokens = new List<Ptoken>();
         static global()
         {
+             businesscount.Add(businessType.unknown, 5);
+
             businesscount.Add(businessType.ChangeLicense, 5);
             businesscount.Add(businessType.delay, 4);
             businesscount.Add(businessType.lost, 3);
@@ -130,6 +132,10 @@ namespace mvc104
 
             businesscount.Add(businessType.three, 4);
             businesscount.Add(businessType.five, 4);
+
+             businesscount.Add(businessType.inspectDelay, 4);
+            businesscount.Add(businessType.bodyDelay, 4);
+             businesscount.Add(businessType.changeContact, 4);
         }
     }
 }
