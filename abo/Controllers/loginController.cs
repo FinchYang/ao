@@ -45,18 +45,23 @@ namespace mvc104.Controllers
         [HttpGet]
         public loginresponse login(string name, string identify, string phone, businessType businessType)
         {
-            if (string.IsNullOrEmpty(identify))
+            if (string.IsNullOrEmpty(identify)||identify=="undefined")
             {
                 return new loginresponse { status = responseStatus.iderror };
             }
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrEmpty(name)||name=="undefined")
             {
                 return new loginresponse { status = responseStatus.nameerror };
             }
-            if (string.IsNullOrEmpty(phone))
+            if (string.IsNullOrEmpty(phone)||phone=="undefined")
             {
                 return new loginresponse { status = responseStatus.phoneerror };
             }
+            if (businessType==businessType.unknown)
+            {
+                return new loginresponse { status = responseStatus.businesstypeerror };
+            }
+
             _log.LogInformation("{3}-{0} from {1}, input is {2}", DateTime.Now, "login",
              Request.HttpContext.Connection.RemoteIpAddress.ToString() + HttpContext.Connection.RemoteIpAddress,
             identify + name + phone + businessType);
@@ -79,6 +84,15 @@ namespace mvc104.Controllers
                     theuser.Phone = phone;
                 }
 
+                 var business = _db1.Business.FirstOrDefault(i => i.Identity == identify&&i.Businesstype==(short)businessType);
+                if (business == null)
+                {
+                    _db1.Business.Add(new Business
+                    {
+                        Identity = identify,Businesstype=(short)businessType,Completed=false,Time=DateTime.Now,
+                    });
+                }
+                
                 _db1.SaveChanges();
             }
             catch (Exception ex)

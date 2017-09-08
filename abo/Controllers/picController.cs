@@ -87,6 +87,7 @@ namespace mvc104.Controllers
             var accinfo = highlevel.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
 
+_log.LogInformation("uploadpic: id={0},bt={1}",accinfo.Identity,accinfo.businessType);
             if (!savePic(input.picture, input.picType, accinfo.Identity, accinfo.businessType))
              return    highlevel.commonreturn( responseStatus.fileprocesserror );
 

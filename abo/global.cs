@@ -47,11 +47,11 @@ namespace mvc104
                     acc.Identity = ci.Identity;
                     acc.businessType = ci.businessType;
                 }
+                LogRequest(acc.Identity,acc.businessType.ToString());
                 return acc;
             }
             catch (Exception ex)
             {
-
                 return new access_idinfo { status = responseStatus.tokenerror, content = ex.Message };
             }
         }

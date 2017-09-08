@@ -1,8 +1,8 @@
 namespace mvc104.models
 {
-    public class loginresponse
+    public class loginresponse:commonresponse
     {
-        public responseStatus status { get; set; }
+      //  public responseStatus status { get; set; }
         public string token { get; set; }
         public short[] okpic{ get; set; }
     }
