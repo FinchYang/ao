@@ -13,7 +13,8 @@ namespace mvc104
 {
     public class highlevel
     {
-        public static ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("47.93.226.74:8111");
+        public static ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("192.168.10.94:6379");
+      //   public static ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("47.93.226.74:8111");
         public static access_idinfo GetInfoByToken(IHeaderDictionary header)
         {
             try

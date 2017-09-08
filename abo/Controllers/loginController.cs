@@ -78,12 +78,7 @@ namespace mvc104.Controllers
                         Name = name
                     });
                 }
-                else
-                {
-                    theuser.Name = name;
-                    theuser.Phone = phone;
-                }
-
+               
                  var business = _db1.Business.FirstOrDefault(i => i.Identity == identify&&i.Businesstype==(short)businessType);
                 if (business == null)
                 {

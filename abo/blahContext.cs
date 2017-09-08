@@ -112,6 +112,10 @@ namespace mvc104
                     .HasColumnName("name")
                     .HasColumnType("varchar(45)");
 
+                entity.Property(e => e.Newphone)
+                    .HasColumnName("newphone")
+                    .HasColumnType("varchar(45)");
+
                 entity.Property(e => e.Phone)
                     .HasColumnName("phone")
                     .HasColumnType("varchar(45)");
@@ -119,6 +123,10 @@ namespace mvc104
                 entity.Property(e => e.Photofile)
                     .HasColumnName("photofile")
                     .HasColumnType("varchar(145)");
+
+                entity.Property(e => e.Verificationcode)
+                    .HasColumnName("verificationcode")
+                    .HasColumnType("varchar(45)");
             });
 
             modelBuilder.Entity<Blahuser>(entity =>

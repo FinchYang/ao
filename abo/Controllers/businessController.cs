@@ -100,12 +100,12 @@ namespace mvc104.Controllers
                     return highlevel.commonreturn(responseStatus.iderror);
                 }
                 theuser.Postaddr = input.postaddr;
-                
-                if (!string.IsNullOrEmpty(input.acceptingplace))
-                theuser.Acceptingplace = input.acceptingplace;
 
-                 if (!string.IsNullOrEmpty(input.quasiDrivingLicense))
-                theuser.QuasiDrivingLicense = input.quasiDrivingLicense;
+                if (!string.IsNullOrEmpty(input.acceptingplace))
+                    theuser.Acceptingplace = input.acceptingplace;
+
+                if (!string.IsNullOrEmpty(input.quasiDrivingLicense))
+                    theuser.QuasiDrivingLicense = input.quasiDrivingLicense;
                 _db1.SaveChanges();
             }
             catch (Exception ex)
@@ -116,11 +116,11 @@ namespace mvc104.Controllers
             return highlevel.commonreturn(responseStatus.ok);
         }
 
-        [Route("validatephone")]
+        [Route("sendvcode")]
         [HttpGet]
-        public commonresponse validatephone(string phone)
+        public commonresponse sendvcode(string phone)
         {
-           // highlevel.LogRequest("postaddr", "postaddr", Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            // highlevel.LogRequest("postaddr", "postaddr", Request.HttpContext.Connection.RemoteIpAddress.ToString());
             if (string.IsNullOrEmpty(phone))
             {
                 return highlevel.commonreturn(responseStatus.phoneerror);
@@ -130,19 +130,24 @@ namespace mvc104.Controllers
 
             try
             {
-                var theuser = _db1.Business.FirstOrDefault(i => i.Identity == accinfo.Identity && i.Businesstype == (short)accinfo.businessType);
+                var theuser = _db1.Aouser.FirstOrDefault(i => i.Identity == accinfo.Identity);
                 if (theuser == null)
                 {
                     return highlevel.commonreturn(responseStatus.iderror);
                 }
-                theuser.Postaddr = input.postaddr;
-                
-                if (!string.IsNullOrEmpty(input.acceptingplace))
-                theuser.Acceptingplace = input.acceptingplace;
-
-                 if (!string.IsNullOrEmpty(input.quasiDrivingLicense))
-                theuser.QuasiDrivingLicense = input.quasiDrivingLicense;
+                var rd = new Random();
+                var vcode = rd.Next(0, 999999);
+                theuser.Verificationcode = vcode.ToString();
+                theuser.Newphone = phone;
                 _db1.SaveChanges();
+
+                var a = new System.Diagnostics.Process();
+                a.StartInfo.UseShellExecute = true;
+                a.StartInfo.Arguments =
+                string.Format(" {0} {1}/* -r", "zipfname", "dbtofilePath");
+                a.StartInfo.FileName = "echo";
+                a.Start();
+                a.WaitForExit();
             }
             catch (Exception ex)
             {
@@ -152,5 +157,35 @@ namespace mvc104.Controllers
             return highlevel.commonreturn(responseStatus.ok);
         }
 
+        [Route("checkvcode")]
+        [HttpGet]
+        public commonresponse checkvcode(string vcode)
+        {
+            // highlevel.LogRequest("postaddr", "postaddr", Request.HttpContext.Coannection.RemoteIpAddress.ToString());
+            if (string.IsNullOrEmpty(vcode))
+            {
+                return highlevel.commonreturn(responseStatus.vcodeerror);
+            }
+            var accinfo = highlevel.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+
+            try
+            {
+                var theuser = _db1.Aouser.FirstOrDefault(i => i.Identity == accinfo.Identity && i.Verificationcode == vcode);
+                if (theuser == null)
+                {
+                    return highlevel.commonreturn(responseStatus.vcodeerror);
+                }
+
+                theuser.Phone = theuser.Newphone;
+                _db1.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("db error:{0}", ex.Message);
+                return highlevel.commonreturn(responseStatus.dberror);
+            }
+            return highlevel.commonreturn(responseStatus.ok);
+        }
     }
 }
