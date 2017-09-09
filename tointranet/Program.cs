@@ -104,7 +104,7 @@ namespace exportdb
                 db.SaveChanges();
             }
             if (!Directory.Exists(exportPath)) Directory.CreateDirectory(exportPath);
-            var zipfname = Path.Combine(exportPath, dir);
+            var zipfname = Path.Combine(exportPath, dir+"-abo");
 
             var a = new System.Diagnostics.Process();
             a.StartInfo.UseShellExecute = true;

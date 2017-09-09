@@ -8,77 +8,42 @@ namespace importdata
 {
     class Program
     {
+        public enum businessType
+        {
+            unknown,
+            ChangeLicense,//变更户籍姓名
+
+            delay,//延期换证
+            lost,//遗失补证
+            damage,//损毁换证
+            overage,//超龄换证
+
+            expire,//期满换证
+            changeaddr,//变更户籍地址
+            basicinfo,//基本信息证明
+            first,//初领、增加机动车驾驶证自愿业务退办
+            network,// 网约车安全驾驶证明
+
+            three,//三年无重大事故证明
+            five,//五年安全驾驶证明
+            inspectDelay//延期审验
+ , bodyDelay//延期提交身体证明
+ , changeContact//变更联系方式
+
+        };
         static string importPath = "/home/inspect/ftp/get";
-        //   static string importPath = @"e:\11";
 
         static void Main(string[] args)
         {
             Console.WriteLine("import stated {0}!", DateTime.Now);
-           //  FileToDbIhistory();
             FileToDb();
             Console.WriteLine("import completed {0}!", DateTime.Now);
         }
-        static void FileToDbIhistory()
-        {
-            using (var db = new studyinContext())
-            {
-                var filebase = "DateSync/history.txt";
-                var fname = Path.Combine(importPath, filebase);
-                if (!File.Exists(fname))
-                {
-                    Console.WriteLine("file {0} does  not exist, exit.{1}", fname, DateTime.Now);
-                    return;
-                }
-                var content = File.ReadAllLines(fname);
-                foreach (var line in content)
-                {
-                    try
-                    {
-                        var aaa = JsonConvert.DeserializeObject<IHistory>(line);
-                        db.IHistory.Add(new IHistory
-                        {
-                            Id = aaa.Id,
-                            Idcard = aaa.Idcard,
-                            Licence = aaa.Licence,
-                            Sremark = aaa.Sremark,
-                            Phonenumber = aaa.Phonenumber,
-                            Deductpoints = aaa.Deductpoints,
-                            Zhiduinumber = aaa.Zhiduinumber,
-                            Address = aaa.Address,
-                            Name = aaa.Name,
-                            Filename = aaa.Filename,
-                            Licencenumber = aaa.Licencenumber,
-                            Status = aaa.Status,
-                            Time = aaa.Time,
-                            Photo = aaa.Photo,
-                            Printed = aaa.Printed,
-                            Processed = aaa.Processed,
-                            Messaged = aaa.Messaged,
-                            Studylog = aaa.Studylog,
-                            Failure = aaa.Failure,
-                            Syyxqz = aaa.Syyxqz,
-                            Ordinal = aaa.Ordinal,
-                            Dabh = aaa.Dabh,
-                            County = aaa.County,
-                        });
-
-
-                        db.SaveChanges();
-                        Console.WriteLine("ihistory {0} has already updated.{1}", aaa.Id, DateTime.Now);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("ihistory {0} error.{1}", ex.Message, DateTime.Now);
-                    }
-                }
-
-            }
-        }
         static void FileToDb()
         {
-            using (var db = new studyinContext())
+            using (var db = new blahContext())
             {
-                var filebase = "allowToStudy.txt";
+                var filebase = "result.txt";
                 var fname = Path.Combine(importPath, filebase);
                 if (!File.Exists(fname))
                 {
@@ -89,157 +54,50 @@ namespace importdata
                 foreach (var line in content)
                 {
                     var fields = line.Split(',');
-                    if (fields.Length < 9)
+                    if (fields.Length < 4)
                     {
                         Console.WriteLine(" invalid data line {0},{1}", fields.Length, line);
                         continue;
                     }
 
                     var identity = fields[0];
-                    if (identity.Length > 44)
+
+                    var btype = fields[1];
+                    var bbtype = businessType.unknown;
+                    if (!Enum.TryParse(btype, out bbtype))
                     {
-                        Console.WriteLine(" invalid data line, identity={0}-{2},{1}", identity.Length, line, identity);
                         continue;
                     }
-                    var phone = fields[1];
-                    var drivertype = fields[2].Substring(0, 2);
-                    DrivingLicenseType enumtype;
-                    if (!Enum.TryParse(drivertype, out enumtype))
-                    {
-                        enumtype = DrivingLicenseType.Unknown;
-                    }
+                    var success = fields[2];
 
                     var drugrelated = fields[3];
-                    var pictureok = fields[4];
-                    var deductedmarks = fields[5];
-                    var licensenumber = fields[6];
-                    var photofile = fields[7];
-                    var status = fields[8];
-                    var ideducted = 0;
-                    if (!int.TryParse(deductedmarks, out ideducted)) ideducted = 1;
-                    var theuser = db.User.FirstOrDefault(async => async.Identity == identity);
-                    if (theuser == null)
+                    if (success != "1") continue;
+
+                    var pics = db.Businesspic.Where(a => a.Identity == identity && a.Businesstype == (int)bbtype);
+                    foreach (var pic in pics)
                     {
-                        try
+                        db.Businesspichis.Add(new Businesspichis
                         {
-                            var today = DateTime.Now;
-                            var his = db.History.Where(async => async.Identity == identity ).OrderBy(al=>al.Finishdate).LastOrDefault();
-                            if (his != null)
-                            {
-                                if(his.Finishdate.CompareTo(today.AddMonths(-1))>0) {
-                                     Console.WriteLine("user {0} had already finished learning on that day {10}, discarded! {1},{2},{3},{4},{5},{6},{7},{8},{9}",
-                            identity, ((int)enumtype).ToString(), drugrelated, phone,
-                            pictureok, licensenumber, ideducted
-                            , photofile, status, today,his.Finishdate);
-                                    continue;
-                                }
-                            }
-                           
-                            Console.WriteLine("import user {0} , {1},{2},{3},{4},{5},{6},{7},{8},{9}",
-                            identity, ((int)enumtype).ToString(), drugrelated, phone,
-                            pictureok, licensenumber, ideducted
-                            , photofile, status, today);
-
-                            var inspect = "1";
-                            if (fields.Length > 9)
-                            {
-                                if (fields[9] == "0") inspect = "0";
-                            }
-                            db.User.AddAsync(new User
-                            {
-                                Identity = identity,
-                                Licensetype = ((int)enumtype).ToString(),
-                                Drugrelated = drugrelated,
-                                Syncphone = phone,
-                                Inspect = inspect,
-                                Photostatus = pictureok,
-                                Drivinglicense = licensenumber,
-                                Deductedmarks = ideducted,
-                                Photofile = photofile,
-                                Status = status,
-                                Syncdate = today
-                            });
-                            //   Console.WriteLine("import user {0} before {1}", identity, "db.SaveChanges();");
-                            db.SaveChanges();
-                            //  db.SaveChangesAsync();
-                            Console.WriteLine("import user {0} ok {1}", identity, DateTime.Now);
-                        }
-                        //              catch (DbUpdateConcurrencyException ex)
-                        // {
-                        //     foreach (var entry in ex.Entries)
-                        //     {
-                        //         if (entry.Entity is User)
-                        //         {
-                        //             // Using a NoTracking query means we get the entity but it is not tracked by the context
-                        //             // and will not be merged with existing entities in the context.
-                        //             var databaseEntity = db.User.AsNoTracking().Single(p => p.Identity == ((User)entry.Entity).Identity);
-                        //             var databaseEntry = db.Entry(databaseEntity);
-
-                        //             foreach (var property in entry.Metadata.GetProperties())
-                        //             {
-                        //                 var proposedValue = entry.Property(property.Name).CurrentValue;
-                        //                 var originalValue = entry.Property(property.Name).OriginalValue;
-                        //                 var databaseValue = databaseEntry.Property(property.Name).CurrentValue;
-
-                        //                 // TODO: Logic to decide which value should be written to database
-                        //                  entry.Property(property.Name).CurrentValue = proposedValue;
-
-                        //                 // Update original values to
-                        //                 entry.Property(property.Name).OriginalValue = databaseEntry.Property(property.Name).CurrentValue;
-                        //             }
-                        //         }
-                        //         else
-                        //         {
-                        //             throw new NotSupportedException("Don't know how to handle concurrency conflicts for " + entry.Metadata.Name);
-                        //         }
-                        //     }
-
-                        //     // Retry the save operation
-                        //     db.SaveChanges();
-                        // }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("user {0} sync error{1}.", identity, ex.Message);
-                        }
+                            Identity = pic.Identity,
+                            Time = DateTime.Now,
+                            Businesstype = (short)pic.Businesstype,
+                            Pictype = pic.Pictype
+                        });
+                        db.Businesspic.Remove(pic);
                     }
-                    else
+                    var busi = db.Business.FirstOrDefault(b => b.Identity == identity && b.Businesstype == (short)bbtype);
+                    if (busi != null)
                     {
-                        if (status != theuser.Status)
+                        db.Businesshis.Add(new Businesshis
                         {
-                            theuser.Status = status;
-                        }
-                        if (drugrelated == "1")
-                            theuser.Drugrelated = drugrelated;
-                        theuser.Syncdate = DateTime.Now;
-
-                        if (fields.Length > 9)
-                        {
-                            switch (fields[9])
-                            {
-                                // case "1":
-                                // theuser.Inspect=fields[9];
-                                // break;                                
-                                case "0":
-                                    theuser.Inspect = fields[9];
-                                    break;
-                                default:
-                                    theuser.Inspect = "1";
-                                    // Console.WriteLine("user {0} ,error permission field, -{1}-", identity, fields[9]);
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            //   Console.WriteLine("user {0} ,no permission field, -{1}-", identity, fields.Length);
-                            theuser.Inspect = "1";
-                        }
-
-                        db.SaveChanges();
-                        Console.WriteLine("user {0} has already updated.{1}", identity, DateTime.Now);
+                            Identity = busi.Identity,
+                            Businesstype = busi.Businesstype,
+                            Time = DateTime.Now,
+                        });
+                        db.Business.Remove(busi);
                     }
+                    db.SaveChanges();
                 }
-                //  db.SaveChangesAsync();
-                //  db.Attach
             }
         }
     }
