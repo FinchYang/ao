@@ -204,17 +204,37 @@ namespace mvc104
                     .HasColumnType("tinyint(1)")
                     .HasDefaultValueSql("0");
 
+                entity.Property(e => e.Finishtime)
+                    .HasColumnName("finishtime")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("2000-01-01 00:00:00");
+
                 entity.Property(e => e.Postaddr)
                     .HasColumnName("postaddr")
                     .HasColumnType("varchar(145)");
+
+                entity.Property(e => e.Processtime)
+                    .HasColumnName("processtime")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("2000-01-01 00:00:00");
 
                 entity.Property(e => e.QuasiDrivingLicense)
                     .HasColumnName("quasiDrivingLicense")
                     .HasColumnType("varchar(45)");
 
+                entity.Property(e => e.Status)
+                    .HasColumnName("status")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("0");
+
                 entity.Property(e => e.Time)
                     .HasColumnName("time")
                     .HasColumnType("datetime");
+
+                entity.Property(e => e.Waittime)
+                    .HasColumnName("waittime")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("2000-01-01 00:00:00");
             });
 
             modelBuilder.Entity<Businesshis>(entity =>

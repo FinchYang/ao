@@ -45,19 +45,19 @@ namespace mvc104.Controllers
         [HttpGet]
         public loginresponse login(string name, string identify, string phone, businessType businessType)
         {
-            if (string.IsNullOrEmpty(identify)||identify=="undefined")
+            if (string.IsNullOrEmpty(identify) || identify == "undefined")
             {
                 return new loginresponse { status = responseStatus.iderror };
             }
-            if (string.IsNullOrEmpty(name)||name=="undefined")
+            if (string.IsNullOrEmpty(name) || name == "undefined")
             {
                 return new loginresponse { status = responseStatus.nameerror };
             }
-            if (string.IsNullOrEmpty(phone)||phone=="undefined")
+            if (string.IsNullOrEmpty(phone) || phone == "undefined")
             {
                 return new loginresponse { status = responseStatus.phoneerror };
             }
-            if (businessType==businessType.unknown)
+            if (businessType == businessType.unknown)
             {
                 return new loginresponse { status = responseStatus.businesstypeerror };
             }
@@ -65,51 +65,69 @@ namespace mvc104.Controllers
             _log.LogInformation("{3}-{0} from {1}, input is {2}", DateTime.Now, "login",
              Request.HttpContext.Connection.RemoteIpAddress.ToString() + HttpContext.Connection.RemoteIpAddress,
             identify + name + phone + businessType);
+
+            var btype = (short)businessType;
+            var picsl = new List<short>();
+            var token = GetToken();
+            var response = new loginresponse
+            {
+                status = responseStatus.ok,
+                businessstatus = businessstatus.unknown,
+                token = token,
+                okpic = picsl.ToArray()
+            };
             try
             {
                 var theuser = _db1.Aouser.FirstOrDefault(i => i.Identity == identify);
                 if (theuser == null)
                 {
-                    //  return new loginresponse { status = responseStatus.iderror };
                     _db1.Aouser.Add(new Aouser
                     {
                         Identity = identify,
                         Phone = phone,
                         Name = name
                     });
+                    _db1.SaveChanges();
                 }
-               
-                 var business = _db1.Business.FirstOrDefault(i => i.Identity == identify&&i.Businesstype==(short)businessType);
+
+                var business = _db1.Business.FirstOrDefault(i => i.Identity == identify && i.Businesstype == (short)businessType);
                 if (business == null)
                 {
                     _db1.Business.Add(new Business
                     {
-                        Identity = identify,Businesstype=(short)businessType,Completed=false,Time=DateTime.Now,
+                        Identity = identify,
+                        Businesstype = (short)businessType,
+                        Completed = false,
+                        Time = DateTime.Now,
                     });
+                    _db1.SaveChanges();
                 }
-                
-                _db1.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                _log.LogError("login user process error:{0}", ex.Message);
-            }
-            var btype = (short)businessType;
-            var picsl = new List<short>();
-            try
-            {
-                var pics = _db1.Businesspic.Where(c => c.Businesstype == btype && c.Identity == identify && c.Uploaded == true);
-                if (pics.Count() < global.businesscount[businessType])
-                    foreach (var a in pics)
+                else
+                {
+                    var pics = _db1.Businesspic.Where(c => c.Businesstype == btype && c.Identity == identify && c.Uploaded == true);
+                    if (pics.Count() < global.businesscount[businessType])
                     {
-                        picsl.Add(a.Pictype);
+                        foreach (var a in pics)
+                        {
+                            picsl.Add(a.Pictype);
+                        }
+                        response.okpic = picsl.ToArray();
                     }
+                    else
+                    {
+                        response.businessstatus = (businessstatus)business.Status;
+                        response.finish_time = business.Finishtime;
+                        response.wait_time = business.Waittime;
+                        response.process_time = business.Processtime;
+                    }
+                }
             }
             catch (Exception ex)
             {
-                _log.LogError("login businesspic process error:{0}", ex.Message);
+                _log.LogError("login -- process error:{0}", ex.Message);
             }
-            var token = GetToken();
+
+
             try
             {
                 var redisdb = highlevel.redis.GetDatabase();
@@ -136,7 +154,7 @@ namespace mvc104.Controllers
                 global.tokens.Add(new Ptoken { idinfo = new idinfo { Identity = identify, businessType = businessType }, Token = token });
             }
             highlevel.LogRequest(name + phone + identify, "login", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)businessType);
-            return new loginresponse { status = responseStatus.ok, token = token, okpic = picsl.ToArray() };
+            return response;
         }
     }
 }

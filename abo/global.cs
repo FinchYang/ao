@@ -119,24 +119,24 @@ namespace mvc104
         {
              businesscount.Add(businessType.unknown, 5);
 
-            businesscount.Add(businessType.ChangeLicense, 5);
-            businesscount.Add(businessType.delay, 4);
-            businesscount.Add(businessType.lost, 3);
-            businesscount.Add(businessType.damage, 5);
-            businesscount.Add(businessType.overage, 5);
+            businesscount.Add(businessType.ChangeLicense, 6);//变更户籍姓名
+            businesscount.Add(businessType.delay, 6);//延期换证?
+            businesscount.Add(businessType.lost, 6);//遗失补证
+            businesscount.Add(businessType.damage, 5);//损毁换证
+            businesscount.Add(businessType.overage, 6);//超龄换证?
 
-            businesscount.Add(businessType.expire, 5);
-            businesscount.Add(businessType.changeaddr, 5);
-            businesscount.Add(businessType.basicinfo, 4);
-            businesscount.Add(businessType.first, 3);
-            businesscount.Add(businessType.network, 4);
+            businesscount.Add(businessType.expire, 6);//期满换证??6,7??
+            businesscount.Add(businessType.changeaddr, 5);//变更户籍地址
+            businesscount.Add(businessType.basicinfo, 4);//基本信息证明
+            businesscount.Add(businessType.first, 4);//初领、增加机动车驾驶证自愿业务退办
+            businesscount.Add(businessType.network, 4);// 网约车安全驾驶证明
 
-            businesscount.Add(businessType.three, 4);
-            businesscount.Add(businessType.five, 4);
+            businesscount.Add(businessType.three, 4);//三年无重大事故证明
+            businesscount.Add(businessType.five, 4);//五年安全驾驶证明
 
-             businesscount.Add(businessType.inspectDelay, 4);
-            businesscount.Add(businessType.bodyDelay, 4);
-             businesscount.Add(businessType.changeContact, 4);
+             businesscount.Add(businessType.inspectDelay, 6);//延期审验
+            businesscount.Add(businessType.bodyDelay, 6);//延期提交身体证明
+             businesscount.Add(businessType.changeContact, 4);//变更联系方式
         }
     }
 }
