@@ -73,6 +73,7 @@ namespace mvc104.Controllers
             {
                 status = responseStatus.ok,
                 businessstatus = businessstatus.unknown,
+                submitted=false,
                 token = token,
                 okpic = picsl.ToArray()
             };
@@ -105,6 +106,7 @@ namespace mvc104.Controllers
                 else
                 {
                     var pics = _db1.Businesspic.Where(c => c.Businesstype == btype && c.Identity == identify && c.Uploaded == true);
+                     response.businessstatus = (businessstatus)business.Status;
                     if (pics.Count() < global.businesscount[businessType])
                     {
                         foreach (var a in pics)
@@ -115,6 +117,7 @@ namespace mvc104.Controllers
                     }
                     else
                     {
+                        response.submitted=true;
                         response.businessstatus = (businessstatus)business.Status;
                         response.finish_time = business.Finishtime;
                         response.wait_time = business.Waittime;
@@ -126,7 +129,6 @@ namespace mvc104.Controllers
             {
                 _log.LogError("login -- process error:{0}", ex.Message);
             }
-
 
             try
             {

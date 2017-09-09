@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace exportdb
 {
-    public partial class Request
+    public partial class Businesspichis
     {
         public int Ordinal { get; set; }
         public short Businesstype { get; set; }
-        public string Content { get; set; }
-        public string Ip { get; set; }
-        public string Method { get; set; }
+        public string Identity { get; set; }
+        public short Pictype { get; set; }
         public DateTime Time { get; set; }
+        public bool Uploaded { get; set; }
     }
 }

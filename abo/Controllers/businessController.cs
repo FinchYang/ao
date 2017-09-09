@@ -169,22 +169,22 @@ namespace mvc104.Controllers
             var accinfo = highlevel.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
 
-            try
-            {
-                var theuser = _db1.Aouser.FirstOrDefault(i => i.Identity == accinfo.Identity && i.Verificationcode == vcode);
-                if (theuser == null)
-                {
-                    return highlevel.commonreturn(responseStatus.vcodeerror);
-                }
+            // try
+            // {
+            //     var theuser = _db1.Aouser.FirstOrDefault(i => i.Identity == accinfo.Identity && i.Verificationcode == vcode);
+            //     if (theuser == null)
+            //     {
+            //         return highlevel.commonreturn(responseStatus.vcodeerror);
+            //     }
 
-                theuser.Phone = theuser.Newphone;
-                _db1.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                _log.LogError("db error:{0}", ex.Message);
-                return highlevel.commonreturn(responseStatus.dberror);
-            }
+            //     theuser.Phone = theuser.Newphone;
+            //     _db1.SaveChanges();
+            // }
+            // catch (Exception ex)
+            // {
+            //     _log.LogError("db error:{0}", ex.Message);
+            //     return highlevel.commonreturn(responseStatus.dberror);
+            // }
             return highlevel.commonreturn(responseStatus.ok);
         }
     }
