@@ -14,7 +14,7 @@ namespace mvc104
     public class highlevel
     {
         public static ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("192.168.10.94:6379");
-      //   public static ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("47.93.226.74:8111");
+        //   public static ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("47.93.226.74:8111");
         public static access_idinfo GetInfoByToken(IHeaderDictionary header)
         {
             try
@@ -48,7 +48,7 @@ namespace mvc104
                     acc.Identity = ci.Identity;
                     acc.businessType = ci.businessType;
                 }
-                LogRequest(acc.Identity,acc.businessType.ToString());
+                LogRequest(acc.Identity, acc.businessType.ToString());
                 return acc;
             }
             catch (Exception ex)
@@ -98,11 +98,9 @@ namespace mvc104
         {
             log.LogError("{0}-{1}-{2}", DateTime.Now, method, ex.Message);
         }
-
-        //
-         public static commonresponse commonreturn(responseStatus rs)
+        public static commonresponse commonreturn(responseStatus rs)
         {
-            return new commonresponse { status = rs,content=rs.ToString() };
+            return new commonresponse { status = rs, content = rs.ToString() };
         }
         public static void infolog(ILogger log, string method, string msg)
         {
@@ -117,7 +115,7 @@ namespace mvc104
         public static List<Ptoken> tokens = new List<Ptoken>();
         static global()
         {
-             businesscount.Add(businessType.unknown, 5);
+            businesscount.Add(businessType.unknown, 5);
 
             businesscount.Add(businessType.ChangeLicense, 6);//变更户籍姓名
             businesscount.Add(businessType.delay, 6);//延期换证?
@@ -134,9 +132,9 @@ namespace mvc104
             businesscount.Add(businessType.three, 4);//三年无重大事故证明
             businesscount.Add(businessType.five, 4);//五年安全驾驶证明
 
-             businesscount.Add(businessType.inspectDelay, 6);//延期审验
+            businesscount.Add(businessType.inspectDelay, 6);//延期审验
             businesscount.Add(businessType.bodyDelay, 6);//延期提交身体证明
-             businesscount.Add(businessType.changeContact, 4);//变更联系方式
+            businesscount.Add(businessType.changeContact, 4);//变更联系方式
         }
     }
 }

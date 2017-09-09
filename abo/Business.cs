@@ -10,10 +10,11 @@ namespace mvc104
         public string Acceptingplace { get; set; }
         public bool Completed { get; set; }
         public DateTime Finishtime { get; set; }
+        public bool? Integrated { get; set; }
         public string Postaddr { get; set; }
         public DateTime Processtime { get; set; }
         public string QuasiDrivingLicense { get; set; }
-        public short? Status { get; set; }
+        public short Status { get; set; }
         public DateTime Time { get; set; }
         public DateTime Waittime { get; set; }
     }

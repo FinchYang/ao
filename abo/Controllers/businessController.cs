@@ -37,40 +37,40 @@ namespace mvc104.Controllers
         }
 
 
-        [Route("updateinfo")]
-        [HttpPost]
-        public commonresponse updateinfo([FromBody]updateinforequest input)
-        {
-            highlevel.LogRequest("updateinfo", "updateinfo", Request.HttpContext.Connection.RemoteIpAddress.ToString());
-            if (input == null)
-            {
-                return new commonresponse { status = responseStatus.requesterror };
-            }
-            var accinfo = highlevel.GetInfoByToken(Request.Headers);
-            if (accinfo.status != responseStatus.ok) return accinfo;
+        // [Route("updateinfo")]
+        // [HttpPost]
+        // public commonresponse updateinfo([FromBody]updateinforequest input)
+        // {
+        //     highlevel.LogRequest("updateinfo", "updateinfo", Request.HttpContext.Connection.RemoteIpAddress.ToString());
+        //     if (input == null)
+        //     {
+        //         return new commonresponse { status = responseStatus.requesterror };
+        //     }
+        //     var accinfo = highlevel.GetInfoByToken(Request.Headers);
+        //     if (accinfo.status != responseStatus.ok) return accinfo;
 
-            if (string.IsNullOrEmpty(input.postaddr))
-            {
-                return new commonresponse { status = responseStatus.postaddrerror };
-            }
+        //     if (string.IsNullOrEmpty(input.postaddr))
+        //     {
+        //         return new commonresponse { status = responseStatus.postaddrerror };
+        //     }
 
-            try
-            {
-                var theuser = _db1.User.FirstOrDefault(i => i.Identity == accinfo.Identity);
-                if (theuser == null)
-                {
-                    return new commonresponse { status = responseStatus.iderror };
-                }
-                theuser.Postaddr = input.postaddr;
-                _db1.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                _log.LogError("db error:{0}", ex.Message);
-                return new commonresponse { status = responseStatus.dberror };
-            }
-            return new commonresponse { status = responseStatus.ok };
-        }
+        //     try
+        //     {
+        //         var theuser = _db1.Aouser.FirstOrDefault(i => i.Identity == accinfo.Identity);
+        //         if (theuser == null)
+        //         {
+        //             return new commonresponse { status = responseStatus.iderror };
+        //         }
+        //         theuser.Postaddr = input.postaddr;
+        //         _db1.SaveChanges();
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         _log.LogError("db error:{0}", ex.Message);
+        //         return new commonresponse { status = responseStatus.dberror };
+        //     }
+        //     return new commonresponse { status = responseStatus.ok };
+        // }
 
         [Route("postaddr")]
         [HttpPost]
