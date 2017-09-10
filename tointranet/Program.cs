@@ -99,6 +99,7 @@ namespace exportdb
             var dbtofp = Path.Combine(home, dbtofilePath);
             if (!Directory.Exists(dbtofp)) Directory.CreateDirectory(dbtofp);
             var fname = Path.Combine(dbtofp, dbtofilefname);
+
             using (var db = new blahContext())
             {
                 var theuser = db.Business.Where(async => async.Integrated == false);
@@ -114,6 +115,10 @@ namespace exportdb
                         {
                             if (!checkSignpic(bt, re.Identity, home)) continue;
                         }
+
+                        var aouser = db.Aouser.FirstOrDefault(aa => aa.Identity == re.Identity);
+                        if (aouser == null || string.IsNullOrEmpty(aouser.Name)) continue;
+
                         NewMethod(re.Identity, bt.ToString(), home);
                         var phone = string.Empty;
                         if (re.Businesstype == (short)businessType.changeContact)
@@ -124,10 +129,11 @@ namespace exportdb
                                 phone = userp.Phone;
                             }
                         }
-                        var line = string.Format("{0},{1},{2},{3},{4},{5}",
-                         re.Identity, re.Businesstype, re.Postaddr, re.Acceptingplace, re.QuasiDrivingLicense, phone);
+                        var line = string.Format("{0},{1},{2},{3},{4},{5},{6}",
+                         re.Identity, re.Businesstype, re.Postaddr, re.Acceptingplace, re.QuasiDrivingLicense, phone, aouser.Name);
                         File.AppendAllText(fname, line + "\r\n");
                         re.Integrated = true;
+                        re.Waittime = DateTime.Now;
                     }
 
                 }
@@ -160,13 +166,13 @@ namespace exportdb
 
         private static void NewMethod(string filebase, string btype, string home)
         {
-            var  bpath=Path.Combine(home,dbtofilePath,filebase);
-             if(!Directory.Exists(bpath)) Directory.CreateDirectory(bpath);
-             
+            var bpath = Path.Combine(home, dbtofilePath, filebase);
+            if (!Directory.Exists(bpath)) Directory.CreateDirectory(bpath);
+
             var a = new System.Diagnostics.Process();
             a.StartInfo.UseShellExecute = true;
             a.StartInfo.Arguments =
-           
+
             string.Format(" -r {3}/publish/pictures/{1}/{2} {3}/{0}/{1}/", dbtofilePath, filebase, btype, home);
             a.StartInfo.FileName = "cp";
             a.Start();
