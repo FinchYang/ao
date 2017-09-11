@@ -108,7 +108,7 @@ _log.LogInformation("uploadpic: id={0},bt={1}",accinfo.Identity,accinfo.business
                         var newpic = new Businesspic
                     {
                         Identity = accinfo.Identity,
-                        Businesstype = (int)accinfo.businessType,
+                        Businesstype = (short)accinfo.businessType,
                         Pictype = (short)input.picType,
                         Uploaded = true,
                         Time = DateTime.Now

@@ -31,7 +31,15 @@ namespace importdata
  , changeContact//变更联系方式
 
         };
-        static string importPath = "/home/inspect/ftp/get";
+        public enum businessstatus
+        {
+            unknown,
+            wait,//身份证正面
+            process,//身份证反面
+            finish, //户口簿本人信息变更页  
+            failure
+        };
+        static string importPath = "ftp/get";
 
         static void Main(string[] args)
         {
@@ -44,7 +52,8 @@ namespace importdata
             using (var db = new blahContext())
             {
                 var filebase = "result.txt";
-                var fname = Path.Combine(importPath, filebase);
+                 var home = Environment.GetEnvironmentVariable("HOME");
+                var fname = Path.Combine(home,importPath, filebase);
                 if (!File.Exists(fname))
                 {
                     Console.WriteLine("file {0} does  not exist, exit.{1}", fname, DateTime.Now);
@@ -54,7 +63,7 @@ namespace importdata
                 foreach (var line in content)
                 {
                     var fields = line.Split(',');
-                    if (fields.Length < 4)
+                    if (fields.Length < 5)
                     {
                         Console.WriteLine(" invalid data line {0},{1}", fields.Length, line);
                         continue;
@@ -69,34 +78,67 @@ namespace importdata
                         continue;
                     }
                     var success = fields[2];
-
-                    var drugrelated = fields[3];
-                    if (success != "1") continue;
-
-                    var pics = db.Businesspic.Where(a => a.Identity == identity && a.Businesstype == (int)bbtype);
-                    foreach (var pic in pics)
+                    var desc = fields[3];
+                    var timed = fields[4];
+                    var timedd=DateTime.Now;
+                    DateTime.TryParse(timed, out timedd);
+                    switch (success)
                     {
-                        db.Businesspichis.Add(new Businesspichis
-                        {
-                            Identity = pic.Identity,
-                            Time = DateTime.Now,
-                            Businesstype = (short)pic.Businesstype,
-                            Pictype = pic.Pictype
-                        });
-                        db.Businesspic.Remove(pic);
+                        case "1":
+                        case "2":
+                            var pics = db.Businesspic.Where(a => a.Identity == identity && a.Businesstype == (int)bbtype);
+                            foreach (var pic in pics)
+                            {
+                                db.Businesspichis.Add(new Businesspichis
+                                {
+                                    Identity = pic.Identity,
+                                    Time = DateTime.Now,
+                                    Businesstype = (short)pic.Businesstype,
+                                    Pictype = pic.Pictype
+                                });
+                                db.Businesspic.Remove(pic);
+                            }
+                            var busi = db.Business.FirstOrDefault(b => b.Identity == identity && b.Businesstype == (short)bbtype);
+                            if (busi != null)
+                            {
+                                db.Businesshis.Add(new Businesshis
+                                {
+                                    Identity = busi.Identity,
+                                    Businesstype = busi.Businesstype,
+                                    Time = DateTime.Now,
+                                });
+                                db.Business.Remove(busi);
+                            }
+                            db.SaveChanges();
+                            break;
+                        case "3":
+                            var busi3 = db.Business.FirstOrDefault(b => b.Identity == identity && b.Businesstype == (short)bbtype);
+                            if (busi3 != null)
+                            {
+                                busi3.Status = (short)businessstatus.process;
+                             //   busi3.Reason=desc;
+                                busi3.Processtime=timedd;
+                                db.SaveChanges();
+                            }
+
+                            break;
+                        case "4":
+                        var busi4 = db.Business.FirstOrDefault(b => b.Identity == identity && b.Businesstype == (short)bbtype);
+                            if (busi4 != null)
+                            {
+                                busi4.Status = (short)businessstatus.failure;
+                                busi4.Reason=desc;
+                                busi4.Finishtime=timedd;
+                                db.SaveChanges();
+                            }
+
+                            break;
+                        default:
+                         Console.WriteLine(" invalid data line {0},{1}", fields.Length, line);
+                            break;
                     }
-                    var busi = db.Business.FirstOrDefault(b => b.Identity == identity && b.Businesstype == (short)bbtype);
-                    if (busi != null)
-                    {
-                        db.Businesshis.Add(new Businesshis
-                        {
-                            Identity = busi.Identity,
-                            Businesstype = busi.Businesstype,
-                            Time = DateTime.Now,
-                        });
-                        db.Business.Remove(busi);
-                    }
-                    db.SaveChanges();
+
+
                 }
             }
         }

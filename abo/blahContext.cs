@@ -101,6 +101,10 @@ namespace mvc104
                     .HasColumnName("quasiDrivingLicense")
                     .HasColumnType("varchar(45)");
 
+                entity.Property(e => e.Reason)
+                    .HasColumnName("reason")
+                    .HasColumnType("varchar(450)");
+
                 entity.Property(e => e.Status)
                     .HasColumnName("status")
                     .HasColumnType("smallint(2)")
@@ -172,7 +176,7 @@ namespace mvc104
 
                 entity.Property(e => e.Businesstype)
                     .HasColumnName("businesstype")
-                    .HasColumnType("int(11)")
+                    .HasColumnType("smallint(2)")
                     .HasDefaultValueSql("0");
 
                 entity.Property(e => e.Pictype)

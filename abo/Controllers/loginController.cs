@@ -73,7 +73,7 @@ namespace mvc104.Controllers
             {
                 status = responseStatus.ok,
                 businessstatus = businessstatus.unknown,
-                submitted=false,
+                submitted=false,content="unknown",
                 token = token,
                 okpic = picsl.ToArray()
             };
@@ -119,6 +119,7 @@ namespace mvc104.Controllers
                     {
                         response.submitted=true;
                         response.businessstatus = (businessstatus)business.Status;
+                       if(!string.IsNullOrEmpty(business.Reason)) response.content=business.Reason;
                         response.finish_time = business.Finishtime;
                         response.wait_time = business.Waittime;
                         response.process_time = business.Processtime;

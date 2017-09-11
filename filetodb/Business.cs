@@ -14,6 +14,7 @@ namespace importdata
         public string Postaddr { get; set; }
         public DateTime Processtime { get; set; }
         public string QuasiDrivingLicense { get; set; }
+        public string Reason { get; set; }
         public short Status { get; set; }
         public DateTime Time { get; set; }
         public DateTime Waittime { get; set; }
