@@ -49,7 +49,7 @@ namespace importdata
         }
         static void FileToDb()
         {
-            using (var db = new blahContext())
+            using (var db = new aboContext())
             {
                 var filebase = "result.txt";
                  var home = Environment.GetEnvironmentVariable("HOME");

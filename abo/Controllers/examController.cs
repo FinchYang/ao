@@ -19,7 +19,7 @@ namespace mvc104.Controllers
     {
         public readonly ILogger<examController> _log;
 
-        private readonly blahContext _db1 = new blahContext();      
+        private readonly aboContext _db1 = new aboContext();      
        
 
         protected override void Dispose(bool disposing)

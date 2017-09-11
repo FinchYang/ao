@@ -20,7 +20,7 @@ namespace mvc104.Controllers
 
         private readonly string facepath = "face";
         private readonly string residencepicturepath = "residentpicture";
-        private readonly blahContext _db1 = new blahContext();
+        private readonly aboContext _db1 = new aboContext();
 
         protected override void Dispose(bool disposing)
         {

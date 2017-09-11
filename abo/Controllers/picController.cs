@@ -18,7 +18,7 @@ namespace mvc104.Controllers
     public class picController : Controller
     {
         public readonly ILogger<picController> _log;
-        private readonly blahContext _db1 = new blahContext();
+        private readonly aboContext _db1 = new aboContext();
         static string _picpath = "pictures";
 
         protected override void Dispose(bool disposing)
@@ -101,7 +101,7 @@ _log.LogInformation("uploadpic: id={0},bt={1}",accinfo.Identity,accinfo.business
             }
             try
             {
-                using (var ddbb = new blahContext())
+                using (var ddbb = new aboContext())
                 {
                     var already=ddbb.Businesspic.FirstOrDefault(i =>i.Businesstype==(int)accinfo.businessType&&i.Identity==accinfo.Identity&&i.Pictype==(short)input.picType);
                     if(already==null){

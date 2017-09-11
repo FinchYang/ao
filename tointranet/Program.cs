@@ -94,13 +94,13 @@ namespace exportdb
             var date = DateTime.Now;
             var dir = string.Format("{0}-{1}-{2}-{3}-{4}-{5}", date.Year, date.Month.ToString("D2"), date.Day.ToString("D2"),
             date.Hour.ToString("D2"), date.Minute.ToString("D2"), date.Second.ToString("D2"));
-            var dbtofilefname = dir + "-abo.txt";
+            var dbtofilefname =  "abo.txt";
             var home = Environment.GetEnvironmentVariable("HOME");
             var dbtofp = Path.Combine(home, dbtofilePath);
             if (!Directory.Exists(dbtofp)) Directory.CreateDirectory(dbtofp);
             var fname = Path.Combine(dbtofp, dbtofilefname);
 
-            using (var db = new blahContext())
+            using (var db = new aboContext())
             {
                 var theuser = db.Business.Where(async => async.Integrated == false);
                 Console.WriteLine("today is {1}, {2} records need to  be archived", ",", date, theuser.Count());
@@ -121,14 +121,14 @@ namespace exportdb
 
                         NewMethod(re.Identity, bt.ToString(), home);
                         var phone = string.Empty;
-                        if (re.Businesstype == (short)businessType.changeContact)
-                        {
+                        // if (re.Businesstype == (short)businessType.changeContact)
+                        // {
                             var userp = db.Aouser.FirstOrDefault(h => h.Identity == re.Identity);
                             if (userp != null)
                             {
                                 phone = userp.Phone;
                             }
-                        }
+                      //  }
                         var line = string.Format("{0},{1},{2},{3},{4},{5},{6}",
                          re.Identity, re.Businesstype, re.Postaddr, re.Acceptingplace, re.QuasiDrivingLicense, phone, aouser.Name);
                         File.AppendAllText(fname, line + "\r\n");

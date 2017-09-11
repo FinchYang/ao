@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace mvc104
+namespace exportdb
 {
-    public partial class blahContext : DbContext
+    public partial class aboContext : DbContext
     {
         public virtual DbSet<Aouser> Aouser { get; set; }
         public virtual DbSet<Business> Business { get; set; }
@@ -16,7 +16,7 @@ namespace mvc104
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-            optionsBuilder.UseMySql(@"Server=47.93.226.74;User Id=blah;Password=ycl1mail@A;Database=blah");
+            optionsBuilder.UseMySql(@"Server=192.168.10.94;User Id=studyin;Password=yunyi@6688A;Database=abo");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -80,7 +80,6 @@ namespace mvc104
 
                 entity.Property(e => e.Finishtime)
                     .HasColumnName("finishtime")
-                    .HasColumnType("datetime")
                     .HasDefaultValueSql("2000-01-01 00:00:00");
 
                 entity.Property(e => e.Integrated)
@@ -94,7 +93,6 @@ namespace mvc104
 
                 entity.Property(e => e.Processtime)
                     .HasColumnName("processtime")
-                    .HasColumnType("datetime")
                     .HasDefaultValueSql("2000-01-01 00:00:00");
 
                 entity.Property(e => e.QuasiDrivingLicense)
@@ -110,13 +108,10 @@ namespace mvc104
                     .HasColumnType("smallint(2)")
                     .HasDefaultValueSql("0");
 
-                entity.Property(e => e.Time)
-                    .HasColumnName("time")
-                    .HasColumnType("datetime");
+                entity.Property(e => e.Time).HasColumnName("time");
 
                 entity.Property(e => e.Waittime)
                     .HasColumnName("waittime")
-                    .HasColumnType("datetime")
                     .HasDefaultValueSql("2000-01-01 00:00:00");
             });
 
@@ -158,9 +153,7 @@ namespace mvc104
                     .HasColumnName("quasiDrivingLicense")
                     .HasColumnType("varchar(45)");
 
-                entity.Property(e => e.Time)
-                    .HasColumnName("time")
-                    .HasColumnType("datetime");
+                entity.Property(e => e.Time).HasColumnName("time");
             });
 
             modelBuilder.Entity<Businesspic>(entity =>
@@ -176,7 +169,7 @@ namespace mvc104
 
                 entity.Property(e => e.Businesstype)
                     .HasColumnName("businesstype")
-                    .HasColumnType("smallint(2)")
+                    .HasColumnType("int(11)")
                     .HasDefaultValueSql("0");
 
                 entity.Property(e => e.Pictype)
@@ -184,9 +177,7 @@ namespace mvc104
                     .HasColumnType("smallint(2)")
                     .HasDefaultValueSql("0");
 
-                entity.Property(e => e.Time)
-                    .HasColumnName("time")
-                    .HasColumnType("datetime");
+                entity.Property(e => e.Time).HasColumnName("time");
 
                 entity.Property(e => e.Uploaded)
                     .HasColumnName("uploaded")
@@ -220,9 +211,7 @@ namespace mvc104
                     .HasColumnType("smallint(2)")
                     .HasDefaultValueSql("0");
 
-                entity.Property(e => e.Time)
-                    .HasColumnName("time")
-                    .HasColumnType("datetime");
+                entity.Property(e => e.Time).HasColumnName("time");
 
                 entity.Property(e => e.Uploaded)
                     .HasColumnName("uploaded")
@@ -258,9 +247,7 @@ namespace mvc104
                     .HasColumnName("method")
                     .HasColumnType("varchar(45)");
 
-                entity.Property(e => e.Time)
-                    .HasColumnName("time")
-                    .HasColumnType("datetime");
+                entity.Property(e => e.Time).HasColumnName("time");
             });
         }
     }

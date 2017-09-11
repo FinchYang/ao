@@ -79,7 +79,7 @@ namespace mvc104
             }
             await Task.Run(() =>
             {
-                using (var logdb = new blahContext())
+                using (var logdb = new aboContext())
                 {
                     logdb.Request.Add(new Request
                     {
