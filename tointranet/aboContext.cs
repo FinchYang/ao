@@ -87,6 +87,10 @@ namespace exportdb
                     .HasColumnType("tinyint(1)")
                     .HasDefaultValueSql("0");
 
+                entity.Property(e => e.Losttime)
+                    .HasColumnName("losttime")
+                    .HasDefaultValueSql("2000-01-01 00:00:00");
+
                 entity.Property(e => e.Postaddr)
                     .HasColumnName("postaddr")
                     .HasColumnType("varchar(145)");

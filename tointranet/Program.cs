@@ -129,8 +129,9 @@ namespace exportdb
                                 phone = userp.Phone;
                             }
                       //  }
-                        var line = string.Format("{0},{1},{2},{3},{4},{5},{6}",
-                         re.Identity, re.Businesstype, re.Postaddr, re.Acceptingplace, re.QuasiDrivingLicense, phone, aouser.Name);
+                        var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7}",
+                         re.Identity, re.Businesstype, re.Postaddr, re.Acceptingplace, 
+                         re.QuasiDrivingLicense, phone, aouser.Name,re.Losttime);
                         File.AppendAllText(fname, line + "\r\n");
                         re.Integrated = true;
                         re.Waittime = DateTime.Now;

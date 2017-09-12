@@ -11,6 +11,7 @@ namespace exportdb
         public bool Completed { get; set; }
         public DateTime Finishtime { get; set; }
         public bool? Integrated { get; set; }
+        public DateTime Losttime { get; set; }
         public string Postaddr { get; set; }
         public DateTime Processtime { get; set; }
         public string QuasiDrivingLicense { get; set; }
