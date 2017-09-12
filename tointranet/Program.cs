@@ -130,7 +130,7 @@ namespace exportdb
                             }
                       //  }
                         var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7}",
-                         re.Identity, re.Businesstype, re.Postaddr, re.Acceptingplace, 
+                         re.Identity, ((businessType)re.Businesstype).ToString(), re.Postaddr, re.Acceptingplace, 
                          re.QuasiDrivingLicense, phone, aouser.Name,re.Losttime);
                         File.AppendAllText(fname, line + "\r\n");
                         re.Integrated = true;
@@ -147,7 +147,7 @@ namespace exportdb
             var a = new System.Diagnostics.Process();
             a.StartInfo.UseShellExecute = true;
             a.StartInfo.Arguments =
-            string.Format(" {0} {1}/* -r", zipfname, dbtofp);
+            string.Format(" -9 {0} {1}/* -r", zipfname, dbtofp);
             a.StartInfo.FileName = "zip";
             a.Start();
             a.WaitForExit();
@@ -172,9 +172,11 @@ namespace exportdb
 
             var a = new System.Diagnostics.Process();
             a.StartInfo.UseShellExecute = true;
-            a.StartInfo.Arguments =
+            var param=string.Format(" -r {3}/server/pictures/{1}/{2} {3}/{0}/{1}/", dbtofilePath, filebase, btype, home);
+            a.StartInfo.Arguments =param;
 
-            string.Format(" -r {3}/publish/pictures/{1}/{2} {3}/{0}/{1}/", dbtofilePath, filebase, btype, home);
+            
+            Console.WriteLine(param);
             a.StartInfo.FileName = "cp";
             a.Start();
             a.WaitForExit();
