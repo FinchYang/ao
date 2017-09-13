@@ -134,7 +134,9 @@ namespace exportdb
                          re.QuasiDrivingLicense, phone, aouser.Name,re.Losttime);
                         File.AppendAllText(fname, line + "\r\n");
                         re.Integrated = true;
-                        re.Waittime = DateTime.Now;
+                        var now=DateTime.Now;
+                        re.Exporttime=now;
+                        re.Waittime = now;
                     }
 
                 }
