@@ -23,30 +23,36 @@ namespace exportdb
                     var req = abdb.Request.OrderBy(a => a.Ordinal).LastOrDefault();
                     if (req == null)
                     {
-                        sendautomsg("db error");
+                        sendautomsg("db-error");
                     }
                     else
                     {
-                        if(now.Hour>=6)
-                        if (req.Time < now.AddMinutes(-10))
-                        {
-                            sendautomsg(string.Format("last request time {0}", req.Time));
-                        }
+                        if (now.Hour >= 6)
+                            if (req.Time < now.AddMinutes(-10))
+                            {
+                                sendautomsg(string.Format("last-request-time-{0}", getdate(req.Time)));
+                            }
 
                     }
                     if (now.Minute < 10)
                     {
                         var cc = abdb.Request.Where(b => b.Time > now.AddHours(-1)).Count();
-                        sendautomsg(string.Format("last hour had {0} times requests", cc));
+                        sendautomsg(string.Format("last-hour-had-{0}-requests", cc));
                     }
                 }
-                Thread.Sleep(1000 * 10);
+                Thread.Sleep(1000 * 60 * 10);
             } while (!quit);
+        }
+        private static string getdate(DateTime dt)
+        {
+            return string.Format("last-request-time-{0}-{1}-{2}-{3}-{4}-{5}",
+                             dt.Year, dt.Month, dt.Day,
+                            dt.Hour, dt.Minute, dt.Second);
         }
         private static void sendautomsgone(string v, string phone)
         {
             var cmd =
-            string.Format(" {0} {1}", phone, v + DateTime.Now);
+            string.Format(" {0} \"{1}\"", phone, v + getdate(DateTime.Now));
             Console.WriteLine(cmd);
             var a = new System.Diagnostics.Process();
             a.StartInfo.FileName = "/home/driverbusiness/bin/sendmsg";

@@ -94,7 +94,7 @@ namespace exportdb
             var date = DateTime.Now;
             var dir = string.Format("{0}-{1}-{2}-{3}-{4}-{5}", date.Year, date.Month.ToString("D2"), date.Day.ToString("D2"),
             date.Hour.ToString("D2"), date.Minute.ToString("D2"), date.Second.ToString("D2"));
-            var dbtofilefname =  "abo.txt";
+            var dbtofilefname = "abo.txt";
             var home = Environment.GetEnvironmentVariable("HOME");
             var dbtofp = Path.Combine(home, dbtofilePath);
             if (!Directory.Exists(dbtofp)) Directory.CreateDirectory(dbtofp);
@@ -102,6 +102,40 @@ namespace exportdb
 
             using (var db = new aboContext())
             {
+                //冗余传输，防止边界平台not delivery
+                var rebusi = db.Business.Where(async => async.Integrated == true && async.Exporttime.CompareTo(date.AddDays(-1)) >= 0);
+                Console.WriteLine("redundant is {1}, {2} records need to  be archived", ",", date, rebusi.Count());
+                foreach (var rere in rebusi)
+                {
+                    var picsr = db.Businesspic.Where(c => c.Businesstype == rere.Businesstype && c.Identity == rere.Identity && c.Uploaded == true);
+
+                    if (picsr.Count() >= global.businesscount[(businessType)rere.Businesstype])
+                    {
+                        var bt = (businessType)rere.Businesstype;
+                        if (bt == businessType.delay || bt == businessType.overage || bt == businessType.expire)
+                        {
+                            if (!checkSignpic(bt, rere.Identity, home)) continue;
+                        }
+
+                        var aouser = db.Aouser.FirstOrDefault(aa => aa.Identity == rere.Identity);
+                        if (aouser == null || string.IsNullOrEmpty(aouser.Name)) continue;
+
+                        NewMethod(rere.Identity, bt.ToString(), home);
+                        var phone = string.Empty;
+
+                        var userp = db.Aouser.FirstOrDefault(h => h.Identity == rere.Identity);
+                        if (userp != null)
+                        {
+                            phone = userp.Phone;
+                        }
+
+                        var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7}",
+                         rere.Identity, ((businessType)rere.Businesstype).ToString(), rere.Postaddr, rere.Acceptingplace,
+                         rere.QuasiDrivingLicense, phone, aouser.Name, rere.Losttime);
+                        File.AppendAllText(fname, line + "\r\n");
+                    }
+                }
+
                 var theuser = db.Business.Where(async => async.Integrated == false);
                 Console.WriteLine("today is {1}, {2} records need to  be archived", ",", date, theuser.Count());
                 foreach (var re in theuser)
@@ -123,22 +157,21 @@ namespace exportdb
                         var phone = string.Empty;
                         // if (re.Businesstype == (short)businessType.changeContact)
                         // {
-                            var userp = db.Aouser.FirstOrDefault(h => h.Identity == re.Identity);
-                            if (userp != null)
-                            {
-                                phone = userp.Phone;
-                            }
-                      //  }
+                        var userp = db.Aouser.FirstOrDefault(h => h.Identity == re.Identity);
+                        if (userp != null)
+                        {
+                            phone = userp.Phone;
+                        }
+                        //  }
                         var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7}",
-                         re.Identity, ((businessType)re.Businesstype).ToString(), re.Postaddr, re.Acceptingplace, 
-                         re.QuasiDrivingLicense, phone, aouser.Name,re.Losttime);
+                         re.Identity, ((businessType)re.Businesstype).ToString(), re.Postaddr, re.Acceptingplace,
+                         re.QuasiDrivingLicense, phone, aouser.Name, re.Losttime);
                         File.AppendAllText(fname, line + "\r\n");
                         re.Integrated = true;
-                        var now=DateTime.Now;
-                        re.Exporttime=now;
-                        re.Waittime = now;
-                    }
 
+                        re.Exporttime = date;
+                        re.Waittime = date;
+                    }
                 }
                 db.SaveChanges();
             }
@@ -174,10 +207,9 @@ namespace exportdb
 
             var a = new System.Diagnostics.Process();
             a.StartInfo.UseShellExecute = true;
-            var param=string.Format(" -r {3}/server/pictures/{1}/{2} {3}/{0}/{1}/", dbtofilePath, filebase, btype, home);
-            a.StartInfo.Arguments =param;
+            var param = string.Format(" -r {3}/server/pictures/{1}/{2} {3}/{0}/{1}/", dbtofilePath, filebase, btype, home);
+            a.StartInfo.Arguments = param;
 
-            
             Console.WriteLine(param);
             a.StartInfo.FileName = "cp";
             a.Start();
