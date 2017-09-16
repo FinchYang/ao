@@ -17,11 +17,10 @@ namespace mvc104.Controllers
     public class livingController : Controller
     {
         public readonly ILogger<livingController> _log;
-
         private readonly string facepath = "face";
         private readonly string residencepicturepath = "residentpicture";
         private readonly aboContext _db1 = new aboContext();
-
+     
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -119,6 +118,7 @@ namespace mvc104.Controllers
                 return new commonresponse { status = responseStatus.fileprocesserror };
             }
         }
+
         private string CompareWitdIdFace(string api_id, string api_secret, string path, string historypath)
         {
             HttpContent apiId = new StringContent(api_id);

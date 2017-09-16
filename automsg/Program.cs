@@ -18,27 +18,34 @@ namespace exportdb
             do
             {
                 var now = DateTime.Now;
-                using (var abdb = new studyinContext())
+                try
                 {
-                    var req = abdb.Request.OrderBy(a => a.Ordinal).LastOrDefault();
-                    if (req == null)
+                    using (var abdb = new studyinContext())
                     {
-                        sendautomsg("db-error");
-                    }
-                    else
-                    {
-                        if (now.Hour >= 6)
-                            if (req.Time < now.AddMinutes(-10))
-                            {
-                                sendautomsg(string.Format("last-request-time-{0}", getdate(req.Time)));
-                            }
+                        var req = abdb.Request.OrderBy(a => a.Ordinal).LastOrDefault();
+                        if (req == null)
+                        {
+                            sendautomsg("db-error");
+                        }
+                        else
+                        {
+                            if (now.Hour >= 6)
+                                if (req.Time < now.AddMinutes(-10))
+                                {
+                                    sendautomsg(string.Format("last-request-time-{0}", getdate(req.Time)));
+                                }
 
+                        }
+                        if (now.Minute < 10)
+                        {
+                            var cc = abdb.Request.Where(b => b.Time > now.AddHours(-1)).Count();
+                            sendautomsg(string.Format("last-hour-had-{0}-requests", cc));
+                        }
                     }
-                    if (now.Minute < 10)
-                    {
-                        var cc = abdb.Request.Where(b => b.Time > now.AddHours(-1)).Count();
-                        sendautomsg(string.Format("last-hour-had-{0}-requests", cc));
-                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(now + "something happened ... " + ex.Message);
                 }
                 Thread.Sleep(1000 * 60 * 10);
             } while (!quit);
