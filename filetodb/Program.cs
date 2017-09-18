@@ -60,6 +60,7 @@ namespace importdata
                     return;
                 }
                 var content = File.ReadAllLines(fname);
+                Console.WriteLine("{0} lines need to import", content.Length);
                 foreach (var line in content)
                 {
                     var fields = line.Split(',');
@@ -70,11 +71,11 @@ namespace importdata
                     }
 
                     var identity = fields[0];
-
                     var btype = fields[1];
                     var bbtype = businessType.unknown;
                     if (!Enum.TryParse(btype, out bbtype))
                     {
+                        Console.WriteLine(" businessType error line {0},{1}", fields.Length, line);
                         continue;
                     }
                     var success = fields[2];
@@ -82,6 +83,8 @@ namespace importdata
                     var timed = fields[4];
                     var timedd=DateTime.Now;
                     DateTime.TryParse(timed, out timedd);
+                    Console.WriteLine(" businessType ={0},identity={1},success={2},desc={3},timedd={4},bbtype={5}",
+                        btype, identity, success, desc, timedd, (int)bbtype);
                     switch (success)
                     {
                         case "1":
@@ -137,8 +140,6 @@ namespace importdata
                          Console.WriteLine(" invalid data line {0},{1}", fields.Length, line);
                             break;
                     }
-
-
                 }
             }
         }

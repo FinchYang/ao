@@ -87,7 +87,7 @@ namespace mvc104.Controllers
             var accinfo = highlevel.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
 
-_log.LogInformation("uploadpic: id={0},bt={1}",accinfo.Identity,accinfo.businessType);
+//_log.LogInformation("uploadpic: id={0},bt={1}",accinfo.Identity,accinfo.businessType);
             if (!savePic(input.picture, input.picType, accinfo.Identity, accinfo.businessType))
              return    highlevel.commonreturn( responseStatus.fileprocesserror );
 
@@ -113,9 +113,9 @@ _log.LogInformation("uploadpic: id={0},bt={1}",accinfo.Identity,accinfo.business
                         Uploaded = true,
                         Time = DateTime.Now
                     };
-                    highlevel.infolog(_log, "uploadpic", JsonConvert.SerializeObject(newpic));
+                  //  highlevel.infolog(_log, "uploadpic", JsonConvert.SerializeObject(newpic));
                     var ret = ddbb.Businesspic.Add(newpic);
-                    highlevel.infolog(_log, "uploadpic88", JsonConvert.SerializeObject(ret.Entity));
+                 //  highlevel.infolog(_log, "uploadpic88", JsonConvert.SerializeObject(ret.Entity));
 
                     }
                     else {
@@ -171,7 +171,7 @@ _log.LogInformation("uploadpic: id={0},bt={1}",accinfo.Identity,accinfo.business
                 var fpath = Path.Combine(_picpath, identity, btype.ToString());
                 if (!Directory.Exists(fpath)) Directory.CreateDirectory(fpath);
                 var fname = Path.Combine(fpath, picType + ".jpg");
-                highlevel.infolog(_log, "savepic", fname);
+             //   highlevel.infolog(_log, "savepic", fname);
                 var index = picstr.IndexOf("base64,");
                 System.IO.File.WriteAllBytes(fname, Convert.FromBase64String(picstr.Substring(index + 7)));
              //   System.IO.File.WriteAllBytes(fname,new byte[1]);

@@ -80,10 +80,16 @@ namespace mvc104.Controllers
             {
                 return new loginresponse { status = responseStatus.businesstypeerror };
             }
+        
+            //if (!checkbusi(identify, businessType))
+            //{
+            //    highlevel.LogRequest(name + phone + identify + responseStatus.forbidden, "login", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)businessType);
 
-            _log.LogInformation("{3}-{0} from {1}, input is {2}", DateTime.Now, "login",
-             Request.HttpContext.Connection.RemoteIpAddress.ToString() + HttpContext.Connection.RemoteIpAddress,
-            identify + name + phone + businessType);
+            //    return new loginresponse { status = responseStatus.forbidden };
+            //}
+            // _log.LogInformation("{3}-{0} from {1}, input is {2}", DateTime.Now, "login",
+            //  Request.HttpContext.Connection.RemoteIpAddress.ToString() + HttpContext.Connection.RemoteIpAddress,
+            // identify + name + phone + businessType);
 
             var btype = (short)businessType;
             var picsl = new List<short>();
@@ -99,6 +105,26 @@ namespace mvc104.Controllers
             };
             try
             {
+                if (businessType == businessType.overage)
+                {
+                    var idl = identify.Length;
+                    if (idl == 18)//
+                    {
+                        var year = int.Parse(identify.Substring(6, 4));
+                        var month = int.Parse(identify.Substring(10, 2));
+                        var day = int.Parse(identify.Substring(12, 2));
+                        var birth = new DateTime(year, month, day);
+                        if (birth.AddYears(60) > DateTime.Now) return new loginresponse { status = responseStatus.forbidden };
+                    }
+                    else if (idl == 15)
+                    {
+                        var year = int.Parse(identify.Substring(6, 2)) + 1900;
+                        var month = int.Parse(identify.Substring(8, 2));
+                        var day = int.Parse(identify.Substring(10, 2));
+                        var birth = new DateTime(year, month, day);
+                        if (birth.AddYears(60) > DateTime.Now) return new loginresponse { status = responseStatus.forbidden };
+                    }
+                }
                 var theuser = _db1.Aouser.FirstOrDefault(i => i.Identity == identify);
                 if (theuser == null)
                 {
@@ -176,169 +202,87 @@ namespace mvc104.Controllers
             {
                 global.tokens.Add(new Ptoken { idinfo = new idinfo { Identity = identify, businessType = businessType }, Token = token });
             }
-            highlevel.LogRequest(name + phone + identify, "login", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)businessType);
+            highlevel.LogRequest(name + phone + identify+JsonConvert.SerializeObject(response), "login", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)businessType);
             return response;
         }
 
-        [Route("newlogin")]
-        [HttpGet]
-        public loginresponse newlogin(string name, string identify, string phone, businessType businessType)
-        {
-            if (string.IsNullOrEmpty(identify) || identify == "undefined")
-            {
-                return new loginresponse { status = responseStatus.iderror };
-            }
-            if (string.IsNullOrEmpty(name) || name == "undefined")
-            {
-                return new loginresponse { status = responseStatus.nameerror };
-            }
-            if (string.IsNullOrEmpty(phone) || phone == "undefined")
-            {
-                return new loginresponse { status = responseStatus.phoneerror };
-            }
-            if (businessType == businessType.unknown)
-            {
-                return new loginresponse { status = responseStatus.businesstypeerror };
-            }
-
-            if (!checkbusi(identify, businessType))
-            {
-                return new loginresponse { status = responseStatus.forbidden };
-            }
-            _log.LogInformation("{3}-{0} from {1}, input is {2}", DateTime.Now, "login",
-             Request.HttpContext.Connection.RemoteIpAddress.ToString() + HttpContext.Connection.RemoteIpAddress,
-            identify + name + phone + businessType);
-
-            var btype = (short)businessType;
-            var picsl = new List<short>();
-            var token = GetToken();
-            var response = new loginresponse
-            {
-                status = responseStatus.ok,
-                businessstatus = businessstatus.unknown,
-                submitted = false,
-                content = "unknown",
-                token = token,
-                okpic = picsl.ToArray()
-            };
-            try
-            {
-                var theuser = _db1.Aouser.FirstOrDefault(i => i.Identity == identify);
-                if (theuser == null)
-                {
-                    _db1.Aouser.Add(new Aouser
-                    {
-                        Identity = identify,
-                        Phone = phone,
-                        Name = name
-                    });
-                    _db1.SaveChanges();
-                }
-
-                var business = _db1.Business.FirstOrDefault(i => i.Identity == identify && i.Businesstype == (short)businessType);
-                if (business == null)
-                {
-                    _db1.Business.Add(new Business
-                    {
-                        Identity = identify,
-                        Businesstype = (short)businessType,
-                        Completed = false,
-                        Time = DateTime.Now,
-                    });
-                    _db1.SaveChanges();
-                }
-                else
-                {
-                    var pics = _db1.Businesspic.Where(c => c.Businesstype == btype && c.Identity == identify && c.Uploaded == true);
-                    response.businessstatus = (businessstatus)business.Status;
-                    if (pics.Count() < global.businesscount[businessType])
-                    {
-                        foreach (var a in pics)
-                        {
-                            picsl.Add(a.Pictype);
-                        }
-                        response.okpic = picsl.ToArray();
-                    }
-                    else
-                    {
-                        response.submitted = true;
-                        response.businessstatus = (businessstatus)business.Status;
-                        if (!string.IsNullOrEmpty(business.Reason)) response.content = business.Reason;
-                        response.finish_time = business.Finishtime;
-                        response.wait_time = business.Waittime;
-                        response.process_time = business.Processtime;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _log.LogError("login -- process error:{0}", ex.Message);
-            }
-
-            try
-            {
-                var redisdb = highlevel.redis.GetDatabase();
-                redisdb.StringSet(token, JsonConvert.SerializeObject(new idinfo { Identity = identify, businessType = businessType }));
-                redisdb.KeyExpire(token, TimeSpan.FromDays(30));
-            }
-            catch (Exception ex)
-            {
-                _log.LogError("redis key process error:{0}", ex.Message);
-            }
-
-            var found = false;
-            foreach (var a in global.tokens)
-            {
-                if (a.idinfo.Identity == identify && a.idinfo.businessType == businessType)
-                {
-                    a.Token = token;
-                    found = true;
-                    break;
-                }
-            }
-            if (!found)
-            {
-                global.tokens.Add(new Ptoken { idinfo = new idinfo { Identity = identify, businessType = businessType }, Token = token });
-            }
-            highlevel.LogRequest(name + phone + identify, "login", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)businessType);
-            return response;
-        }
 
         private bool checkbusi(string identify, businessType businessType)
         {
             if (businessType == businessType.changeContact || businessType == businessType.first) return true;
-            sendautomsgone(identify);
-            var rpath = "/home/driverbusiness/detachment";
-            var rfile = Path.Combine(rpath, identify);
-            var source = System.IO.File.ReadAllText(rfile);
+           
+            try
+            {
+                if (businessType == businessType.overage)
+                {
+                    var idl = identify.Length;
+                    if (idl == 18)//
+                    {
+                        var year = int.Parse(identify.Substring(6, 4));
+                        var month = int.Parse(identify.Substring(10, 2));
+                        var day = int.Parse(identify.Substring(12, 2));
+                        var birth = new DateTime(year, month, day);
+                        if (birth.AddYears(60) > DateTime.Now) return false;
+                    }
+                    else if (idl == 15)
+                    {
+                        var year = int.Parse(identify.Substring(6, 2)) + 1900;
+                        var month = int.Parse(identify.Substring(8, 2));
+                        var day = int.Parse(identify.Substring(10, 2));
+                        var birth = new DateTime(year, month, day);
+                        if (birth.AddYears(60) > DateTime.Now) return false;
+                    }
+                }
+                _log.LogInformation("sendautomsgone,begin" + identify+DateTime.Now);
+                sendautomsgone(identify);
+                _log.LogInformation("sendautomsgone,end" + identify + DateTime.Now);
+                var rpath = "/home/driverbusiness/detachment";
+                var rfile = Path.Combine(rpath, identify);
+                var source =System.IO. File.ReadAllText(rfile);
+                var ff = new System.IO.FileInfo(rfile).Length;
 
-            string pattern = @"{.*}";
-            var result = string.Empty;
-            Match theMatch = Regex.Match(source, pattern);
-            if (theMatch.Success)
-            {
-                int endindex = theMatch.Length;
-                result = source.Substring(theMatch.Index, endindex);
-                var ret=JsonConvert.DeserializeObject<getDrivingLicenseBySfzmhm>(result);
-                if(ret.code=="200"&&ret.status=="1"&&ret.result[0].ZT=="A") return true;
+                string pattern =  @"{""code"":.*}";
+                var result = string.Empty;
+                Match theMatch = Regex.Match(source, pattern, RegexOptions.Multiline);
+                if (theMatch.Success)
+                {
+                    int endindex = theMatch.Length;
+                    result = source.Substring(theMatch.Index, endindex);
+                     _log.LogInformation("match detach ok"+result);
+                    if (result.Length < 60) return false;//此人无驾驶证
+                    var ret = JsonConvert.DeserializeObject<getDrivingLicenseBySfzmhm>(result);
+                    if (ret.code == "200" && ret.status == "1" && ret.result[0].ZT == "A")
+                    {
+                        _log.LogInformation("normal detach ok"+identify);
+                        return true;
+                    }
+                }
+                else
+                {
+                    //支队同步库出错情况下，暂时丢弃业务逻辑限制
+                     _log.LogInformation(source.Length+"no match"+identify+source+ff);
+                    return true;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                //支队同步库出错情况下，暂时丢弃业务逻辑限制
+                _log.LogError("checkbusi process error:{0}", ex.Message);
                 return true;
             }
-
             return false;
         }
 
-        private static void sendautomsgone(string id)
+        private  void sendautomsgone(string id)
         {
             var a = new System.Diagnostics.Process();
             a.StartInfo.FileName = "/home/driverbusiness/bin/searchdetach";
             a.StartInfo.UseShellExecute = true;
             a.StartInfo.Arguments = id;
+            _log.LogInformation("sendautomsgone,before start" + id + DateTime.Now);
             a.Start();
+            _log.LogInformation("sendautomsgone,after start" + id + DateTime.Now);
             a.WaitForExit();
+            _log.LogInformation("sendautomsgone,after exit" + id + DateTime.Now);
         }
     }
 }

@@ -19,8 +19,8 @@ namespace mvc104.Controllers
     {
         public readonly ILogger<examController> _log;
 
-        private readonly aboContext _db1 = new aboContext();      
-       
+        private readonly aboContext _db1 = new aboContext();
+
 
         protected override void Dispose(bool disposing)
         {
@@ -39,12 +39,12 @@ namespace mvc104.Controllers
         {
             var seed = Guid.NewGuid().ToString("N");
             return seed;
-        }      
+        }
 
-  private string exam()
+        private string exam()
         {
-           
-            var url = string.Format("http://jisujiakao.market.alicloudapi.com/driverexam/query?pagenum=1&pagesize=1&sort=rand&subject=1&type=A1", 
+
+            var url = string.Format("http://jisujiakao.market.alicloudapi.com/driverexam/query?pagenum=1&pagesize=1&sort=rand&subject=1&type=A1",
             "wx774a9869c14f1647", "7f94f888c5e5c32bba9239230f46a827");
             try
             {
@@ -52,94 +52,69 @@ namespace mvc104.Controllers
 
                 using (var restget = new HttpClient(handler))
                 {
-                    var auth=new List<string>();
+                    var auth = new List<string>();
                     auth.Add("APPCODE a7686da69b354d78b1cd97b49ebd4490");
-                    restget.DefaultRequestHeaders.Add("Authorization",auth);
+                    restget.DefaultRequestHeaders.Add("Authorization", auth);
                     var response = restget.GetAsync(url).Result;
                     string srcString = response.Content.ReadAsStringAsync().Result;
-                   
+
                     return srcString;
                 }
             }
             catch (Exception ex)
             {
                 highlevel.errorlog(_log, "exam", ex);
-                return  "000001" ;
+                return "000001";
             }
         }
-        [Route("lo77gin")]
-        [HttpGet]
-        public loginresponse login(string name, string identify, string phone, businessType businessType)
+        public class ssresponse : commonresponse
         {
-           var ret= exam();
-            return new loginresponse { status = responseStatus.ok,token=ret };
-            if (string.IsNullOrEmpty(identify))
+            public aboss ongoing { get; set; } = new aboss();
+            public aboss completed { get; set; } = new aboss();
+        }
+        public class aboss
+        {
+            public Dictionary<int, int> bcount = new Dictionary<int, int>();
+            public int Total { get; set; } = 0;
+        }
+        [Route("searchStatistics")]
+        [HttpGet]
+        public ssresponse searchStatistics(string startdate, string enddate)
+        {
+            var start = DateTime.Now.AddYears(-100);
+            var end = DateTime.Now;
+            if (!DateTime.TryParse(startdate, out start))
             {
-                return new loginresponse { status = responseStatus.iderror };
+                return new ssresponse { status = responseStatus.startdateerror,content = responseStatus.startdateerror.ToString() };
             }
-            if (string.IsNullOrEmpty(name))
+            if (!DateTime.TryParse(enddate, out end))
             {
-                return new loginresponse { status = responseStatus.nameerror };
+                return new ssresponse { status = responseStatus.enddateerror, content = responseStatus.enddateerror.ToString() };
             }
-            if (string.IsNullOrEmpty(phone))
+            var ret = new ssresponse { status = 0 };
+            _log.LogInformation("start is={0},end={1}", start, end);
+            foreach (int a in Enum.GetValues(typeof(businessType)))
             {
-                return new loginresponse { status = responseStatus.phoneerror };
-            }
-            _log.LogInformation("{3}-{0} from {1}, input is {2}", DateTime.Now, "login",
-             Request.HttpContext.Connection.RemoteIpAddress.ToString() + HttpContext.Connection.RemoteIpAddress,
-            identify + name + phone+businessType);
-
-            var theuser = _db1.Aouser.FirstOrDefault(i => i.Identity == identify);
-            if (theuser == null)
-            {
-                return new loginresponse { status = responseStatus.iderror };
-            }
-
-            theuser.Name = name;
-            theuser.Phone = phone;
-            _db1.SaveChanges();
-
-            var btype = (short)businessType;
-            var picsl = new List<short>();
-            // var unbusiness = _db1.Business.FirstOrDefault(c => c.Completed == false && c.Businesstype == btype);
-            // if(_db1.Businesspic.Count(c=>c.Businesstype==(short)businessType&&c.Identity==identify&&c.Uploaded)<global.businesscount[businessType])
-            //  if (unbusiness != null)
-            // {
-            var pics = _db1.Businesspic.Where(c => c.Businesstype == btype && c.Identity == identify && c.Uploaded == true);
-            if (pics.Count() < global.businesscount[businessType])
-                foreach (var a in pics)
+                try
                 {
-                    picsl.Add(a.Pictype);
+                    var cc = _db1.Business.Count(i => i.Businesstype == a && i.Integrated == true
+                    && i.Time.CompareTo(start) >= 0 && i.Time.CompareTo(end) <= 0);
+                    _log.LogInformation("cc is={0}", cc);
+                    ret.ongoing.bcount.Add(a, cc);
+                    ret.ongoing.Total += cc;
+
+                    var ccc = _db1.Businesshis.Count(i => i.Businesstype == a
+                    && i.Time.CompareTo(start) >= 0 && i.Time.CompareTo(end) <= 0);
+                    ret.completed.bcount.Add(a, ccc);
+                    ret.completed.Total += ccc;
                 }
-            //  }
-            var token = GetToken();
-            try
-            {
-                var redisdb = highlevel.redis.GetDatabase();
-                redisdb.StringSet(token, JsonConvert.SerializeObject(new idinfo { Identity = identify, businessType = businessType }));
-                redisdb.KeyExpire(token, TimeSpan.FromDays(30));
-            }
-            catch (Exception ex)
-            {
-                _log.LogError("redis key process error:{0}", ex.Message);
-            }
-
-            var found = false;
-            foreach (var a in global. tokens)
-            {
-                if (a.idinfo.Identity == identify && a.idinfo.businessType == businessType)
+                catch (Exception ex)
                 {
-                    a.Token = token;
-                    found = true;
-                    break;
+                    ret.content += ex.Message;
                 }
             }
-            if (!found)
-            {
-                global. tokens.Add(new Ptoken { idinfo = new idinfo { Identity = identify, businessType = businessType }, Token = token });
-            }
-           highlevel. LogRequest(name + phone + identify, "login", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)businessType);
-            return new loginresponse { status = responseStatus.ok, token = token, okpic = picsl.ToArray() };
+
+            return ret;
         }
     }
 }

@@ -61,7 +61,7 @@ namespace mvc104
             var dbtext = string.Empty;
             var dbmethod = string.Empty;
             var dbip = string.Empty;
-            var contentlenth = 150;
+            var contentlenth = 4150;
             var shortlength = 44;
             if (!string.IsNullOrEmpty(content))
             {
@@ -70,7 +70,6 @@ namespace mvc104
             }
             if (!string.IsNullOrEmpty(method))
             {
-
                 dbmethod = method.Length > shortlength ? method.Substring(0, shortlength) : method;
             }
             if (!string.IsNullOrEmpty(ip))
@@ -92,7 +91,6 @@ namespace mvc104
                     logdb.SaveChanges();
                 }
             });
-
         }
         public static void errorlog(ILogger log, string method, Exception ex)
         {

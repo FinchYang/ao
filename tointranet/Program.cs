@@ -95,7 +95,7 @@ namespace exportdb
             var dir = string.Format("{0}-{1}-{2}-{3}-{4}-{5}", date.Year, date.Month.ToString("D2"), date.Day.ToString("D2"),
             date.Hour.ToString("D2"), date.Minute.ToString("D2"), date.Second.ToString("D2"));
             var dbtofilefname = "abo.txt";
-            var home = Environment.GetEnvironmentVariable("HOME");
+            var home = "/home/driverbusiness";// Environment.GetEnvironmentVariable("HOME");
             var dbtofp = Path.Combine(home, dbtofilePath);
             if (!Directory.Exists(dbtofp)) Directory.CreateDirectory(dbtofp);
             var fname = Path.Combine(dbtofp, dbtofilefname);
