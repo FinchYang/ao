@@ -55,7 +55,7 @@ namespace mvc104.Controllers
         [HttpGet]
         public commonresponse downloadpic(picType picType)
         {
-            highlevel.LogRequest("downloadpic", "downloadpic", Request.HttpContext.Connection.RemoteIpAddress.ToString());
+         //   highlevel.LogRequest("downloadpic", "downloadpic", Request.HttpContext.Connection.RemoteIpAddress.ToString());
 
             var accinfo = highlevel.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
@@ -135,7 +135,7 @@ namespace mvc104.Controllers
         [HttpPost]
         public commonresponse ChangeLicense([FromBody]changelicenserequest input)
         {
-            highlevel.LogRequest("ChangeLicense", "ChangeLicense", Request.HttpContext.Connection.RemoteIpAddress.ToString());
+          //  highlevel.LogRequest("ChangeLicense", "ChangeLicense", Request.HttpContext.Connection.RemoteIpAddress.ToString());
             if (input == null)
             {
                 return new commonresponse { status = responseStatus.requesterror };

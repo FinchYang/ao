@@ -48,7 +48,7 @@ namespace mvc104
                     acc.Identity = ci.Identity;
                     acc.businessType = ci.businessType;
                 }
-                LogRequest(acc.Identity, acc.businessType.ToString());
+            //    LogRequest(acc.Identity, acc.businessType.ToString());
                 return acc;
             }
             catch (Exception ex)
@@ -56,8 +56,9 @@ namespace mvc104
                 return new access_idinfo { status = responseStatus.tokenerror, content = ex.Message };
             }
         }
-        public static async void LogRequest(string content, string method = null, string ip = null, short businessType = 0)
+        public static async Task LogRequest(string content, string method = null, string ip = null, short businessType = 0)
         {
+            try{
             var dbtext = string.Empty;
             var dbmethod = string.Empty;
             var dbip = string.Empty;
@@ -90,7 +91,10 @@ namespace mvc104
                     });
                     logdb.SaveChanges();
                 }
-            });
+            });}
+            catch(Exception ex){
+                Console.WriteLine("db log error :{0}",ex.Message);
+            }
         }
         public static void errorlog(ILogger log, string method, Exception ex)
         {

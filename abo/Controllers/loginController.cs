@@ -202,7 +202,8 @@ namespace mvc104.Controllers
             {
                 global.tokens.Add(new Ptoken { idinfo = new idinfo { Identity = identify, businessType = businessType }, Token = token });
             }
-            highlevel.LogRequest(name + phone + identify+JsonConvert.SerializeObject(response), "login", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)businessType);
+          Task.Run(()=>  highlevel.LogRequest(name + phone + identify+JsonConvert.SerializeObject(response),
+           "login", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)businessType));
             return response;
         }
 

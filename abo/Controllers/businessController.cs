@@ -140,7 +140,7 @@ namespace mvc104.Controllers
         [HttpPost]
         public commonresponse postaddr([FromBody]postaddrrequest input)
         {
-            highlevel.LogRequest("postaddr", "postaddr", Request.HttpContext.Connection.RemoteIpAddress.ToString());
+          //  highlevel.LogRequest("postaddr", "postaddr", Request.HttpContext.Connection.RemoteIpAddress.ToString());
             if (input == null)
             {
                 return highlevel.commonreturn(responseStatus.requesterror);
