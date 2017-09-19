@@ -69,6 +69,11 @@ namespace mvc104
                     .HasColumnType("smallint(2)")
                     .HasDefaultValueSql("0");
 
+                entity.Property(e => e.Abroadorservice)
+                    .HasColumnName("abroadorservice")
+                    .HasColumnType("tinyint(1)")
+                    .HasDefaultValueSql("0");
+
                 entity.Property(e => e.Acceptingplace)
                     .HasColumnName("acceptingplace")
                     .HasColumnType("varchar(145)");
@@ -77,6 +82,10 @@ namespace mvc104
                     .HasColumnName("completed")
                     .HasColumnType("tinyint(1)")
                     .HasDefaultValueSql("0");
+
+                entity.Property(e => e.Exporttime)
+                    .HasColumnName("exporttime")
+                    .HasDefaultValueSql("2000-01-01 00:00:00");
 
                 entity.Property(e => e.Finishtime)
                     .HasColumnName("finishtime")

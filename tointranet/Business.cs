@@ -7,6 +7,7 @@ namespace exportdb
     {
         public string Identity { get; set; }
         public short Businesstype { get; set; }
+        public bool Abroadorservice { get; set; }
         public string Acceptingplace { get; set; }
         public bool Completed { get; set; }
         public DateTime Exporttime { get; set; }

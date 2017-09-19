@@ -103,7 +103,9 @@ namespace exportdb
             using (var db = new aboContext())
             {
                 //冗余传输，防止边界平台not delivery
-                var rebusi = db.Business.Where(async => async.Integrated == true && async.Exporttime.CompareTo(date.AddDays(-1)) >= 0);
+                var rebusi = db.Business.Where(async => async.Integrated == true 
+               // && async.Exporttime.CompareTo(date.AddDays(-1)) >= 0
+                );
                 Console.WriteLine("redundant is {1}, {2} records need to  be archived", ",", date, rebusi.Count());
                 foreach (var rere in rebusi)
                 {
@@ -112,7 +114,7 @@ namespace exportdb
                     if (picsr.Count() >= global.businesscount[(businessType)rere.Businesstype])
                     {
                         var bt = (businessType)rere.Businesstype;
-                        if (bt == businessType.delay || bt == businessType.overage || bt == businessType.expire)
+                        if (bt == businessType.delay || bt == businessType.overage || bt == businessType.expire || bt == businessType.bodyDelay)
                         {
                             if (!checkSignpic(bt, rere.Identity, home)) continue;
                         }
@@ -129,9 +131,9 @@ namespace exportdb
                             phone = userp.Phone;
                         }
 
-                        var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7}",
+                        var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}",
                          rere.Identity, ((businessType)rere.Businesstype).ToString(), rere.Postaddr, rere.Acceptingplace,
-                         rere.QuasiDrivingLicense, phone, aouser.Name, rere.Losttime);
+                         rere.QuasiDrivingLicense, phone, aouser.Name, rere.Losttime,rere.Abroadorservice);
                         File.AppendAllText(fname, line + "\r\n");
                     }
                 }
@@ -163,9 +165,9 @@ namespace exportdb
                             phone = userp.Phone;
                         }
                         //  }
-                        var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7}",
+                        var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}",
                          re.Identity, ((businessType)re.Businesstype).ToString(), re.Postaddr, re.Acceptingplace,
-                         re.QuasiDrivingLicense, phone, aouser.Name, re.Losttime);
+                         re.QuasiDrivingLicense, phone, aouser.Name, re.Losttime,re.Abroadorservice);
                         File.AppendAllText(fname, line + "\r\n");
                         re.Integrated = true;
 

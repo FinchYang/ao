@@ -36,6 +36,35 @@ namespace mvc104.Controllers
             _log = log;
         }
 
+        [Route("abroadorservice")]
+        [HttpGet]
+        public commonresponse abroadorservice(string aors)
+        {
+            if (string.IsNullOrEmpty(aors)||(aors!="0"&&aors!="1"))
+            {
+                return highlevel.commonreturn(responseStatus.abroadorserviceerror);
+            }
+            var accinfo = highlevel.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+
+            try
+            {
+                var theuser = _db1.Business.FirstOrDefault(i => i.Identity == accinfo.Identity && i.Businesstype == (short)accinfo.businessType);
+                if (theuser == null)
+                {
+                    return highlevel.commonreturn(responseStatus.iderror);
+                }
+              theuser.Abroadorservice=bool.Parse( aors);
+                _db1.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("db error:{0}", ex.Message);
+                return highlevel.commonreturn(responseStatus.dberror);
+            }
+            return highlevel.commonreturn(responseStatus.ok);
+        }
         [Route("losttime")]
         [HttpGet]
         public commonresponse losttime(string ltime)

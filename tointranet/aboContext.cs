@@ -69,6 +69,11 @@ namespace exportdb
                     .HasColumnType("smallint(2)")
                     .HasDefaultValueSql("0");
 
+                entity.Property(e => e.Abroadorservice)
+                    .HasColumnName("abroadorservice")
+                    .HasColumnType("tinyint(1)")
+                    .HasDefaultValueSql("0");
+
                 entity.Property(e => e.Acceptingplace)
                     .HasColumnName("acceptingplace")
                     .HasColumnType("varchar(145)");
