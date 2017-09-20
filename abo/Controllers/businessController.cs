@@ -35,7 +35,35 @@ namespace mvc104.Controllers
         {
             _log = log;
         }
+  [Route("again")]
+        [HttpGet]
+        public commonresponse again()
+        {           
+            var accinfo = highlevel.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
 
+            try
+            {
+                var theuser = _db1.Business.FirstOrDefault(i => i.Identity == accinfo.Identity && i.Businesstype == (short)accinfo.businessType);
+                if (theuser == null)
+                {
+                    return highlevel.commonreturn(responseStatus.iderror);
+                }
+              theuser.Integrated=false;
+              theuser.Status=(short)businessstatus.unknown;
+              var  pics=_db1.Businesspic.Where(i => i.Identity == accinfo.Identity && i.Businesstype == (short)accinfo.businessType);
+              foreach(var p in pics){
+                  p.Uploaded=false;
+              }
+                _db1.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("db error:{0}", ex.Message);
+                return highlevel.commonreturn(responseStatus.dberror);
+            }
+            return highlevel.commonreturn(responseStatus.ok);
+        }
         [Route("abroadorservice")]
         [HttpGet]
         public commonresponse abroadorservice(string aors)

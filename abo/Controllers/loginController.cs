@@ -153,7 +153,7 @@ namespace mvc104.Controllers
                 {
                     var pics = _db1.Businesspic.Where(c => c.Businesstype == btype && c.Identity == identify && c.Uploaded == true);
                     response.businessstatus = (businessstatus)business.Status;
-                    if (pics.Count() < global.businesscount[businessType])
+                    if (pics.Count() < global.businesscount[businessType]||response.businessstatus==businessstatus.failure)
                     {
                         foreach (var a in pics)
                         {

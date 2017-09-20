@@ -123,17 +123,17 @@ namespace exportdb
                         if (aouser == null || string.IsNullOrEmpty(aouser.Name)) continue;
 
                         NewMethod(rere.Identity, bt.ToString(), home);
-                        var phone = string.Empty;
+                        // var phone = string.Empty;
 
-                        var userp = db.Aouser.FirstOrDefault(h => h.Identity == rere.Identity);
-                        if (userp != null)
-                        {
-                            phone = userp.Phone;
-                        }
+                        // var userp = db.Aouser.FirstOrDefault(h => h.Identity == rere.Identity);
+                        // if (userp != null)
+                        // {
+                        //     phone = userp.Phone;
+                        // }
 
-                        var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}",
+                        var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}",
                          rere.Identity, ((businessType)rere.Businesstype).ToString(), rere.Postaddr, rere.Acceptingplace,
-                         rere.QuasiDrivingLicense, phone, aouser.Name, rere.Losttime,rere.Abroadorservice);
+                         rere.QuasiDrivingLicense,aouser.Phone , aouser.Name, rere.Losttime,rere.Abroadorservice,rere.Exporttime);
                         File.AppendAllText(fname, line + "\r\n");
                     }
                 }
@@ -147,7 +147,7 @@ namespace exportdb
                     if (pics.Count() >= global.businesscount[(businessType)re.Businesstype])
                     {
                         var bt = (businessType)re.Businesstype;
-                        if (bt == businessType.delay || bt == businessType.overage || bt == businessType.expire)
+                        if (bt == businessType.delay || bt == businessType.overage || bt == businessType.expire || bt == businessType.bodyDelay)
                         {
                             if (!checkSignpic(bt, re.Identity, home)) continue;
                         }
@@ -156,18 +156,18 @@ namespace exportdb
                         if (aouser == null || string.IsNullOrEmpty(aouser.Name)) continue;
 
                         NewMethod(re.Identity, bt.ToString(), home);
-                        var phone = string.Empty;
-                        // if (re.Businesstype == (short)businessType.changeContact)
+                        // var phone = string.Empty;
+                        // // if (re.Businesstype == (short)businessType.changeContact)
+                        // // {
+                        // var userp = db.Aouser.FirstOrDefault(h => h.Identity == re.Identity);
+                        // if (userp != null)
                         // {
-                        var userp = db.Aouser.FirstOrDefault(h => h.Identity == re.Identity);
-                        if (userp != null)
-                        {
-                            phone = userp.Phone;
-                        }
-                        //  }
-                        var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}",
+                        //     phone = userp.Phone;
+                        // }
+                        // //  }
+                        var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}",
                          re.Identity, ((businessType)re.Businesstype).ToString(), re.Postaddr, re.Acceptingplace,
-                         re.QuasiDrivingLicense, phone, aouser.Name, re.Losttime,re.Abroadorservice);
+                         re.QuasiDrivingLicense, aouser.Phone, aouser.Name, re.Losttime,re.Abroadorservice,date);
                         File.AppendAllText(fname, line + "\r\n");
                         re.Integrated = true;
 
