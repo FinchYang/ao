@@ -133,7 +133,8 @@ namespace exportdb
 
                         var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}",
                          rere.Identity, ((businessType)rere.Businesstype).ToString(), rere.Postaddr, rere.Acceptingplace,
-                         rere.QuasiDrivingLicense,aouser.Phone , aouser.Name, rere.Losttime,rere.Abroadorservice,rere.Exporttime);
+                         rere.QuasiDrivingLicense,aouser.Phone , aouser.Name, rere.Losttime.ToString("yyyy/MM/dd HH:mm:ss"),
+                         rere.Abroadorservice,rere.Exporttime.ToString("yyyy/MM/dd HH:mm:ss"));
                         File.AppendAllText(fname, line + "\r\n");
                     }
                 }
@@ -167,7 +168,8 @@ namespace exportdb
                         // //  }
                         var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}",
                          re.Identity, ((businessType)re.Businesstype).ToString(), re.Postaddr, re.Acceptingplace,
-                         re.QuasiDrivingLicense, aouser.Phone, aouser.Name, re.Losttime,re.Abroadorservice,date);
+                         re.QuasiDrivingLicense, aouser.Phone, aouser.Name, re.Losttime.ToString("yyyy/MM/dd HH:mm:ss")
+                         ,re.Abroadorservice,date.ToString("yyyy/MM/dd HH:mm:ss"));
                         File.AppendAllText(fname, line + "\r\n");
                         re.Integrated = true;
 

@@ -32,7 +32,7 @@ namespace ConsoleApp1
                 else Console.WriteLine("15 old enough");
             }
         var tt=    System.IO.File.ReadAllText(@"e:\37900919750819723X");
-            Console.WriteLine("15 old enough"+tt);
+            Console.WriteLine(DateTime.Now+ "-15 old enough"+tt);
         }
     }
 }
