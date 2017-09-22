@@ -35,10 +35,10 @@ namespace mvc104.Controllers
         {
             _log = log;
         }
-  [Route("again")]
+        [Route("again")]
         [HttpGet]
         public commonresponse again()
-        {           
+        {
             var accinfo = highlevel.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
 
@@ -49,12 +49,13 @@ namespace mvc104.Controllers
                 {
                     return highlevel.commonreturn(responseStatus.iderror);
                 }
-              theuser.Integrated=false;
-              theuser.Status=(short)businessstatus.unknown;
-              var  pics=_db1.Businesspic.Where(i => i.Identity == accinfo.Identity && i.Businesstype == (short)accinfo.businessType);
-              foreach(var p in pics){
-                  p.Uploaded=false;
-              }
+                theuser.Integrated = false;
+                theuser.Status = (short)businessstatus.unknown;
+                var pics = _db1.Businesspic.Where(i => i.Identity == accinfo.Identity && i.Businesstype == (short)accinfo.businessType);
+                foreach (var p in pics)
+                {
+                    p.Uploaded = false;
+                }
                 _db1.SaveChanges();
             }
             catch (Exception ex)
@@ -62,13 +63,24 @@ namespace mvc104.Controllers
                 _log.LogError("db error:{0}", ex.Message);
                 return highlevel.commonreturn(responseStatus.dberror);
             }
+            try
+            {
+                var he = Request.Host.ToString();
+                foreach (var a in Request.Headers)
+                {
+                    he += "--" + a.Key + "=" + a.Value;
+                }
+                Task.Run(() => highlevel.LogRequest(he+accinfo.Identity,
+                 "again", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
+            }
+            catch (Exception ex) { _log.LogError("dblog error:", ex); }
             return highlevel.commonreturn(responseStatus.ok);
         }
         [Route("abroadorservice")]
         [HttpGet]
         public commonresponse abroadorservice(string aors)
         {
-            if (string.IsNullOrEmpty(aors)||(aors!="0"&&aors!="1"))
+            if (string.IsNullOrEmpty(aors) || (aors != "0" && aors != "1"))
             {
                 return highlevel.commonreturn(responseStatus.abroadorserviceerror);
             }
@@ -82,7 +94,7 @@ namespace mvc104.Controllers
                 {
                     return highlevel.commonreturn(responseStatus.iderror);
                 }
-              theuser.Abroadorservice=bool.Parse( aors);
+                theuser.Abroadorservice = bool.Parse(aors);
                 _db1.SaveChanges();
 
             }
@@ -91,6 +103,17 @@ namespace mvc104.Controllers
                 _log.LogError("db error:{0}", ex.Message);
                 return highlevel.commonreturn(responseStatus.dberror);
             }
+            try
+            {
+                var he = Request.Host.ToString();
+                foreach (var a in Request.Headers)
+                {
+                    he += "--" + a.Key + "=" + a.Value;
+                }
+                Task.Run(() => highlevel.LogRequest(he+accinfo.Identity+aors,
+                 "abroadorservice", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
+            }
+            catch (Exception ex) { _log.LogError("dblog error:", ex); }
             return highlevel.commonreturn(responseStatus.ok);
         }
         [Route("losttime")]
@@ -127,6 +150,17 @@ namespace mvc104.Controllers
                 _log.LogError("db error:{0}", ex.Message);
                 return highlevel.commonreturn(responseStatus.dberror);
             }
+            try
+            {
+                var he = Request.Host.ToString();
+                foreach (var a in Request.Headers)
+                {
+                    he += "--" + a.Key + "=" + a.Value;
+                }
+                Task.Run(() => highlevel.LogRequest(he+accinfo.Identity+ltime,
+                 "losttime", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
+            }
+            catch (Exception ex) { _log.LogError("dblog error:", ex); }
             return highlevel.commonreturn(responseStatus.ok);
         }
         // [Route("updateinfo")]
@@ -168,7 +202,7 @@ namespace mvc104.Controllers
         [HttpPost]
         public commonresponse postaddr([FromBody]postaddrrequest input)
         {
-          //  highlevel.LogRequest("postaddr", "postaddr", Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            //  highlevel.LogRequest("postaddr", "postaddr", Request.HttpContext.Connection.RemoteIpAddress.ToString());
             if (input == null)
             {
                 return highlevel.commonreturn(responseStatus.requesterror);
@@ -205,6 +239,17 @@ namespace mvc104.Controllers
                 _log.LogError("db error:{0}", ex.Message);
                 return highlevel.commonreturn(responseStatus.dberror);
             }
+            try
+            {
+                var he = Request.Host.ToString();
+                foreach (var a in Request.Headers)
+                {
+                    he += "--" + a.Key + "=" + a.Value;
+                }
+                Task.Run(() => highlevel.LogRequest(he+accinfo.Identity+input.postaddr,
+                 "postaddr", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
+            }
+            catch (Exception ex) { _log.LogError("dblog error:", ex); }
             return highlevel.commonreturn(responseStatus.ok);
         }
 
@@ -246,6 +291,17 @@ namespace mvc104.Controllers
                 _log.LogError("db error:{0}", ex.Message);
                 return highlevel.commonreturn(responseStatus.dberror);
             }
+            try
+            {
+                var he = Request.Host.ToString();
+                foreach (var a in Request.Headers)
+                {
+                    he += "--" + a.Key + "=" + a.Value;
+                }
+                Task.Run(() => highlevel.LogRequest(he+accinfo.Identity+phone,
+                 "sendvcode", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
+            }
+            catch (Exception ex) { _log.LogError("dblog error:", ex); }
             return highlevel.commonreturn(responseStatus.ok);
         }
 
@@ -277,6 +333,17 @@ namespace mvc104.Controllers
                 _log.LogError("db error:{0}", ex.Message);
                 return highlevel.commonreturn(responseStatus.dberror);
             }
+            try
+            {
+                var he = Request.Host.ToString();
+                foreach (var a in Request.Headers)
+                {
+                    he += "--" + a.Key + "=" + a.Value;
+                }
+                Task.Run(() => highlevel.LogRequest(he+accinfo.Identity,
+                 "checkvcode", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
+            }
+            catch (Exception ex) { _log.LogError("dblog error:", ex); }
             return highlevel.commonreturn(responseStatus.ok);
         }
     }

@@ -80,7 +80,7 @@ namespace mvc104.Controllers
             {
                 return new loginresponse { status = responseStatus.businesstypeerror };
             }
-        
+
             //if (!checkbusi(identify, businessType))
             //{
             //    highlevel.LogRequest(name + phone + identify + responseStatus.forbidden, "login", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)businessType);
@@ -153,7 +153,7 @@ namespace mvc104.Controllers
                 {
                     var pics = _db1.Businesspic.Where(c => c.Businesstype == btype && c.Identity == identify && c.Uploaded == true);
                     response.businessstatus = (businessstatus)business.Status;
-                    if (pics.Count() < global.businesscount[businessType]||response.businessstatus==businessstatus.failure)
+                    if (pics.Count() < global.businesscount[businessType] || response.businessstatus == businessstatus.failure)
                     {
                         foreach (var a in pics)
                         {
@@ -202,8 +202,17 @@ namespace mvc104.Controllers
             {
                 global.tokens.Add(new Ptoken { idinfo = new idinfo { Identity = identify, businessType = businessType }, Token = token });
             }
-          Task.Run(()=>  highlevel.LogRequest(name + phone + identify+JsonConvert.SerializeObject(response),
-           "login", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)businessType));
+            try
+            {
+                var he = Request.Host.ToString();
+                foreach (var a in Request.Headers)
+                {
+                    he += "--" + a.Key + "=" + a.Value;
+                }
+                Task.Run(() => highlevel.LogRequest(he + name + phone + identify + JsonConvert.SerializeObject(response),
+                 "login", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)businessType));
+            }
+            catch (Exception ex) { _log.LogError("dblog error:", ex); }
             return response;
         }
 
@@ -211,7 +220,7 @@ namespace mvc104.Controllers
         private bool checkbusi(string identify, businessType businessType)
         {
             if (businessType == businessType.changeContact || businessType == businessType.first) return true;
-           
+
             try
             {
                 if (businessType == businessType.overage)
@@ -234,34 +243,34 @@ namespace mvc104.Controllers
                         if (birth.AddYears(60) > DateTime.Now) return false;
                     }
                 }
-                _log.LogInformation("sendautomsgone,begin" + identify+DateTime.Now);
+                _log.LogInformation("sendautomsgone,begin" + identify + DateTime.Now);
                 sendautomsgone(identify);
                 _log.LogInformation("sendautomsgone,end" + identify + DateTime.Now);
                 var rpath = "/home/driverbusiness/detachment";
                 var rfile = Path.Combine(rpath, identify);
-                var source =System.IO. File.ReadAllText(rfile);
+                var source = System.IO.File.ReadAllText(rfile);
                 var ff = new System.IO.FileInfo(rfile).Length;
 
-                string pattern =  @"{""code"":.*}";
+                string pattern = @"{""code"":.*}";
                 var result = string.Empty;
                 Match theMatch = Regex.Match(source, pattern, RegexOptions.Multiline);
                 if (theMatch.Success)
                 {
                     int endindex = theMatch.Length;
                     result = source.Substring(theMatch.Index, endindex);
-                     _log.LogInformation("match detach ok"+result);
+                    _log.LogInformation("match detach ok" + result);
                     if (result.Length < 60) return false;//此人无驾驶证
                     var ret = JsonConvert.DeserializeObject<getDrivingLicenseBySfzmhm>(result);
                     if (ret.code == "200" && ret.status == "1" && ret.result[0].ZT == "A")
                     {
-                        _log.LogInformation("normal detach ok"+identify);
+                        _log.LogInformation("normal detach ok" + identify);
                         return true;
                     }
                 }
                 else
                 {
                     //支队同步库出错情况下，暂时丢弃业务逻辑限制
-                     _log.LogInformation(source.Length+"no match"+identify+source+ff);
+                    _log.LogInformation(source.Length + "no match" + identify + source + ff);
                     return true;
                 }
             }
@@ -273,7 +282,7 @@ namespace mvc104.Controllers
             return false;
         }
 
-        private  void sendautomsgone(string id)
+        private void sendautomsgone(string id)
         {
             var a = new System.Diagnostics.Process();
             a.StartInfo.FileName = "/home/driverbusiness/bin/searchdetach";

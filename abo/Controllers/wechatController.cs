@@ -77,6 +77,17 @@ namespace mvc104.Controllers
             var stamp = (DateTime.Now.Ticks - dt_1970.Ticks) / 10000000;
             var sn = getSignature(ticket.ticket, nonce, url, stamp);
 
+            try
+            {
+                var he = Request.Host.ToString();
+                foreach (var a in Request.Headers)
+                {
+                    he += "--" + a.Key + "=" + a.Value;
+                }
+                Task.Run(() => highlevel.LogRequest(he + url+accinfo.Identity,
+                 "getwxconfig", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
+            }
+            catch (Exception ex) { _log.LogError("dblog error:", ex); }
             return new wxconfigresponse { status = responseStatus.ok, nonceStr = nonce, signature = sn, timestamp = stamp };
         }
 
@@ -89,7 +100,7 @@ namespace mvc104.Controllers
                     return new accesstoken { access_token = _tt.access_token };
                 }
             }
-            var url = string.Format("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}", 
+            var url = string.Format("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}",
             "wx774a9869c14f1647", "7f94f888c5e5c32bba9239230f46a827");
             //  var url = string.Format("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}", "wx7fc046cc9adb13e4", "b299bac11729dd892f903115be3aabd9");
             try

@@ -55,7 +55,7 @@ namespace mvc104.Controllers
         [HttpGet]
         public commonresponse downloadpic(picType picType)
         {
-         //   highlevel.LogRequest("downloadpic", "downloadpic", Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            //   highlevel.LogRequest("downloadpic", "downloadpic", Request.HttpContext.Connection.RemoteIpAddress.ToString());
 
             var accinfo = highlevel.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
@@ -66,6 +66,17 @@ namespace mvc104.Controllers
                 highlevel.infolog(_log, "downloadpic", fname);
                 var bbytes = System.IO.File.ReadAllBytes(fname);
                 var retstr = Convert.ToBase64String(bbytes);
+                try
+                {
+                    var he = Request.Host.ToString();
+                    foreach (var a in Request.Headers)
+                    {
+                        he += "--" + a.Key + "=" + a.Value;
+                    }
+                    Task.Run(() => highlevel.LogRequest(he+picType+accinfo.Identity,
+                     "downloadpic", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
+                }
+                catch (Exception ex) { _log.LogError("dblog error:", ex); }
                 return new downloadresponse { status = responseStatus.ok, picture = retstr };
             }
             catch (Exception ex)
@@ -82,45 +93,47 @@ namespace mvc104.Controllers
             //  highlevel.LogRequest("uploadpic", "uploadpic", Request.HttpContext.Connection.RemoteIpAddress.ToString());
             if (input == null)
             {
-               return  highlevel.commonreturn( responseStatus.requesterror );
+                return highlevel.commonreturn(responseStatus.requesterror);
             }
             var accinfo = highlevel.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
 
-//_log.LogInformation("uploadpic: id={0},bt={1}",accinfo.Identity,accinfo.businessType);
+            //_log.LogInformation("uploadpic: id={0},bt={1}",accinfo.Identity,accinfo.businessType);
             if (!savePic(input.picture, input.picType, accinfo.Identity, accinfo.businessType))
-             return    highlevel.commonreturn( responseStatus.fileprocesserror );
+                return highlevel.commonreturn(responseStatus.fileprocesserror);
 
             if (input.picType == picType.unknown)
             {
-              return  highlevel.commonreturn(responseStatus.pictypeerror);
+                return highlevel.commonreturn(responseStatus.pictypeerror);
             }
             if (accinfo.businessType == businessType.unknown)
             {
-              return  highlevel.commonreturn(responseStatus.businesstypeerror);
+                return highlevel.commonreturn(responseStatus.businesstypeerror);
             }
             try
             {
                 using (var ddbb = new aboContext())
                 {
-                    var already=ddbb.Businesspic.FirstOrDefault(i =>i.Businesstype==(int)accinfo.businessType&&i.Identity==accinfo.Identity&&i.Pictype==(short)input.picType);
-                    if(already==null){
-                        var newpic = new Businesspic
+                    var already = ddbb.Businesspic.FirstOrDefault(i => i.Businesstype == (int)accinfo.businessType && i.Identity == accinfo.Identity && i.Pictype == (short)input.picType);
+                    if (already == null)
                     {
-                        Identity = accinfo.Identity,
-                        Businesstype = (short)accinfo.businessType,
-                        Pictype = (short)input.picType,
-                        Uploaded = true,
-                        Time = DateTime.Now
-                    };
-                  //  highlevel.infolog(_log, "uploadpic", JsonConvert.SerializeObject(newpic));
-                    var ret = ddbb.Businesspic.Add(newpic);
-                 //  highlevel.infolog(_log, "uploadpic88", JsonConvert.SerializeObject(ret.Entity));
+                        var newpic = new Businesspic
+                        {
+                            Identity = accinfo.Identity,
+                            Businesstype = (short)accinfo.businessType,
+                            Pictype = (short)input.picType,
+                            Uploaded = true,
+                            Time = DateTime.Now
+                        };
+                        //  highlevel.infolog(_log, "uploadpic", JsonConvert.SerializeObject(newpic));
+                        var ret = ddbb.Businesspic.Add(newpic);
+                        //  highlevel.infolog(_log, "uploadpic88", JsonConvert.SerializeObject(ret.Entity));
 
                     }
-                    else {
-                        already.Uploaded=true;
-                        already.Time=DateTime.Now;
+                    else
+                    {
+                        already.Uploaded = true;
+                        already.Time = DateTime.Now;
                     }
                     ddbb.SaveChanges();
                 }
@@ -129,13 +142,24 @@ namespace mvc104.Controllers
             {
                 highlevel.errorlog(_log, "uploadpic", ex);
             }
+            try
+            {
+                var he = Request.Host.ToString();
+                foreach (var a in Request.Headers)
+                {
+                    he += "--" + a.Key + "=" + a.Value;
+                }
+                Task.Run(() => highlevel.LogRequest(he+input.picType+accinfo.Identity,
+                 "uploadpic", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
+            }
+            catch (Exception ex) { _log.LogError("dblog error:", ex); }
             return new commonresponse { status = responseStatus.ok };
         }
         [Route("ChangeLicense")]
         [HttpPost]
         public commonresponse ChangeLicense([FromBody]changelicenserequest input)
         {
-          //  highlevel.LogRequest("ChangeLicense", "ChangeLicense", Request.HttpContext.Connection.RemoteIpAddress.ToString());
+            //  highlevel.LogRequest("ChangeLicense", "ChangeLicense", Request.HttpContext.Connection.RemoteIpAddress.ToString());
             if (input == null)
             {
                 return new commonresponse { status = responseStatus.requesterror };
@@ -171,10 +195,10 @@ namespace mvc104.Controllers
                 var fpath = Path.Combine(_picpath, identity, btype.ToString());
                 if (!Directory.Exists(fpath)) Directory.CreateDirectory(fpath);
                 var fname = Path.Combine(fpath, picType + ".jpg");
-             //   highlevel.infolog(_log, "savepic", fname);
+                //   highlevel.infolog(_log, "savepic", fname);
                 var index = picstr.IndexOf("base64,");
                 System.IO.File.WriteAllBytes(fname, Convert.FromBase64String(picstr.Substring(index + 7)));
-             //   System.IO.File.WriteAllBytes(fname,new byte[1]);
+                //   System.IO.File.WriteAllBytes(fname,new byte[1]);
             }
             catch (Exception ex)
             {

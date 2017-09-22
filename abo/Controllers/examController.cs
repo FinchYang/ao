@@ -85,7 +85,7 @@ namespace mvc104.Controllers
             var end = DateTime.Now;
             if (!DateTime.TryParse(startdate, out start))
             {
-                return new ssresponse { status = responseStatus.startdateerror,content = responseStatus.startdateerror.ToString() };
+                return new ssresponse { status = responseStatus.startdateerror, content = responseStatus.startdateerror.ToString() };
             }
             if (!DateTime.TryParse(enddate, out end))
             {
@@ -113,7 +113,17 @@ namespace mvc104.Controllers
                     ret.content += ex.Message;
                 }
             }
-
+            try
+            {
+                var he =  Request.Host.ToString();
+                foreach (var a in Request.Headers)
+                {
+                    he += "--" + a.Key + "=" + a.Value;
+                }
+                Task.Run(() => highlevel.LogRequest(he,
+                 "searchStatistics", Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+            }
+            catch (Exception ex) { _log.LogError("dblog error:", ex); }
             return ret;
         }
     }
