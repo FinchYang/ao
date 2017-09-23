@@ -32,6 +32,11 @@ namespace importdata
                     .HasColumnName("identity")
                     .HasColumnType("varchar(50)");
 
+                entity.Property(e => e.Blacklist)
+                    .HasColumnName("blacklist")
+                    .HasColumnType("tinyint(1)")
+                    .HasDefaultValueSql("0");
+
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
                     .HasColumnType("varchar(45)");
@@ -69,6 +74,11 @@ namespace importdata
                     .HasColumnType("smallint(2)")
                     .HasDefaultValueSql("0");
 
+                entity.Property(e => e.Abroadorservice)
+                    .HasColumnName("abroadorservice")
+                    .HasColumnType("tinyint(1)")
+                    .HasDefaultValueSql("0");
+
                 entity.Property(e => e.Acceptingplace)
                     .HasColumnName("acceptingplace")
                     .HasColumnType("varchar(145)");
@@ -78,6 +88,10 @@ namespace importdata
                     .HasColumnType("tinyint(1)")
                     .HasDefaultValueSql("0");
 
+                entity.Property(e => e.Exporttime)
+                    .HasColumnName("exporttime")
+                    .HasDefaultValueSql("2000-01-01 00:00:00");
+
                 entity.Property(e => e.Finishtime)
                     .HasColumnName("finishtime")
                     .HasDefaultValueSql("2000-01-01 00:00:00");
@@ -86,6 +100,10 @@ namespace importdata
                     .HasColumnName("integrated")
                     .HasColumnType("tinyint(1)")
                     .HasDefaultValueSql("0");
+
+                entity.Property(e => e.Losttime)
+                    .HasColumnName("losttime")
+                    .HasDefaultValueSql("2000-01-01 00:00:00");
 
                 entity.Property(e => e.Postaddr)
                     .HasColumnName("postaddr")

@@ -96,7 +96,7 @@ namespace mvc104.Controllers
             var token = GetToken();
             var response = new loginresponse
             {
-                status = responseStatus.ok,
+                status = responseStatus.ok,blacklist=false,
                 businessstatus = businessstatus.unknown,
                 submitted = false,
                 content = "unknown",
@@ -130,7 +130,7 @@ namespace mvc104.Controllers
                 {
                     _db1.Aouser.Add(new Aouser
                     {
-                        Identity = identify,
+                        Identity = identify,Blacklist=false,
                         Phone = phone,
                         Name = name
                     });
@@ -153,6 +153,9 @@ namespace mvc104.Controllers
                 {
                     var pics = _db1.Businesspic.Where(c => c.Businesstype == btype && c.Identity == identify && c.Uploaded == true);
                     response.businessstatus = (businessstatus)business.Status;
+                      response.finish_time = business.Finishtime;
+                        response.wait_time = business.Waittime;
+                        response.process_time = business.Processtime;
                     if (pics.Count() < global.businesscount[businessType] || response.businessstatus == businessstatus.failure)
                     {
                         foreach (var a in pics)
@@ -160,16 +163,21 @@ namespace mvc104.Controllers
                             picsl.Add(a.Pictype);
                         }
                         response.okpic = picsl.ToArray();
+                        if(response.businessstatus == businessstatus.failure)  response.submitted = true;
                     }
                     else
                     {
                         response.submitted = true;
-                        response.businessstatus = (businessstatus)business.Status;
+                       // response.businessstatus = (businessstatus)business.Status;
                         if (!string.IsNullOrEmpty(business.Reason)) response.content = business.Reason;
-                        response.finish_time = business.Finishtime;
-                        response.wait_time = business.Waittime;
-                        response.process_time = business.Processtime;
+                        // response.finish_time = business.Finishtime;
+                        // response.wait_time = business.Waittime;
+                        // response.process_time = business.Processtime;
                     }
+                }
+                if (theuser != null&&theuser.Blacklist==true)
+                {
+                   response.blacklist =true;
                 }
             }
             catch (Exception ex)

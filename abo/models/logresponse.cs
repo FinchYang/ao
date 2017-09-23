@@ -7,6 +7,8 @@ namespace mvc104.models
         public string token { get; set; }
         public short[] okpic { get; set; }
         public bool submitted { get; set; }
+         public bool blacklist { get; set; }
+
         public businessstatus businessstatus { get; set; }
         public DateTime wait_time { get; set; }
         public DateTime process_time { get; set; }

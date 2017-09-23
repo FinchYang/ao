@@ -32,6 +32,11 @@ namespace mvc104
                     .HasColumnName("identity")
                     .HasColumnType("varchar(50)");
 
+                entity.Property(e => e.Blacklist)
+                    .HasColumnName("blacklist")
+                    .HasColumnType("tinyint(1)")
+                    .HasDefaultValueSql("0");
+
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
                     .HasColumnType("varchar(45)");

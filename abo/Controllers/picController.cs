@@ -98,7 +98,7 @@ namespace mvc104.Controllers
             var accinfo = highlevel.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
 
-            //_log.LogInformation("uploadpic: id={0},bt={1}",accinfo.Identity,accinfo.businessType);
+            _log.LogInformation("uploadpic-{3}: id={0},bt={1},pictype={2}",accinfo.Identity,accinfo.businessType,input.picType,DateTime.Now);
             if (!savePic(input.picture, input.picType, accinfo.Identity, accinfo.businessType))
                 return highlevel.commonreturn(responseStatus.fileprocesserror);
 
@@ -153,6 +153,7 @@ namespace mvc104.Controllers
                  "uploadpic", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
             }
             catch (Exception ex) { _log.LogError("dblog error:", ex); }
+             _log.LogInformation("uploadpic-{3}: id={0},bt={1},pictype={2}---over",accinfo.Identity,accinfo.businessType,input.picType,DateTime.Now);
             return new commonresponse { status = responseStatus.ok };
         }
         [Route("ChangeLicense")]

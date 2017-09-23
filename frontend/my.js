@@ -26,5 +26,10 @@ jQuery(function($){
             console.log( "You have clicked this before!" );
         });
     });
-//  $("a").on(a,b,c,d);
+$("#ddd").datepicker()
+    $( "#mydiv" ).progressbar({ value: 90 });
+    $( "#mydiv" ).progressbar("value",50);
+    $( "#mydiv" ).slider({
+        orientation: "vertical"
+    });
 });
