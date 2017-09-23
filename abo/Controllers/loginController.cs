@@ -156,6 +156,7 @@ namespace mvc104.Controllers
                       response.finish_time = business.Finishtime;
                         response.wait_time = business.Waittime;
                         response.process_time = business.Processtime;
+                          if (!string.IsNullOrEmpty(business.Reason)) response.content = business.Reason;
                     if (pics.Count() < global.businesscount[businessType] || response.businessstatus == businessstatus.failure)
                     {
                         foreach (var a in pics)
@@ -169,7 +170,7 @@ namespace mvc104.Controllers
                     {
                         response.submitted = true;
                        // response.businessstatus = (businessstatus)business.Status;
-                        if (!string.IsNullOrEmpty(business.Reason)) response.content = business.Reason;
+                      
                         // response.finish_time = business.Finishtime;
                         // response.wait_time = business.Waittime;
                         // response.process_time = business.Processtime;

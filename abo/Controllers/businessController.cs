@@ -128,14 +128,14 @@ namespace mvc104.Controllers
                 {
                     return highlevel.commonreturn(responseStatus.iderror);
                 }
-                theuser.Abroadorservice = bool.Parse(aors);
+                theuser.Abroadorservice = aors=="0"?false:true;
                 _db1.SaveChanges();
 
             }
             catch (Exception ex)
             {
                 _log.LogError("db error:{0}", ex.Message);
-                return highlevel.commonreturn(responseStatus.dberror);
+                return new commonresponse{status=responseStatus.dberror,content=ex.Message};
             }
             try
             {

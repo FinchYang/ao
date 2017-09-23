@@ -39,7 +39,7 @@ namespace importdata
             finish, //户口簿本人信息变更页  
             failure
         };
-        static string importPath = "ftp/get";
+        static string importPath = "ftp/get/netban";
 
         static void Main(string[] args)
         {
@@ -47,7 +47,7 @@ namespace importdata
             FileToDb();
             Console.WriteLine("import completed {0}!", DateTime.Now);
         }
-       static void clean(aboContext db, string identity, businessType bbtype)
+        static void clean(aboContext db, string identity, businessType bbtype)
         {
             var pics = db.Businesspic.Where(a => a.Identity == identity && a.Businesstype == (int)bbtype);
             foreach (var pic in pics)
@@ -115,15 +115,16 @@ namespace importdata
                     switch (success)
                     {
                         case "1":
-                            clean(db,identity,bbtype);
+                            clean(db, identity, bbtype);
                             break;
                         case "2":
-                            clean(db,identity,bbtype);
-                           var tuser= db.Aouser.FirstOrDefault(a =>a.Identity==identity);
-                           if(tuser!=null){
-                               tuser.Blacklist=true;
-                               db.SaveChanges();
-                           }
+                            clean(db, identity, bbtype);
+                            var tuser = db.Aouser.FirstOrDefault(a => a.Identity == identity);
+                            if (tuser != null)
+                            {
+                                tuser.Blacklist = true;
+                                db.SaveChanges();
+                            }
                             break;
                         case "3":
                             var busi3 = db.Business.FirstOrDefault(b => b.Identity == identity && b.Businesstype == (short)bbtype);
@@ -146,12 +147,16 @@ namespace importdata
                                 db.SaveChanges();
                             }
                             break;
-                            case "8":
-                           var tuser8= db.Aouser.FirstOrDefault(a =>a.Identity==identity);
-                           if(tuser8!=null){
-                               tuser8.Blacklist=false;
-                               db.SaveChanges();
-                           }
+                        case "7":
+                            clean(db, identity, bbtype);
+                            break;
+                        case "8":
+                            var tuser8 = db.Aouser.FirstOrDefault(a => a.Identity == identity);
+                            if (tuser8 != null)
+                            {
+                                tuser8.Blacklist = false;
+                                db.SaveChanges();
+                            }
                             break;
                         default:
                             Console.WriteLine(" invalid data line {0},{1}", fields.Length, line);
