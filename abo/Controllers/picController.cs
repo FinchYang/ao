@@ -65,7 +65,7 @@ namespace mvc104.Controllers
                 var fname = Path.Combine(_picpath, accinfo.Identity, accinfo.businessType.ToString(), picType + ".jpg");
                 highlevel.infolog(_log, "downloadpic", fname);
                 var bbytes = System.IO.File.ReadAllBytes(fname);
-                var retstr = Convert.ToBase64String(bbytes);
+                var retstr ="data:image/jpeg;base64," +Convert.ToBase64String(bbytes);
                 try
                 {
                     var he = Request.Host.ToString();
@@ -84,7 +84,6 @@ namespace mvc104.Controllers
                 _log.LogError("{0}-{1}-{2}", DateTime.Now, "downloadpic", ex.Message);
                 return new commonresponse { status = responseStatus.processerror, content = ex.Message };
             }
-
         }
         [Route("uploadpic")]
         [HttpPost]

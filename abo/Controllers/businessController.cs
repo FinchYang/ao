@@ -70,11 +70,45 @@ namespace mvc104.Controllers
                 {
                     he += "--" + a.Key + "=" + a.Value;
                 }
-                Task.Run(() => highlevel.LogRequest(he+accinfo.Identity,
+                Task.Run(() => highlevel.LogRequest(he + accinfo.Identity,
                  "again", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
             }
             catch (Exception ex) { _log.LogError("dblog error:", ex); }
             return highlevel.commonreturn(responseStatus.ok);
+        }
+        [Route("getabroadorservice")]
+        [HttpGet]
+        public commonresponse getabroadorservice()
+        {
+            var accinfo = highlevel.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+            var ret = new getaosresponse { status = responseStatus.ok };
+            try
+            {
+                var theuser = _db1.Business.FirstOrDefault(i => i.Identity == accinfo.Identity && i.Businesstype == (short)accinfo.businessType);
+                if (theuser == null)
+                {
+                    return highlevel.commonreturn(responseStatus.iderror);
+                }
+                ret.abroadorservice = theuser.Abroadorservice;
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("db error:{0}", ex.Message);
+                return highlevel.commonreturn(responseStatus.dberror);
+            }
+            try
+            {
+                var he = Request.Host.ToString();
+                foreach (var a in Request.Headers)
+                {
+                    he += "--" + a.Key + "=" + a.Value;
+                }
+                Task.Run(() => highlevel.LogRequest(he + accinfo.Identity,
+                 "getabroadorservice", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
+            }
+            catch (Exception ex) { _log.LogError("dblog error:", ex); }
+            return ret;
         }
         [Route("abroadorservice")]
         [HttpGet]
@@ -110,7 +144,7 @@ namespace mvc104.Controllers
                 {
                     he += "--" + a.Key + "=" + a.Value;
                 }
-                Task.Run(() => highlevel.LogRequest(he+accinfo.Identity+aors,
+                Task.Run(() => highlevel.LogRequest(he + accinfo.Identity + aors,
                  "abroadorservice", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
             }
             catch (Exception ex) { _log.LogError("dblog error:", ex); }
@@ -157,46 +191,94 @@ namespace mvc104.Controllers
                 {
                     he += "--" + a.Key + "=" + a.Value;
                 }
-                Task.Run(() => highlevel.LogRequest(he+accinfo.Identity+ltime,
+                Task.Run(() => highlevel.LogRequest(he + accinfo.Identity + ltime,
                  "losttime", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
             }
             catch (Exception ex) { _log.LogError("dblog error:", ex); }
             return highlevel.commonreturn(responseStatus.ok);
         }
-        // [Route("updateinfo")]
-        // [HttpPost]
-        // public commonresponse updateinfo([FromBody]updateinforequest input)
-        // {
-        //     highlevel.LogRequest("updateinfo", "updateinfo", Request.HttpContext.Connection.RemoteIpAddress.ToString());
-        //     if (input == null)
-        //     {
-        //         return new commonresponse { status = responseStatus.requesterror };
-        //     }
-        //     var accinfo = highlevel.GetInfoByToken(Request.Headers);
-        //     if (accinfo.status != responseStatus.ok) return accinfo;
+        [Route("getlosttime")]
+        [HttpGet]
+        public commonresponse getlosttime()
+        {
+            var accinfo = highlevel.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+            var ret = new getlosttimeresponse { status = responseStatus.ok };
+            try
+            {
+                var theuser = _db1.Business.FirstOrDefault(i => i.Identity == accinfo.Identity && i.Businesstype == (short)accinfo.businessType);
+                if (theuser == null)
+                {
+                    return highlevel.commonreturn(responseStatus.iderror);
+                }
+                ret.losttime = theuser.Losttime;
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("db error:{0}", ex.Message);
+                return highlevel.commonreturn(responseStatus.dberror);
+            }
+            try
+            {
+                var he = Request.Host.ToString();
+                foreach (var a in Request.Headers)
+                {
+                    he += "--" + a.Key + "=" + a.Value;
+                }
+                Task.Run(() => highlevel.LogRequest(he + accinfo.Identity,
+                 "getlosttime", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
+            }
+            catch (Exception ex) { _log.LogError("dblog error:", ex); }
+            return highlevel.commonreturn(responseStatus.ok);
+        }
+        [Route("getaddr")]
+        [HttpGet]
+        public commonresponse getaddr()
+        {
+            var accinfo = highlevel.GetInfoByToken(Request.Headers);
+            if (accinfo.status != responseStatus.ok) return accinfo;
+            var ret = new getaddrresponse { status = responseStatus.ok };
+            try
+            {
+                var theuser = _db1.Business.FirstOrDefault(i => i.Identity == accinfo.Identity && i.Businesstype == (short)accinfo.businessType);
+                if (theuser == null)
+                {
+                    return highlevel.commonreturn(responseStatus.iderror);
+                }
+                if (!string.IsNullOrEmpty(theuser.Postaddr))
+                    ret.postaddr = theuser.Postaddr;
+                if (!string.IsNullOrEmpty(theuser.Acceptingplace))
+                    ret.acceptingplace = theuser.Acceptingplace;
 
-        //     if (string.IsNullOrEmpty(input.postaddr))
-        //     {
-        //         return new commonresponse { status = responseStatus.postaddrerror };
-        //     }
+                if (!string.IsNullOrEmpty(theuser.QuasiDrivingLicense))
+                    ret.quasiDrivingLicense = theuser.QuasiDrivingLicense;
 
-        //     try
-        //     {
-        //         var theuser = _db1.Aouser.FirstOrDefault(i => i.Identity == accinfo.Identity);
-        //         if (theuser == null)
-        //         {
-        //             return new commonresponse { status = responseStatus.iderror };
-        //         }
-        //         theuser.Postaddr = input.postaddr;
-        //         _db1.SaveChanges();
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         _log.LogError("db error:{0}", ex.Message);
-        //         return new commonresponse { status = responseStatus.dberror };
-        //     }
-        //     return new commonresponse { status = responseStatus.ok };
-        // }
+                if (!string.IsNullOrEmpty(theuser.Province))
+                    ret.province = theuser.Province;
+                if (!string.IsNullOrEmpty(theuser.City))
+                    ret.city = theuser.City;
+                if (!string.IsNullOrEmpty(theuser.County))
+                    ret.county = theuser.County;
+                _db1.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("db error:{0}", ex.Message);
+                return highlevel.commonreturn(responseStatus.dberror);
+            }
+            try
+            {
+                var he = Request.Host.ToString();
+                foreach (var a in Request.Headers)
+                {
+                    he += "--" + a.Key + "=" + a.Value;
+                }
+                Task.Run(() => highlevel.LogRequest(he + accinfo.Identity,
+                 "getaddr", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
+            }
+            catch (Exception ex) { _log.LogError("dblog error:", ex); }
+            return ret;
+        }
 
         [Route("postaddr")]
         [HttpPost]
@@ -232,6 +314,13 @@ namespace mvc104.Controllers
 
                 if (!string.IsNullOrEmpty(input.quasiDrivingLicense))
                     theuser.QuasiDrivingLicense = input.quasiDrivingLicense;
+
+                if (!string.IsNullOrEmpty(input.province))
+                    theuser.Province = input.province;
+                if (!string.IsNullOrEmpty(input.city))
+                    theuser.City = input.city;
+                if (!string.IsNullOrEmpty(input.county))
+                    theuser.County = input.county;
                 _db1.SaveChanges();
             }
             catch (Exception ex)
@@ -246,7 +335,7 @@ namespace mvc104.Controllers
                 {
                     he += "--" + a.Key + "=" + a.Value;
                 }
-                Task.Run(() => highlevel.LogRequest(he+accinfo.Identity+input.postaddr,
+                Task.Run(() => highlevel.LogRequest(he + accinfo.Identity + input.postaddr,
                  "postaddr", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
             }
             catch (Exception ex) { _log.LogError("dblog error:", ex); }
@@ -298,7 +387,7 @@ namespace mvc104.Controllers
                 {
                     he += "--" + a.Key + "=" + a.Value;
                 }
-                Task.Run(() => highlevel.LogRequest(he+accinfo.Identity+phone,
+                Task.Run(() => highlevel.LogRequest(he + accinfo.Identity + phone,
                  "sendvcode", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
             }
             catch (Exception ex) { _log.LogError("dblog error:", ex); }
@@ -340,7 +429,7 @@ namespace mvc104.Controllers
                 {
                     he += "--" + a.Key + "=" + a.Value;
                 }
-                Task.Run(() => highlevel.LogRequest(he+accinfo.Identity,
+                Task.Run(() => highlevel.LogRequest(he + accinfo.Identity,
                  "checkvcode", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
             }
             catch (Exception ex) { _log.LogError("dblog error:", ex); }
