@@ -71,6 +71,8 @@ namespace mvc104.Controllers
         {
             public aboss ongoing { get; set; } = new aboss();
             public aboss completed { get; set; } = new aboss();
+            public string onhtml { get; set; }
+            public string comhtml { get; set; }
         }
         public class aboss
         {
@@ -93,19 +95,24 @@ namespace mvc104.Controllers
             }
             var ret = new ssresponse { status = 0 };
             _log.LogInformation("start is={0},end={1}", start, end);
+            var onhtml = string.Empty;
+            var comhtml = string.Empty;
             foreach (int a in Enum.GetValues(typeof(businessType)))
             {
                 try
                 {
+                    if (a == 0) continue;
                     var cc = _db1.Business.Count(i => i.Businesstype == a && i.Integrated == true
                     && i.Time.CompareTo(start) >= 0 && i.Time.CompareTo(end) <= 0);
                     _log.LogInformation("cc is={0}", cc);
                     ret.ongoing.bcount.Add(a, cc);
+                    onhtml += "<li>" + global.statistics[(businessType)a] + ": " + cc + "</li>";
                     ret.ongoing.Total += cc;
 
                     var ccc = _db1.Businesshis.Count(i => i.Businesstype == a
                     && i.Time.CompareTo(start) >= 0 && i.Time.CompareTo(end) <= 0);
                     ret.completed.bcount.Add(a, ccc);
+                    comhtml += "<li>" + global.statistics[(businessType)a] + ": " + ccc + "</li>";
                     ret.completed.Total += ccc;
                 }
                 catch (Exception ex)
@@ -113,6 +120,10 @@ namespace mvc104.Controllers
                     ret.content += ex.Message;
                 }
             }
+            onhtml += "<li>" + global.statistics[(businessType)0] + ": " + ret.ongoing.Total + "</li>";
+            comhtml += "<li>" + global.statistics[(businessType)0] + ": " + ret.completed.Total + "</li>";
+            ret.onhtml = onhtml;
+            ret.comhtml = comhtml;
             try
             {
                 var he =  Request.Host.ToString();

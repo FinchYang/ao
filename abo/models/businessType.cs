@@ -1,5 +1,8 @@
+using System.Collections.Generic;
+
 namespace mvc104.models
 {
+   
     public enum businessType
     {
          unknown,
