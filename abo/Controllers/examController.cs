@@ -126,13 +126,67 @@ namespace mvc104.Controllers
             ret.comhtml = comhtml;
             try
             {
-                var he =  Request.Host.ToString();
+                var he = Request.Host.ToString();
                 foreach (var a in Request.Headers)
                 {
                     he += "--" + a.Key + "=" + a.Value;
                 }
                 Task.Run(() => highlevel.LogRequest(he,
                  "searchStatistics", Request.HttpContext.Connection.RemoteIpAddress.ToString()));
+            }
+            catch (Exception ex) { _log.LogError("dblog error:", ex); }
+            return ret;
+        }
+         public class abssresponse : commonresponse
+        {
+            public string onhtml { get; set; }
+        }
+        [Route("abStatistics")]
+        [HttpGet]
+        public abssresponse abStatistics(string startdate, string enddate)
+        {
+            var start = DateTime.Now.AddYears(-100);
+            var end = DateTime.Now;
+            if (!DateTime.TryParse(startdate, out start))
+            {
+                return new abssresponse { status = responseStatus.startdateerror, content = responseStatus.startdateerror.ToString() };
+            }
+            if (!DateTime.TryParse(enddate, out end))
+            {
+                return new abssresponse { status = responseStatus.enddateerror, content = responseStatus.enddateerror.ToString() };
+            }
+            var ret = new abssresponse { status = 0 };
+            var onhtml = string.Empty;
+var  hiscount=0;
+var allreq=0;
+var usecount=0;
+            try
+            {
+                using (var abdb = new mvc104.abm.studyinContext())
+                {
+                  hiscount=  abdb.History.Count(a => a.Finishdate.CompareTo(start) >= 0 && a.Finishdate.CompareTo(end) <= 0);
+                 allreq=  abdb.Request.Count(a => a.Time.CompareTo(start) >= 0 && a.Time.CompareTo(end) <= 0);
+                 usecount=  abdb.Request.Count(a =>!a.Method.Contains("LoginAndQuery") &&a.Time.CompareTo(start) >= 0 && a.Time.CompareTo(end) <= 0);
+                }
+            }
+            catch (Exception ex)
+            {
+                ret.content += ex.Message;
+            }
+
+            onhtml += "<li>学习完成量: " + hiscount + "</li>";
+          onhtml += "<li>访问量: " + allreq + "</li>";
+           onhtml += "<li>使用量: " + usecount + "</li>";
+            ret.onhtml = onhtml;
+            try
+            {
+                var he = Request.Host.ToString();
+                foreach (var a in Request.Headers)
+                {
+                    he += "--" + a.Key + "=" + a.Value;
+                }
+                Task.Run(() => highlevel.LogRequest(he + startdate + enddate,
+                 "abStatistics", Request.HttpContext.Connection.RemoteIpAddress.ToString()));
             }
             catch (Exception ex) { _log.LogError("dblog error:", ex); }
             return ret;

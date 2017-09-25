@@ -12,6 +12,7 @@ namespace mvc104
         public string Identity { get; set; }
         public string Postaddr { get; set; }
         public string QuasiDrivingLicense { get; set; }
+        public string Reason { get; set; }
         public DateTime Time { get; set; }
     }
 }

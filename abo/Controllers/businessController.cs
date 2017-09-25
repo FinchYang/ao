@@ -49,8 +49,18 @@ namespace mvc104.Controllers
                 {
                     return highlevel.commonreturn(responseStatus.iderror);
                 }
-                theuser.Integrated = false;
-                theuser.Status = (short)businessstatus.unknown;
+                // theuser.Integrated = false;
+                // theuser.Status = (short)businessstatus.unknown;
+                var reason=string.Empty;
+                if(!string.IsNullOrEmpty(theuser.Reason))  reason=theuser.Reason;
+                _db1.Businesshis.Add(new Businesshis{
+Identity=theuser.Identity,
+Businesstype=theuser.Businesstype,
+Completed=true,
+Time=theuser.Finishtime,
+Reason=reason
+                });
+                _db1.Business.Remove(theuser);
                 var pics = _db1.Businesspic.Where(i => i.Identity == accinfo.Identity && i.Businesstype == (short)accinfo.businessType);
                 foreach (var p in pics)
                 {

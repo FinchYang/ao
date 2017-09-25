@@ -183,6 +183,10 @@ namespace mvc104
                     .HasColumnName("quasiDrivingLicense")
                     .HasColumnType("varchar(45)");
 
+                entity.Property(e => e.Reason)
+                    .HasColumnName("reason")
+                    .HasColumnType("varchar(545)");
+
                 entity.Property(e => e.Time).HasColumnName("time");
             });
 

@@ -35,7 +35,21 @@
         <div role="main" class="ui-content">
             <p id="barp">完整业务处理完成数据统计</p>
             <ul class="sdulli" id="barpul">            </ul>
-            <p><a href="#foo">查看处理中数据统计</a></p>
+            <p><a href="#abstudy">查看AB证审验教育数据统计</a></p>
+        </div><!-- /content -->
+        <div data-role="footer">
+            <h4>山东云一提供技术支持</h4>
+        </div><!-- /footer -->
+    </div><!-- /page -->
+
+      <div data-role="page" id="abstudy">
+        <div data-role="header">
+            <h1>AB证审验教育数据统计</h1>
+        </div><!-- /header -->
+        <div role="main" class="ui-content">
+            <!-- <p id="barp">完整业务处理完成数据统计</p> -->
+            <ul class="sdulli" id="abul">            </ul>
+            <p><a href="#foo">查看全程网办数据统计</a></p>
         </div><!-- /content -->
         <div data-role="footer">
             <h4>山东云一提供技术支持</h4>
@@ -45,7 +59,8 @@
         $(document).ready(function () {
              console.log(" window.location.search: " + window.location.search);
             $.ajax({
-                url: "/sdyycjg/searchStatistics",
+                <!-- url: "/searchStatistics", -->
+                   url: "/sdyycjg/searchStatistics",
                 data: {
                     startdate: "1999-1-1",
                     enddate: "2999-1-1"
@@ -64,6 +79,30 @@
                     //    ret += key + "=" + value + ",";
                     //})
                     //$("#foop").html(json.ongoing.total + "ongoing" + ret);
+                }
+
+            })
+                .fail(function (xhr, status, errorThrown) {
+                    alert("Sorry, there was a problem!");
+                    console.log("Error: " + errorThrown);
+                    console.log("Status: " + status);
+                    console.dir(xhr);
+                })
+                .always(function (xhr, status) {
+    //alert("The request is complete!"); 
+  });
+
+    $.ajax({
+                url: "/sdyycjg/abStatistics",
+                data: {
+                    startdate: "1999-1-1",
+                    enddate: "2999-1-1"
+                }
+            }).done(function (json) {
+                if (json.status) alert("Sorry, there was a problem!" + json.content);
+                else {
+                   
+                    $("#abul").html(json.onhtml);
                 }
 
             })
