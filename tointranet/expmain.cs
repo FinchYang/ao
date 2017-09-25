@@ -103,8 +103,8 @@ namespace exportdb
             using (var db = new aboContext())
             {
                 //冗余传输，防止边界平台not delivery
-                var rebusi = db.Business.Where(async => async.Integrated == true 
-               // && async.Exporttime.CompareTo(date.AddDays(-1)) >= 0
+                var rebusi = db.Business.Where(async => async.Integrated == true
+                // && async.Exporttime.CompareTo(date.AddDays(-1)) >= 0
                 );
                 Console.WriteLine("redundant is {1}, {2} records need to  be archived", ",", date, rebusi.Count());
                 foreach (var rere in rebusi)
@@ -123,18 +123,15 @@ namespace exportdb
                         if (aouser == null || string.IsNullOrEmpty(aouser.Name)) continue;
 
                         NewMethod(rere.Identity, bt.ToString(), home);
-                        // var phone = string.Empty;
-
-                        // var userp = db.Aouser.FirstOrDefault(h => h.Identity == rere.Identity);
-                        // if (userp != null)
-                        // {
-                        //     phone = userp.Phone;
-                        // }
-
+                        var addr = string.Empty;
+                        if (!string.IsNullOrEmpty(rere.Province)) addr += rere.Province;
+                        if (!string.IsNullOrEmpty(rere.City)) addr += rere.City;
+                        if (!string.IsNullOrEmpty(rere.County)) addr += rere.County;
+                        if (!string.IsNullOrEmpty(rere.Postaddr)) addr += rere.Postaddr;
                         var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}",
-                         rere.Identity, ((businessType)rere.Businesstype).ToString(), rere.Postaddr, rere.Acceptingplace,
-                         rere.QuasiDrivingLicense,aouser.Phone , aouser.Name, rere.Losttime.ToString("yyyy/MM/dd HH:mm:ss"),
-                         rere.Abroadorservice,rere.Exporttime.ToString("yyyy/MM/dd HH:mm:ss"));
+                         rere.Identity, ((businessType)rere.Businesstype).ToString(), addr, rere.Acceptingplace,
+                         rere.QuasiDrivingLicense, aouser.Phone, aouser.Name, rere.Losttime.ToString("yyyy/MM/dd HH:mm:ss"),
+                         rere.Abroadorservice, rere.Exporttime.ToString("yyyy/MM/dd HH:mm:ss"));
                         File.AppendAllText(fname, line + "\r\n");
                     }
                 }
@@ -157,19 +154,15 @@ namespace exportdb
                         if (aouser == null || string.IsNullOrEmpty(aouser.Name)) continue;
 
                         NewMethod(re.Identity, bt.ToString(), home);
-                        // var phone = string.Empty;
-                        // // if (re.Businesstype == (short)businessType.changeContact)
-                        // // {
-                        // var userp = db.Aouser.FirstOrDefault(h => h.Identity == re.Identity);
-                        // if (userp != null)
-                        // {
-                        //     phone = userp.Phone;
-                        // }
-                        // //  }
+                        var addr = string.Empty;
+                        if (!string.IsNullOrEmpty(re.Province)) addr += re.Province;
+                        if (!string.IsNullOrEmpty(re.City)) addr += re.City;
+                        if (!string.IsNullOrEmpty(re.County)) addr += re.County;
+                        if (!string.IsNullOrEmpty(re.Postaddr)) addr += re.Postaddr;
                         var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}",
-                         re.Identity, ((businessType)re.Businesstype).ToString(), re.Postaddr, re.Acceptingplace,
+                         re.Identity, ((businessType)re.Businesstype).ToString(), addr, re.Acceptingplace,
                          re.QuasiDrivingLicense, aouser.Phone, aouser.Name, re.Losttime.ToString("yyyy/MM/dd HH:mm:ss")
-                         ,re.Abroadorservice,date.ToString("yyyy/MM/dd HH:mm:ss"));
+                         , re.Abroadorservice, date.ToString("yyyy/MM/dd HH:mm:ss"));
                         File.AppendAllText(fname, line + "\r\n");
                         re.Integrated = true;
 

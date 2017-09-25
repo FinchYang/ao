@@ -32,6 +32,11 @@ namespace exportdb
                     .HasColumnName("identity")
                     .HasColumnType("varchar(50)");
 
+                entity.Property(e => e.Blacklist)
+                    .HasColumnName("blacklist")
+                    .HasColumnType("tinyint(1)")
+                    .HasDefaultValueSql("0");
+
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
                     .HasColumnType("varchar(45)");
@@ -78,10 +83,18 @@ namespace exportdb
                     .HasColumnName("acceptingplace")
                     .HasColumnType("varchar(145)");
 
+                entity.Property(e => e.City)
+                    .HasColumnName("city")
+                    .HasColumnType("varchar(145)");
+
                 entity.Property(e => e.Completed)
                     .HasColumnName("completed")
                     .HasColumnType("tinyint(1)")
                     .HasDefaultValueSql("0");
+
+                entity.Property(e => e.County)
+                    .HasColumnName("county")
+                    .HasColumnType("varchar(145)");
 
                 entity.Property(e => e.Exporttime)
                     .HasColumnName("exporttime")
@@ -102,11 +115,15 @@ namespace exportdb
 
                 entity.Property(e => e.Postaddr)
                     .HasColumnName("postaddr")
-                    .HasColumnType("varchar(145)");
+                    .HasColumnType("varchar(450)");
 
                 entity.Property(e => e.Processtime)
                     .HasColumnName("processtime")
                     .HasDefaultValueSql("2000-01-01 00:00:00");
+
+                entity.Property(e => e.Province)
+                    .HasColumnName("province")
+                    .HasColumnType("varchar(145)");
 
                 entity.Property(e => e.QuasiDrivingLicense)
                     .HasColumnName("quasiDrivingLicense")
