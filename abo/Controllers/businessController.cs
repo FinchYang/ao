@@ -49,18 +49,19 @@ namespace mvc104.Controllers
                 {
                     return highlevel.commonreturn(responseStatus.iderror);
                 }
-                // theuser.Integrated = false;
-                // theuser.Status = (short)businessstatus.unknown;
-                var reason=string.Empty;
-                if(!string.IsNullOrEmpty(theuser.Reason))  reason=theuser.Reason;
-                _db1.Businesshis.Add(new Businesshis{
-Identity=theuser.Identity,
-Businesstype=theuser.Businesstype,
-Completed=true,
-Time=theuser.Finishtime,
-Reason=reason
+                theuser.Integrated = false;
+                 theuser.Status = (short)businessstatus.unknown;
+                var reason = string.Empty;
+                if (!string.IsNullOrEmpty(theuser.Reason)) reason = theuser.Reason;
+                _db1.Businesshis.Add(new Businesshis
+                {
+                    Identity = theuser.Identity,
+                    Businesstype = theuser.Businesstype,
+                    Completed = true,
+                    Time = theuser.Finishtime,
+                    Reason = reason
                 });
-                _db1.Business.Remove(theuser);
+               
                 var pics = _db1.Businesspic.Where(i => i.Identity == accinfo.Identity && i.Businesstype == (short)accinfo.businessType);
                 foreach (var p in pics)
                 {
@@ -138,14 +139,14 @@ Reason=reason
                 {
                     return highlevel.commonreturn(responseStatus.iderror);
                 }
-                theuser.Abroadorservice = aors=="0"?false:true;
+                theuser.Abroadorservice = aors == "0" ? false : true;
                 _db1.SaveChanges();
 
             }
             catch (Exception ex)
             {
                 _log.LogError("db error:{0}", ex.Message);
-                return new commonresponse{status=responseStatus.dberror,content=ex.Message};
+                return new commonresponse { status = responseStatus.dberror, content = ex.Message };
             }
             try
             {
@@ -235,11 +236,11 @@ Reason=reason
                 {
                     he += "--" + a.Key + "=" + a.Value;
                 }
-                Task.Run(() => highlevel.LogRequest(he + accinfo.Identity,
+                Task.Run(() => highlevel.LogRequest(he + accinfo.Identity+JsonConvert.SerializeObject(ret),
                  "getlosttime", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
             }
             catch (Exception ex) { _log.LogError("dblog error:", ex); }
-            return highlevel.commonreturn(responseStatus.ok);
+            return ret;
         }
         [Route("getaddr")]
         [HttpGet]
@@ -250,26 +251,27 @@ Reason=reason
             var ret = new getaddrresponse { status = responseStatus.ok };
             try
             {
-                var theuser = _db1.Business.FirstOrDefault(i => i.Identity == accinfo.Identity && i.Businesstype == (short)accinfo.businessType);
-                if (theuser == null)
+                var addrbusi = _db1.Business.FirstOrDefault(i => i.Identity == accinfo.Identity && i.Businesstype == (short)accinfo.businessType);
+                if (addrbusi == null)
                 {
                     return highlevel.commonreturn(responseStatus.iderror);
                 }
-                if (!string.IsNullOrEmpty(theuser.Postaddr))
-                    ret.postaddr = theuser.Postaddr;
-                if (!string.IsNullOrEmpty(theuser.Acceptingplace))
-                    ret.acceptingplace = theuser.Acceptingplace;
+                 Task.Run(() => highlevel.LogRequest( accinfo.Identity+accinfo.businessType+JsonConvert.SerializeObject(addrbusi),
+                 "getaddr", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
+                if (!string.IsNullOrEmpty(addrbusi.Postaddr))
+                    ret.postaddr = addrbusi.Postaddr;
+                if (!string.IsNullOrEmpty(addrbusi.Acceptingplace))
+                    ret.acceptingplace = addrbusi.Acceptingplace;
 
-                if (!string.IsNullOrEmpty(theuser.QuasiDrivingLicense))
-                    ret.quasiDrivingLicense = theuser.QuasiDrivingLicense;
+                if (!string.IsNullOrEmpty(addrbusi.QuasiDrivingLicense))
+                    ret.quasiDrivingLicense = addrbusi.QuasiDrivingLicense;
 
-                if (!string.IsNullOrEmpty(theuser.Province))
-                    ret.province = theuser.Province;
-                if (!string.IsNullOrEmpty(theuser.City))
-                    ret.city = theuser.City;
-                if (!string.IsNullOrEmpty(theuser.County))
-                    ret.county = theuser.County;
-                _db1.SaveChanges();
+                if (!string.IsNullOrEmpty(addrbusi.Province))
+                    ret.province = addrbusi.Province;
+                if (!string.IsNullOrEmpty(addrbusi.City))
+                    ret.city = addrbusi.City;
+                if (!string.IsNullOrEmpty(addrbusi.County))
+                    ret.county = addrbusi.County;
             }
             catch (Exception ex)
             {
@@ -283,7 +285,7 @@ Reason=reason
                 {
                     he += "--" + a.Key + "=" + a.Value;
                 }
-                Task.Run(() => highlevel.LogRequest(he + accinfo.Identity,
+                Task.Run(() => highlevel.LogRequest(he + accinfo.Identity+accinfo.businessType+JsonConvert.SerializeObject(ret),
                  "getaddr", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
             }
             catch (Exception ex) { _log.LogError("dblog error:", ex); }
@@ -294,7 +296,6 @@ Reason=reason
         [HttpPost]
         public commonresponse postaddr([FromBody]postaddrrequest input)
         {
-            //  highlevel.LogRequest("postaddr", "postaddr", Request.HttpContext.Connection.RemoteIpAddress.ToString());
             if (input == null)
             {
                 return highlevel.commonreturn(responseStatus.requesterror);
@@ -306,10 +307,6 @@ Reason=reason
             {
                 return highlevel.commonreturn(responseStatus.postaddrerror);
             }
-            // if (string.IsNullOrEmpty(input.acceptingplace))
-            // {
-            //     return highlevel.commonreturn(responseStatus.acceptingplaceerror);
-            // }
             try
             {
                 var theuser = _db1.Business.FirstOrDefault(i => i.Identity == accinfo.Identity && i.Businesstype == (short)accinfo.businessType);
@@ -345,7 +342,7 @@ Reason=reason
                 {
                     he += "--" + a.Key + "=" + a.Value;
                 }
-                Task.Run(() => highlevel.LogRequest(he + accinfo.Identity + input.postaddr,
+                Task.Run(() => highlevel.LogRequest(he + accinfo.Identity + accinfo.businessType+JsonConvert.SerializeObject(input),
                  "postaddr", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
             }
             catch (Exception ex) { _log.LogError("dblog error:", ex); }

@@ -49,11 +49,26 @@
         <div role="main" class="ui-content">
             <!-- <p id="barp">完整业务处理完成数据统计</p> -->
             <ul class="sdulli" id="abul">            </ul>
+            <div id="result"></div>
+    <script>
+        if (typeof (EventSource) !== "undefined") {
+            var source = new EventSource("http://app.ytjj.gov.cn/sdyycjg/abStatistics1");
+            source.onmessage = function (event) {
+                console.log(event.data);
+                console.dir(event);
+                document.getElementById("abul").innerHTML = event.data + "<br>";
+            };
+        }
+        else {
+            document.getElementById("result").innerHTML = "抱歉，你的浏览器不支持 server-sent 事件...";
+        }
+    </script>
             <p><a href="#foo">查看全程网办数据统计</a></p>
         </div><!-- /content -->
         <div data-role="footer">
             <h4>山东云一提供技术支持</h4>
         </div><!-- /footer -->
+
     </div><!-- /page -->
     <script>
         $(document).ready(function () {

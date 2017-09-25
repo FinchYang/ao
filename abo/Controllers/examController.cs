@@ -137,9 +137,17 @@ namespace mvc104.Controllers
             catch (Exception ex) { _log.LogError("dblog error:", ex); }
             return ret;
         }
-         public class abssresponse : commonresponse
+        public class abssresponse : commonresponse
         {
             public string onhtml { get; set; }
+        }
+        [Route("ServerSent1")]
+        [HttpGet]
+        public string ServerSent1()
+        {
+            Response.ContentType = "text/event-stream";
+            //  HttpContext.Response.CacheControl = "no-cache";
+            return "data:" + DateTime.Now + "\n\n";
         }
         [Route("abStatistics")]
         [HttpGet]
@@ -157,16 +165,16 @@ namespace mvc104.Controllers
             }
             var ret = new abssresponse { status = 0 };
             var onhtml = string.Empty;
-var  hiscount=0;
-var allreq=0;
-var usecount=0;
+            var hiscount = 0;
+            var allreq = 0;
+            var usecount = 0;
             try
             {
                 using (var abdb = new mvc104.abm.studyinContext())
                 {
-                  hiscount=  abdb.History.Count(a => a.Finishdate.CompareTo(start) >= 0 && a.Finishdate.CompareTo(end) <= 0);
-                 allreq=  abdb.Request.Count(a => a.Time.CompareTo(start) >= 0 && a.Time.CompareTo(end) <= 0);
-                 usecount=  abdb.Request.Count(a =>!a.Method.Contains("LoginAndQuery") &&a.Time.CompareTo(start) >= 0 && a.Time.CompareTo(end) <= 0);
+                    hiscount = abdb.History.Count(a => a.Finishdate.CompareTo(start) >= 0 && a.Finishdate.CompareTo(end) <= 0);
+                    allreq = abdb.Request.Count(a => a.Time.CompareTo(start) >= 0 && a.Time.CompareTo(end) <= 0);
+                    usecount = abdb.Request.Count(a => !a.Method.Contains("LoginAndQuery") && a.Time.CompareTo(start) >= 0 && a.Time.CompareTo(end) <= 0);
                 }
             }
             catch (Exception ex)
@@ -175,8 +183,8 @@ var usecount=0;
             }
 
             onhtml += "<li>学习完成量: " + hiscount + "</li>";
-          onhtml += "<li>访问量: " + allreq + "</li>";
-           onhtml += "<li>使用量: " + usecount + "</li>";
+            onhtml += "<li>访问量: " + allreq + "</li>";
+            onhtml += "<li>使用量: " + usecount + "</li>";
             ret.onhtml = onhtml;
             try
             {
@@ -190,6 +198,36 @@ var usecount=0;
             }
             catch (Exception ex) { _log.LogError("dblog error:", ex); }
             return ret;
+        }
+         [Route("abStatistics1")]
+        [HttpGet]
+        public string abStatistics1()
+        {
+            var start = DateTime.Now.AddYears(-100);
+            var end = DateTime.Now;
+            var onhtml = string.Empty;
+            var hiscount = 0;
+            var allreq = 0;
+            var usecount = 0;
+            try
+            {
+                using (var abdb = new mvc104.abm.studyinContext())
+                {
+                    hiscount = abdb.History.Count(a => a.Finishdate.CompareTo(start) >= 0 && a.Finishdate.CompareTo(end) <= 0);
+                    allreq = abdb.Request.Count(a => a.Time.CompareTo(start) >= 0 && a.Time.CompareTo(end) <= 0);
+                    usecount = abdb.Request.Count(a => !a.Method.Contains("LoginAndQuery") && a.Time.CompareTo(start) >= 0 && a.Time.CompareTo(end) <= 0);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+
+            onhtml += "<li>学习完成量: " + hiscount + "</li>";
+            onhtml += "<li>访问量: " + allreq + "</li>";
+            onhtml += "<li>使用量: " + usecount + "</li>";
+          
+             Response.ContentType = "text/event-stream";
+            return "data:"+onhtml + "\n\n";
         }
     }
 }
