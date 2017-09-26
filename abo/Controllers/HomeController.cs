@@ -20,7 +20,7 @@ namespace mvc104.Controllers
             return View();
         }
 
-        public IActionResult Contact()
+        public IActionResult chart()
         {
             ViewData["Message"] = "Your contact page.";
 

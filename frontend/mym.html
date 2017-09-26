@@ -52,5 +52,11 @@
         <h4>Page Footer</h4>
     </div><!-- /footer -->
 </div><!-- /page -->
+<script>
+    jQuery(document).ready(function ($) {
+        var  a=new Date().toLocaleString();
+        $(".ui-content").find("p").before("<p>"+a+"</p>");
+    })
+</script>
 </body>
 </html>
