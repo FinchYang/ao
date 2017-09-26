@@ -61,7 +61,8 @@ namespace importdata
                 });
                 db.Businesspic.Remove(pic);
             }
-            var busi = db.Business.FirstOrDefault(b => b.Identity == identity && b.Businesstype == (short)bbtype);
+            var busi = db.Business.FirstOrDefault(b => b.Identity == identity && b.Businesstype == (short)bbtype
+             && b.Integrated==true);
             if (busi != null)
             {
                 db.Businesshis.Add(new Businesshis
@@ -127,7 +128,8 @@ namespace importdata
                             }
                             break;
                         case "3":
-                            var busi3 = db.Business.FirstOrDefault(b => b.Identity == identity && b.Businesstype == (short)bbtype);
+                            var busi3 = db.Business.FirstOrDefault(b => b.Identity == identity && b.Businesstype == (short)bbtype
+                             && b.Integrated==true);
                             if (busi3 != null)
                             {
                                 busi3.Status = (short)businessstatus.process;
@@ -138,7 +140,9 @@ namespace importdata
 
                             break;
                         case "4":
-                            var busi4 = db.Business.FirstOrDefault(b => b.Identity == identity && b.Businesstype == (short)bbtype);
+                            var busi4 = db.Business.FirstOrDefault(b => b.Identity == identity
+                             && b.Businesstype == (short)bbtype
+                             && b.Integrated==true);
                             if (busi4 != null)
                             {
                                 busi4.Status = (short)businessstatus.failure;

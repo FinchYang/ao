@@ -14,6 +14,29 @@
     </style>
 </head>
 <body>
+      <div data-role="page" id="aboall">
+        <div data-role="header">
+            <h1>查看全程网办综合统计数据</h1>
+        </div><!-- /header -->
+        <div role="main" class="ui-content">
+            <ul class="sdulli" id="aboallul">            </ul>
+    <script>
+        if (typeof (EventSource) !== "undefined") {
+            var source = new EventSource("http://app.ytjj.gov.cn/sdyycjg/aboallStatistics");
+            source.onmessage = function (event) {
+                console.log(event.data);
+                console.dir(event);
+                document.getElementById("aboallul").innerHTML = event.data + "<br>";
+            };
+        }       
+    </script>
+            <p><a href="#foo">查看分类数据统计</a></p>
+        </div><!-- /content -->
+        <div data-role="footer">
+            <h4>山东云一提供技术支持</h4>
+        </div><!-- /footer -->
+
+    </div><!-- /page -->
     <div data-role="page" id="foo">
         <div data-role="header">
             <h1>驾管业务全程网办数据统计</h1>
@@ -63,7 +86,7 @@
             document.getElementById("result").innerHTML = "抱歉，你的浏览器不支持 server-sent 事件...";
         }
     </script>
-            <p><a href="#foo">查看全程网办数据统计</a></p>
+            <p><a href="#aboall">查看全程网办综合统计数据</a></p>
         </div><!-- /content -->
         <div data-role="footer">
             <h4>山东云一提供技术支持</h4>
