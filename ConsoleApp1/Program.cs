@@ -10,29 +10,26 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            var identify = "379009450819723";
-           // var identify = "37900919550819723X";
-            var idl = identify.Length;
-            if (idl == 18)//379009 19750819 723X
-            {
-                var year =int.Parse( identify.Substring(6, 4));
-                var month = int.Parse(identify.Substring(10, 2));
-                var day = int.Parse(identify.Substring(12, 2));
-                var birth = new DateTime(year, month, day);
-                if (birth.AddYears(60) > DateTime.Now) Console.WriteLine("forbidden" + birth);
-                else Console.WriteLine("old enough");
-            }
-            else if (idl == 15)
-            {
-                var year = int.Parse(identify.Substring(6, 2))+1900;
-                var month = int.Parse(identify.Substring(8, 2));
-                var day = int.Parse(identify.Substring(10, 2));
-                var birth = new DateTime(year, month, day);
-                if (birth.AddYears(60) > DateTime.Now) Console.WriteLine(" 15forbidden" + birth);
-                else Console.WriteLine("15 old enough");
-            }
-        var tt=    System.IO.File.ReadAllText(@"e:\37900919750819723X");
-            Console.WriteLine(DateTime.Now+ "-15 old enough"+tt);
+           
+             //   int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+            int[] numbers = { 5, 4, 5, 3, 2, 5, 3, 7, 2, 0 };
+            var numberGroups =
+                    from num in numbers
+                  //  group num by num % 5 into numGroup
+                    group num by num into numGroup
+                    select new { Remainder = numGroup.Key, Numbers = numGroup.Count() };
+
+                foreach (var grp in numberGroups)
+                {
+                    Console.WriteLine("Numbers with a remainder of {0} when divided by 5:{1}", 
+                        grp.Remainder,grp.Numbers);
+                    //foreach (var n in grp.Numbers)
+                    //{
+                    //    Console.WriteLine(n);
+                    //}
+                }
+            
+
         }
     }
 }

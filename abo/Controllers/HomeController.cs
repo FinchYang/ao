@@ -22,7 +22,7 @@ namespace mvc104.Controllers
 
         public IActionResult chart()
         {
-            ViewData["Message"] = "Your contact page.";
+         //   ViewData["Message"] = "Your contact page.";
 
             return View();
         }

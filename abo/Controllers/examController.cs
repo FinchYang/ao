@@ -12,6 +12,15 @@ using Microsoft.Extensions.Logging;
 using mvc104.models;
 using Newtonsoft.Json;
 using static mvc104.global;
+//using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.DependencyInjection;
+using System.Threading;
+using System.Data;
+using mvc104.abm;
 
 namespace mvc104.Controllers
 {
@@ -74,12 +83,78 @@ namespace mvc104.Controllers
             public string onhtml { get; set; }
             public string comhtml { get; set; }
         }
+        public class aballresponse : commonresponse
+        {
+          
+            public List<values> values { get; set; }
+              public List<labels> labels { get; set; }
+        }
         public class aboss
         {
             public Dictionary<int, int> bcount = new Dictionary<int, int>();
             public int Total { get; set; } = 0;
         }
-          [Route("aboallStatistics")]
+        public class aaa{
+            public int count { get; set; }
+            public string day { get; set; }
+        }
+         public class labels{
+            public string label { get; set; }
+        }
+          public class values{
+            public string value { get; set; }
+        }
+           [Route("AbOkDailyCount")]
+        [HttpGet]
+        public aballresponse AbOkDailyCount()
+        {          
+            var ret = new aballresponse { status = 0 ,values=new List<values>() ,labels=new List<labels>()};
+            try
+            {
+                using (var abdb = new mvc104.abm.studyinContext())
+                {
+                    var ah = abdb.History.Select(ab =>ab.Finishdate).ToList();
+                    var aaaaa = from one in ah
+                            group one by one.ToString("yyyyMMdd") into onegroup
+                            select new aaa {day= onegroup.Key,count= onegroup.Count() };
+                   foreach(var cc in aaaaa){
+                       ret.labels.Add(new labels{label=cc.day});
+                         ret.values.Add(new values{value=cc.count.ToString()});
+                   }
+                    //using (var command = abdb.Database.GetDbConnection().CreateCommand())
+                    //{
+                    //    command.CommandText = "SELECT  distinct(date( finishdate)),count(*)  FROM studyin.history group by date( finishdate);";
+                    //    command.CommandText = "SELECT finishdate  FROM studyin.history";
+
+                    //    command.CommandType = CommandType.Text;
+                    //    abdb.Database.OpenConnection();
+
+                    //    using (var result = command.ExecuteReader())
+                    //    {
+                    //        while (result.Read())
+                    //        {
+                    //            var aa = new aaa();
+                    //            aa.count = 1;
+                    //            aa.day = result.GetData(0).ToString();
+                    //            a.Add(aa);
+                    //        }
+
+                    //    }
+                    //}
+                }
+            }
+            catch (Exception ex)
+            {
+                ret.content += ex.Message;
+            }
+            
+          
+            return ret;
+        }
+
+       
+
+        [Route("aboallStatistics")]
         [HttpGet]
         public string aboallStatistics()
         {
