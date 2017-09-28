@@ -115,9 +115,13 @@ namespace mvc104.Controllers
                 {
                     var ah = abdb.History.Select(ab =>ab.Finishdate).ToList();
                     var aaaaa = from one in ah
-                            group one by one.ToString("yyyyMMdd") into onegroup
+                            group one by one.ToString("yyyy-MM-dd") into onegroup
                             select new aaa {day= onegroup.Key,count= onegroup.Count() };
+                         //   var  memday=DateTime.Parse( aaaaa.First().day);
                    foreach(var cc in aaaaa){
+                    //    if(DateTime.Parse(cc.day).AddDays(-1).CompareTo(memday)>0){
+
+                    //    }
                        ret.labels.Add(new labels{label=cc.day});
                          ret.values.Add(new values{value=cc.count.ToString()});
                    }
@@ -152,7 +156,32 @@ namespace mvc104.Controllers
             return ret;
         }
 
-       
+            [Route("AbUsageAmount")]
+        [HttpGet]
+        public aballresponse AbUsageAmount()
+        {          
+            var ret = new aballresponse { status = 0 ,values=new List<values>() ,labels=new List<labels>()};
+            try
+            {
+                using (var abdb = new mvc104.abm.studyinContext())
+                {
+                    var ah = abdb.Request.Where(a =>a.Method.Contains("InspectPostStudyStatus")).Select(b =>b.Time).ToList();
+                    var aaaaa = from one in ah
+                            group one by one.ToString("yyyy-MM-dd") into onegroup
+                            select new aaa {day= onegroup.Key,count= onegroup.Count() };
+                   foreach(var cc in aaaaa){
+                       ret.labels.Add(new labels{label=cc.day});
+                         ret.values.Add(new values{value=cc.count.ToString()});
+                   }                 
+                }
+            }
+            catch (Exception ex)
+            {
+                ret.content += ex.Message;
+            }            
+          
+            return ret;
+        }       
 
         [Route("aboallStatistics")]
         [HttpGet]
