@@ -51,6 +51,7 @@ namespace mvc104.Controllers
                 }
                 theuser.Integrated = false;
                  theuser.Status = (short)businessstatus.unknown;
+                 theuser.Exporttime=new DateTime(2000,1,1);
                 var reason = string.Empty;
                 if (!string.IsNullOrEmpty(theuser.Reason)) reason = theuser.Reason;
                 _db1.Businesshis.Add(new Businesshis
@@ -222,6 +223,7 @@ namespace mvc104.Controllers
                 {
                     return highlevel.commonreturn(responseStatus.iderror);
                 }
+                if(theuser.Losttime.CompareTo(new DateTime(2000,1,1))!=0)
                 ret.losttime = theuser.Losttime;
             }
             catch (Exception ex)

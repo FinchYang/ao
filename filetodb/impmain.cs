@@ -47,22 +47,12 @@ namespace importdata
             FileToDb();
             Console.WriteLine("import completed {0}!", DateTime.Now);
         }
-        static void clean(aboContext db, string identity, businessType bbtype)
+        static void clean(aboContext db, string identity, businessType bbtype, DateTime dsubmit)
         {
-            var pics = db.Businesspic.Where(a => a.Identity == identity && a.Businesstype == (int)bbtype);
-            foreach (var pic in pics)
-            {
-                db.Businesspichis.Add(new Businesspichis
-                {
-                    Identity = pic.Identity,
-                    Time = DateTime.Now,
-                    Businesstype = (short)pic.Businesstype,
-                    Pictype = pic.Pictype
-                });
-                db.Businesspic.Remove(pic);
-            }
+
             var busi = db.Business.FirstOrDefault(b => b.Identity == identity && b.Businesstype == (short)bbtype
-             && b.Integrated==true);
+             && b.Integrated == true
+             && b.Exporttime == dsubmit);
             if (busi != null)
             {
                 db.Businesshis.Add(new Businesshis
@@ -72,6 +62,18 @@ namespace importdata
                     Time = DateTime.Now,
                 });
                 db.Business.Remove(busi);
+                var pics = db.Businesspic.Where(a => a.Identity == identity && a.Businesstype == (int)bbtype);
+                foreach (var pic in pics)
+                {
+                    db.Businesspichis.Add(new Businesspichis
+                    {
+                        Identity = pic.Identity,
+                        Time = DateTime.Now,
+                        Businesstype = (short)pic.Businesstype,
+                        Pictype = pic.Pictype
+                    });
+                    db.Businesspic.Remove(pic);
+                }
             }
             db.SaveChanges();
         }
@@ -92,7 +94,7 @@ namespace importdata
                 foreach (var line in content)
                 {
                     var fields = line.Split(',');
-                    if (fields.Length < 5)
+                    if (fields.Length < 6)
                     {
                         Console.WriteLine(" invalid data line {0},{1}", fields.Length, line);
                         continue;
@@ -110,16 +112,27 @@ namespace importdata
                     var desc = fields[3];
                     var timed = fields[4];
                     var timedd = DateTime.Now;
-                    DateTime.TryParse(timed, out timedd);
-                    Console.WriteLine(" businessType ={0},identity={1},success={2},desc={3},timedd={4},bbtype={5}",
-                        btype, identity, success, desc, timedd, (int)bbtype);
+                    if (!DateTime.TryParse(timed, out timedd))
+                    {
+                        Console.WriteLine(" process time error line {0},{1}", timed, line);
+                        // Console.WriteLine(" businessType ={0},identity={1},success={2},desc={3},timedd={4},bbtype={5}",
+                        //     btype, identity, success, desc, timedd, (int)bbtype);
+                        continue;
+                    }
+                    var submittime = fields[5];
+                    var dsubmit = DateTime.Now;
+                    if (!DateTime.TryParse(submittime, out dsubmit))
+                    {
+                        Console.WriteLine(" submittime error line {0},{1}", submittime, line);
+                        continue;
+                    }
                     switch (success)
                     {
                         case "1":
-                            clean(db, identity, bbtype);
+                            clean(db, identity, bbtype, dsubmit);
                             break;
                         case "2":
-                            clean(db, identity, bbtype);
+                            clean(db, identity, bbtype, dsubmit);
                             var tuser = db.Aouser.FirstOrDefault(a => a.Identity == identity);
                             if (tuser != null)
                             {
@@ -129,7 +142,8 @@ namespace importdata
                             break;
                         case "3":
                             var busi3 = db.Business.FirstOrDefault(b => b.Identity == identity && b.Businesstype == (short)bbtype
-                             && b.Integrated==true);
+                             && b.Integrated == true
+                             && b.Exporttime == dsubmit);
                             if (busi3 != null)
                             {
                                 busi3.Status = (short)businessstatus.process;
@@ -142,7 +156,7 @@ namespace importdata
                         case "4":
                             var busi4 = db.Business.FirstOrDefault(b => b.Identity == identity
                              && b.Businesstype == (short)bbtype
-                             && b.Integrated==true);
+                             && b.Integrated == true && b.Exporttime == dsubmit);
                             if (busi4 != null)
                             {
                                 busi4.Status = (short)businessstatus.failure;
@@ -152,7 +166,7 @@ namespace importdata
                             }
                             break;
                         case "7":
-                            clean(db, identity, bbtype);
+                            clean(db, identity, bbtype, dsubmit);
                             break;
                         case "8":
                             var tuser8 = db.Aouser.FirstOrDefault(a => a.Identity == identity);
