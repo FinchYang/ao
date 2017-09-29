@@ -1,0 +1,77 @@
+
+<!-- saved from url=(0038)http://output.jsbin.com/qofuwa/2/quiet -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2017 by jdduke (http://jsbin.com/qofuwa/2/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+  <title>Overscroll in Chrome</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+</head>
+<body>
+<input id="preventPullToRefresh" type="checkbox">Prevent pull-to-refresh?
+<br>
+<input id="preventOverscrollGlow" type="checkbox">Prevent overscroll glow?
+<br>
+<input id="preventScroll" type="checkbox">Prevent scroll?
+<div style="height:4000px">
+<br>
+<script>
+window.addEventListener('load', function() {
+  var preventPullToRefreshCheckbox = document.getElementById('preventPullToRefresh');
+  var preventOverscrollGlowCheckbox = document.getElementById("preventOverscrollGlow");
+  var preventScrollCheckbox = document.getElementById("preventScroll");
+
+  var maybePreventPullToRefresh = false;
+  var lastTouchY = 0;
+  var touchstartHandler = function(e) {
+    if (e.touches.length != 1) return;
+    lastTouchY = e.touches[0].clientY;
+    // Pull-to-refresh will only trigger if the scroll begins when the
+    // document's Y offset is zero.
+    maybePreventPullToRefresh =
+        preventPullToRefreshCheckbox.checked &&
+        window.pageYOffset == 0;
+  }
+
+  var touchmoveHandler = function(e) {
+    var touchY = e.touches[0].clientY;
+    var touchYDelta = touchY - lastTouchY;
+    lastTouchY = touchY;
+
+    if (maybePreventPullToRefresh) {
+      // To suppress pull-to-refresh it is sufficient to preventDefault the
+      // first overscrolling touchmove.
+      maybePreventPullToRefresh = false;
+      if (touchYDelta > 0) {
+        e.preventDefault();
+        return;
+      }
+    }
+
+    if (preventScrollCheckbox.checked) {
+      e.preventDefault();
+      return;
+    }
+
+    if (preventOverscrollGlowCheckbox.checked) {
+      if (window.pageYOffset == 0 && touchYDelta > 0) {
+        e.preventDefault();
+        return;
+      }
+    }
+  }
+
+  document.addEventListener('touchstart', touchstartHandler, false);
+  document.addEventListener('touchmove', touchmoveHandler, false);
+});
+</script>
+
+
+</div></body></html>

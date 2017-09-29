@@ -1,0 +1,273 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="X-UA-Compatible" content="edge" />
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta HTTP-EQUIV="Cache-Control" CONTENT="no-cache"> 
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no"><!-- 取消浏览器自动识别拨号 -->
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <title>烟台公安</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<!-- <header class="mudule1" style="display:none">
+		<span class="header-left back"></span>
+		<div class="header-title">用户须知</div>
+	</header> -->
+	<section class="mudule1" style="display:none">
+		<div class="xuzhi">
+			<p>在线审验教育流程：</p>
+			<p>（一）身体情况申报。驾驶人如实申报当前身体情况。符合申报要求，并电子签名，可以进入审验教育；不符合申报要求，则返回主界面。</p>
+			<p>（二）网络审验教育学习课程任选六个课时，每个课时半个小时。</p>
+			<p>（三）学习过程中，会通过摄像头随机检测驾驶人当前状态。如检测不是本人学习，该课时作废，并重新开始当前课时教育。</p>
+			<p>（四）学习中如发现有吸毒、交通违法未处理完毕的情况，在线审验教育中止。</p>
+			<p>（五）所有课时完成后需审验答题。</p>
+			<p>（六）电子签名并提交后，开始办理审验业务。审验业务办理过程中，如发现违法未处理的情况，会以短信的形式告知驾驶人。审验业务受理完成，也会通过短信告知驾驶人。</p>
+			<p>注：驾驶人如不符合在线审验教育资格，请到相关部门进行现场教育。</p>
+		</div>
+	</section>
+	<div class="footer mudule1"  style="display:none">
+		<input type="button" id="agree" value=""/>
+	</div>
+
+	<!-- <header class="mudule2" style="display:none">
+		<span class="header-left back"></span>
+		<div class="header-title">驾驶员信息</div>
+	</header> -->
+	<section class="mudule2" style="display:none">
+		<div class="content-top">
+			<img id="headerUrl" src="" />
+			<div class="content-right">
+				<h1><em id="name"></em><span id="phone"></span></h1>
+				<p id="driverLicense"></p>
+				<p id="identity"></p>
+			</div>
+		</div>
+		<div class="content-main">
+			<div>
+				<h1>记分信息</h1>
+				<p><i></i>我的分数<span id="score"></span></p>
+			</div>
+			<div id="study_progress">
+				<h1>学习进度</h1>
+				<p><i></i>学习进度</p>
+			</div>
+		</div>
+	</section>
+	<div class="footer mudule2" style="display:none">
+		<input type="button" id="study" value="审验学习"/>
+	</div>
+	<div class="pop" style="display:none">
+		<div class="pop-bg"></div>
+		<div class="pop-main">
+			<p id="promptcon"></p>
+			<button id="promptbtn"></button>
+		</div>
+	</div>
+
+	<input type="hidden" id="refreshed" value="no">
+</body>
+<script type="text/javascript" src="js/jquery.js" ></script>
+<script type="text/javascript" src="js/common.js" ></script>
+<script type="text/javascript" src="js/base64.js" ></script>
+<script type="text/javascript" src="js/myStorage.js" ></script>
+<script type="text/javascript" src="js/openApp.js" ></script>
+<script type="text/javascript">
+	var Token;
+	var LastToken;
+	var identity;
+	var	name;
+	var	phone;
+	var firstSigned;
+	$(function(){
+		getdata();
+
+		var data = myStorage.getItem("image");
+		if(data == null){
+			$(".sign-show").html("签名展示区域")
+		}else{
+			var i = new Image();
+	        i.src = data; 
+	        $(".sign-show").html(i)
+	        $(".sign-show").removeClass("empty");
+	        myStorage.removeItem("image");
+		}
+
+		$(".sign-btn").on("click",function(){
+			$(".sign-btn").unbind("click");
+			 url = "qianziquyu.html";//此处拼接内容
+        	 window.location.href = url;
+		});
+
+		$("#agree").on("click",function(){
+			 $("#agree").unbind("click");
+			 agree();
+		});
+
+		$("#study").on("click",function(){
+			$("#study").unbind("click");
+			 study();
+		});
+		
+		$("#study_progress").on("click",function(){
+			 $("#study_progress").unbind("click");
+			 study_progress();
+		});
+	});
+	function getdata(){
+		//base64解密
+		var reqData = GetQueryString("reqData");
+		var base = new Base64();  
+		if(reqData != null && reqData !='') {
+			var result = base.decode(reqData);  
+			var obj= eval('('+result+')');
+			var url =  common_url + "LoginAndQuery";
+			identity = obj.sfzmhm;
+			name = obj.xm;
+			phone = obj.sjhm;
+			var data = {
+			  "identity": identity,
+			  "name": name,
+			  "phone": phone
+			}
+			$.ajax({
+				url : url,
+				method : "POST",
+				dataType: "JSON", 
+				data:JSON.stringify(data),
+				contentType:"application/json",
+				success:function(data){
+					//alert(JSON.stringify(data));
+					if(data.statusCode == 200000) {
+						Token = data.token;
+						LastToken = data.lastToken;
+					if(LastToken == null || LastToken ==undefined)
+							LastToken = "";
+						firstSigned = data.firstSigned;
+						//允许学习
+						if(data.allowedToStudy) {
+							//如果有学习进度，显示驾驶员信息页面
+							if(data.allStatus != ""&& data.allStatus !=null) {
+								$("#phone").html(phone);
+								$("#identity").html("驾驶证：" +identity);
+								$("#driverLicense").html("驾驶证类型：" +getDriveType(data.drivingLicense));
+								$("#headerUrl").attr("src","data:image/jpg;base64," +data.photo);
+								$("#name").html(name);
+								$("#score").html(data.deductedMarks);
+								$(".mudule2").show();
+								//如果学习完毕，不显示审验学习按钮
+								if(data.completed) {
+									$(".footer.mudule2").hide();
+								}
+							} else {
+								$("#agree").val("我已阅读并同意");
+								$("#agree").unbind("click");
+								$("#agree").on("click",function(){
+						           //申报表页面
+						           url = "shenbaobiao.html?Token="+Token+"&LastToken="+LastToken+"&firstSigned="+ data.firstSigned;//此处拼接内容
+ 									window.location.href = url;
+						        });
+						        $(".mudule1").show();
+							}
+
+						} else {
+							$("#agree").val("返回");
+							$("#agree").unbind("click");
+							$("#agree").on("click",function(){
+					           //返回
+					           window.history.go(-1);
+					        });
+					        $(".mudule1").show();
+
+                            $("#promptcon").html("您不符合学习条件，请返回！");
+                            $("#promptbtn").html("返回");
+                            $("#promptbtn").unbind("click");
+                            $("#promptbtn").on("click",function(){
+                                window.history.go(-1);
+                            })
+                            $(".pop").show();
+						}
+					} else {
+						$("#promptcon").html(data.description);
+						$("#promptbtn").html("返回");
+						$("#promptbtn").unbind("click");
+						$("#promptbtn").on("click",function(){
+				           window.history.go(-1);
+				        })
+						$(".pop").show();
+					}
+					
+				},error:function(data) {
+					//alert(JSON.stringify(data));
+				}
+			});
+		} else {
+			$("#promptcon").html("参数错误");
+			$("#promptbtn").html("关闭");
+			$("#promptbtn").unbind("click");
+			$("#promptbtn").on("click",function(){
+	           window.history.go(-1);
+	        })
+			$(".pop").show();
+		}
+	}
+
+
+	function study() {
+		//跳转到中粮开始学习页面
+ 		/*if(_web_public_app.getUa().isApple){
+	      window.webkit.messageHandlers.startStudy.postMessage(Token,LastToken);
+	    }else if(_web_public_app.getUa().isAndroid){
+	      window.jsObj.startStudy(Token,LastToken);
+	    }*/
+	    if(LastToken=="") {
+	    	url = zhongyang_url + "hapi.php/Study/beginStudy/token/"+Token;
+		    //此处拼接内容
+	 			window.location.href = url;
+	    } else {
+		    url = zhongyang_url + "hapi.php/Study/beginStudy/token/"+Token+"/last_token/"+LastToken;
+		    //此处拼接内容
+	 			window.location.href = url;
+	 		}
+	}
+
+	function study_progress() {
+		url = "xuexijindu.html?Token="+Token+"&LastToken="+LastToken;//此处拼接内容
+ 		window.location.href = url;
+	}
+	
+	function getDriveType(driveType) {
+		if(driveType==0) {
+			return "未知";
+		} else if(driveType==1) {
+			return "A1";
+		} else if(driveType==2) {
+			return "A2";
+		}else if(driveType==3) {
+			return "A3";
+		}else if(driveType==4) {
+			return "B1";
+		}else if(driveType==5) {
+			return "B2";
+		}
+	}
+
+    window.onpageshow = function(){
+        var e=document.getElementById("refreshed");
+        if(e.value==="no"){
+            e.value="yes";
+        }else{
+            e.value="no";
+            location.reload();
+        }
+    };
+
+</script>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="X-UA-Compatible" content="edge" />
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta HTTP-EQUIV="Cache-Control" CONTENT="no-cache"> 
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no"><!-- 取消浏览器自动识别拨号 -->
+    <title>烟台公安</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<!-- <header>
+		<span class="header-left back"></span>
+		<div class="header-title">学习记录</div>
+	</header> -->
+	<section>
+		<div class="record-main">
+			<ul id="data_list">
+				<!-- <li>
+					<p>课程1</p>
+					<p><em>2017-02-02 12:12:23</em></p>
+					<h6>已完成</h6>
+				</li> -->
+			</ul>
+		</div>
+		<div class="record-bottom" style="display:none">
+			<h2 class="sign-title">签名区域<span class="sign-btn">点击签字</span></h2>
+        	<div class="sign-show empty">签名展示区域</div>
+		</div>
+		
+	</section>
+	<div class="footer studying" style="display:none">
+		<input type="button" id="studying" value="继续学习"/>
+	</div>
+	<div class="footer check" style="display:none">
+		<input type="button" id="check" value="提交审验"/>
+	</div>
+	<div class="pop" style="display:none">
+		<div class="pop-bg"></div>
+		<div class="pop-main">
+			<p id="promptcon"></p>
+			<button id="promptbtn"></button>
+		</div>
+	</div>
+	<script type="text/javascript" src="js/jquery.js" ></script>
+	<script type="text/javascript" src="js/myStorage.js" ></script>
+	<script type="text/javascript" src="js/jquery.js" ></script>
+	<script type="text/javascript" src="js/common.js" ></script>
+	<script type="text/javascript" src="js/base64.js" ></script>
+	<script type="text/javascript" src="js/openApp.js" ></script>
+	<script type="text/javascript">
+		var Token;
+		var LastToken;
+		$(function(){
+			$(".sign-btn").on("click",function(){
+				$(".sign-btn").unbind("click");
+				 url = "qianziquyu.html";//此处拼接内容
+            	 window.location.href = url;
+			});
+			var data = myStorage.getItem("image");
+			if(data == null){
+				$(".sign-show").html("签名展示区域")
+			}else{
+				var i = new Image();
+		        i.src = data; 
+		        $(".sign-show").html(i)
+		        $(".sign-show").removeClass("empty");
+		        myStorage.removeItem("image");
+			}
+			getdata();
+
+			$("#studying").on("click",function(){
+				$("#studying").unbind("click");
+				 study();
+			});
+			
+			$("#check").on("click",function(){
+				$("#check").unbind("click");
+				 check();
+			});
+		})
+		
+		function getdata(){
+		    Token = GetQueryString("Token");
+		    LastToken = GetQueryString("LastToken");
+		    if(LastToken==null) 
+		    	LastToken = "";
+	    	var url =  common_url + "SignatureQuery";
+	    	var data = {
+			  "Token": Token
+			}
+			
+			$.ajax({
+				url : url,
+				method : "POST",
+				dataType: "JSON", 
+				data:JSON.stringify(data),
+				contentType:"application/json",
+				success:function(data){
+					//alert(JSON.stringify(data));
+					if(data.statusCode == 200000) {
+						allStatus = data.allStatus;
+						if(allStatus !='' && allStatus !=null) {
+							var data_list = "";
+							//循环课程
+							var strs= new Array(); //定义一数组 
+							strs=allStatus.split("-"); //字符分割 
+							for (i=0;i<strs.length ;i++ ) 
+							{ 
+								if(strs[i] !='') {
+									//document.write(strs[i]+"<br/>"); //分割后的字符输出 
+									var substr = strs[i].split(",");
+									data_list += "<li>";
+									data_list += "<p>"+substr[0]+"</p>";
+									data_list += "<p><em>"+getLocalTime(substr[1])+"</em></p>";
+									data_list += "<h6>已完成</h6>";
+									data_list += "</li>";
+								}
+							} 
+							$("#data_list").html(data_list);
+						}
+
+						//学习完毕，还没签名，显示签名和开始审验按钮
+						if(data.completed && !data.signed) {
+							$(".record-bottom").show();
+							$(".footer.check").show();
+						}
+						if(data.completed) {
+							//继续学习
+							$(".footer.studying").hide();
+						} else {
+							$(".footer.studying").show();
+						}
+						
+					} else {
+						$("#promptcon").html(data.description);
+						$("#promptbtn").html("返回");
+						$("#promptbtn").unbind("click");
+						$("#promptbtn").on("click",function(){
+				           window.history.go(-1);
+				        })
+						$(".pop").show();
+					}
+					
+				},error:function(data) {
+					//alert(JSON.stringify(data));
+				}
+			});
+		}
+
+		function study() {
+			//跳转到中粮开始学习页面
+			//url = "qianziquyu.html";//此处拼接内容
+	 		//window.location.href = url;
+	 		/*if(_web_public_app.getUa().isApple){
+				window.webkit.messageHandlers.startStudy.postMessage(Token,LastToken);
+			}else if(_web_public_app.getUa().isAndroid){
+				window.jsObj.startStudy(Token,LastToken);
+			}*/
+			
+	 		if(LastToken=="") {
+	    	url = zhongyang_url + "hapi.php/Study/beginStudy/token/"+Token;
+		    //此处拼接内容
+	 			window.location.href = url;
+	    } else {
+		    url = zhongyang_url + "hapi.php/Study/beginStudy/token/"+Token+"/last_token/"+LastToken;
+		    //此处拼接内容
+	 			window.location.href = url;
+	 		}
+		}
+
+		function check() {
+			if($(".sign-show").hasClass("empty")) {
+				$("#promptcon").html("请签字");
+				$("#promptbtn").html("关闭");
+				$("#promptbtn").unbind("click");
+				$("#promptbtn").on("click",function(){
+		           $(".pop").hide();
+		        })
+				$(".pop").show();
+				$("#check").on("click",function(){
+					$("#check").unbind("click");
+					 check();
+				});
+				return false;
+			} else {
+				//提交
+				var data = {};
+				data.Token = Token;
+				data.SignatureFile = $(".sign-show img").attr("src");
+				data.SignatureType = 2;
+				
+				$.ajax({
+					url : common_url + "LogSignature",
+					method : "POST",
+					dataType: "JSON", 
+					data:JSON.stringify(data),
+					contentType:"application/json",
+					success:function(data){
+						//alert(JSON.stringify(data));
+						if(data.statusCode == 200000) {
+							$("#promptcon").html("恭喜您已完成线上审验教育，请留意短信通知");
+							$("#promptbtn").html("关闭");
+							$("#promptbtn").unbind("click");
+							$("#promptbtn").on("click",function(){
+                                WeixinJSBridge.call('closeWindow');
+//					           $(".pop").hide();
+//					           window.location.reload();
+					        })
+							$(".pop").show();
+							
+						} else {
+							$("#promptcon").html(data.description);
+							$("#promptbtn").html("关闭");
+							$("#promptbtn").unbind("click");
+							$("#promptbtn").on("click",function(){
+					           $(".pop").hide();
+					        })
+							$(".pop").show();
+							
+							$("#check").on("click",function(){
+								$("#check").unbind("click");
+								 check();
+							});
+						}
+						
+					},error:function(data) {
+						//alert(JSON.stringify(data));
+					}
+				});
+			}
+		}
+
+		function getLocalTime(nS) {     
+		   return new Date(parseInt(nS) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ');     
+		}     
+	</script>
+</body>
+</html>

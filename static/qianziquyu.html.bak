@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="X-UA-Compatible" content="edge" />
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no"><!-- 取消浏览器自动识别拨号 -->
+    <title>烟台公安</title>
+    <link rel="stylesheet" href="css/style.css">
+   	<script type="text/javascript" src="js/jquery.js" ></script>
+    <script type="text/javascript" src="js/flashcanvas.js" ></script>
+    <script type="text/javascript" src="js/jSignature.min.js" ></script>
+    <script type="text/javascript" src="js/myStorage.js" ></script>
+    <script type="text/javascript" src="js/common.js" ></script>
+    <style>
+    	a{
+    		background: #999;
+		    color: #ffffff;
+		    text-decoration: none;
+		    padding: 5px 16px;
+		    font-size: 12px;
+		    margin: 10px;
+    		}	
+    </style>
+    <script>
+    	 $(function(){  
+	        //初始化插件  
+	        $(".footer-click").on("click",function(){
+	            $("#promptcon").html("请签字");
+				$("#promptbtn").html("关闭");
+				$("#promptbtn").unbind("click");
+				$("#promptbtn").on("click",function(){
+		           $(".pop").hide();
+		        })
+				$(".pop").show();
+	        })
+	        var dHeight = "230px";  
+	        var dWidth = "100%";   
+	        $("#signature").jSignature({height:dHeight,width:dWidth, signatureLine:false});//初始化调整手写屏大小  
+			$("#signature").css("touch-action", "none")
+	    	$("#signature").change(function(){
+	    		$(".footer-click").hide();
+	    		$(".queren-click").show();
+	    		$(".queren-click").unbind("click");
+	    		$(".queren-click").on("click",function(){
+	    			$(".queren-click").unbind("click");
+	    			jSignatureTest();
+	    		})
+	    		
+	    	});
+	    	
+	    	$("#reset").on("click",function(){
+	    		$("#signature").jSignature("reset");
+	    		$(".footer-click").show();
+	    		$(".queren-click").hide();
+	    		
+	    	});
+	    	
+    	 })
+	    //输出签名图片  
+	    function jSignatureTest(){  
+	        var $sigdiv = $("#signature");  
+	        var datapair = $sigdiv.jSignature("getData", "image");
+	        myStorage.setItem("image", "data:" + datapair[0] + "," + datapair[1]);
+	    	  //window.history.go(-1);
+	    	  window.location.href=document.referrer;
+	    }
+		
+		window.addEventListener('load', function() {
+			var maybePreventPullToRefresh = false;
+			var lastTouchY = 0;
+			var touchstartHandler = function(e) {
+				if (e.touches.length != 1) return;
+				lastTouchY = e.touches[0].clientY;
+				// Pull-to-refresh will only trigger if the scroll begins when the
+				// document's Y offset is zero.
+				maybePreventPullToRefresh = window.pageYOffset == 0;
+			}
+
+			var touchmoveHandler = function(e) {
+				var touchY = e.touches[0].clientY;
+				var touchYDelta = touchY - lastTouchY;
+				lastTouchY = touchY;
+
+				if (maybePreventPullToRefresh) {
+					// To suppress pull-to-refresh it is sufficient to preventDefault the
+					// first overscrolling touchmove.
+					maybePreventPullToRefresh = false;
+					if (touchYDelta > 0) {
+						e.preventDefault();
+						return;
+					}
+				}
+			}
+
+			document.addEventListener('touchstart', touchstartHandler, false);
+			document.addEventListener('touchmove', touchmoveHandler, false);
+			});
+    </script>
+</head>
+<body>
+	<!-- <header>
+		<span class="header-left back"></span>
+		<div class="header-title">签字区域</div>
+	</header> -->
+	<section>
+	    <div class="sign-box">
+	        <h1>请在下方签上您的名字：</h1>
+	        <div class="sign-area" id="signature"></div>     
+	    </div>
+	    <a href="javascript:void(0)" id="reset">清空</a>
+		<!--<a href="test.html">test</a>-->
+	</section>
+	<div class="footer">
+		<input type="button" class="footer-click"  value="确认"/>
+		<input type="button" style="display: none;" class="queren-click"  value="确认"/>
+	</div>
+	<div class="pop" style="display:none">
+		<div class="pop-bg"></div>
+		<div class="pop-main">
+			<p id="promptcon"></p>
+			<button id="promptbtn"></button>
+		</div>
+	</div>
+</body>
+</html>

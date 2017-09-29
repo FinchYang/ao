@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="X-UA-Compatible" content="edge" />
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta HTTP-EQUIV="Cache-Control" CONTENT="no-cache"> 
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no"><!-- 取消浏览器自动识别拨号 -->
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <title>烟台公安</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<!-- <header >
+		<span class="header-left back"></span>
+		<div class="header-title">驾驶人身体情况申报表</div>
+	</header> -->
+	<section>
+		<div class="xuzhi">
+			<p>一、本人身体条件符合中华人民共和国机动车驾驶证申请条件</p>
+			<p>二、本人不具有器质性心脏病、癫痫病、美尼尔氏症、眩晕症、癔症、震颤麻痹、精神病、痴呆、影响肢体活动的神经系统疾病等妨碍安全驾驶疾病，及三年内有吸食、注射毒品行为或者解除强制隔离戒毒措施未满三年，或长期服用依赖性精神药品成瘾尚未解除的情况</p>
+			<p>三、本人的身体条件如果发生不符合机动车驾驶许可条件的情形，本人将在30日内向公安机关申请降低准驾车型或注销机动车驾驶证；</p>
+			<p>四、上述申告为本人真实情况和真实意思表示，如果不属实本人自愿承担相应的法律责任。</p>
+		</div>
+		<div class="record-bottom" style="display:none">
+			<h2 class="sign-title">签约区域<span class="sign-btn">点击签字</span></h2>
+      		<div class="sign-show empty">签名展示区域</div>
+      		<!--<div class="sign-address"><label>邮寄地址：</label><span><input placeholder="请填写您的邮寄地址" type="text" id="address"></span></div>-->
+		</div>
+	</section>
+	<div class="footer">
+		<input type="button" id="agree" value="阅读并同意，进入审验学习"/>
+	</div>
+
+	<div class="pop" style="display:none">
+		<div class="pop-bg"></div>
+		<div class="pop-main">
+			<p id="promptcon"></p>
+			<button id="promptbtn"></button>
+		</div>
+	</div>
+
+<script type="text/javascript" src="js/jquery.js" ></script>
+<script type="text/javascript" src="js/common.js" ></script>
+<script type="text/javascript" src="js/base64.js" ></script>
+<script type="text/javascript" src="js/myStorage.js" ></script>
+<script type="text/javascript" src="js/openApp.js" ></script>
+<script type="text/javascript">
+	var Token;
+	var LastToken;
+	var firstSigned;
+	$(function(){
+		getdata();
+
+		var data = myStorage.getItem("image");
+		if(data == null){
+			$(".sign-show").html("签名展示区域")
+		}else{
+			var i = new Image();
+	        i.src = data; 
+	        $(".sign-show").html(i)
+	        $(".sign-show").removeClass("empty");
+	        myStorage.removeItem("image");
+		}
+
+		$(".sign-btn").on("click",function(){
+			$(".sign-btn").unbind("click");
+			 url = "qianziquyu.html";//此处拼接内容
+        	 window.location.href = url;
+		});
+
+		$("#agree").on("click",function(){
+			$("#agree").unbind("click");
+			 agree();
+		});
+
+	});
+	function getdata(){
+		Token = GetQueryString("Token");
+		LastToken = GetQueryString("LastToken");
+		firstSigned = GetQueryString("firstSigned");
+		if(LastToken==null) 
+	    	LastToken = "";
+    	
+		if(Token != null && Token !='') {
+			//如果首次签名
+
+			if(firstSigned=='false') {
+				$(".record-bottom").show();
+			}
+			
+		} else {
+			$("#promptcon").html("参数错误");
+			$("#promptbtn").html("关闭");
+			$("#promptbtn").unbind("click");
+			$("#promptbtn").on("click",function(){
+	           window.history.go(-1);
+	        })
+			$(".pop").show();
+		}
+	}
+
+	function agree() {
+		//阅读并同意，进入审验学习
+		//判断是否签字
+		if(firstSigned=='true') {
+			//跳转到中粮开始学习页面
+			/*if(_web_public_app.getUa().isApple){
+				window.webkit.messageHandlers.startStudy.postMessage(Token,LastToken);
+			}else if(_web_public_app.getUa().isAndroid){
+				window.jsObj.startStudy(Token,LastToken);
+			}*/
+	 		if(LastToken=="") {
+	    	url = zhongyang_url + "hapi.php/Study/beginStudy/token/"+Token;
+		    //此处拼接内容
+	 			window.location.href = url;
+	    } else {
+		    url = zhongyang_url + "hapi.php/Study/beginStudy/token/"+Token+"/last_token/"+LastToken;
+		    //此处拼接内容
+	 			window.location.href = url;
+	 		}
+		} else {
+			if($(".sign-show").hasClass("empty")) {
+				$("#promptcon").html("请签字");
+				$("#promptbtn").html("关闭");
+				$("#promptbtn").unbind("click");
+				$("#promptbtn").on("click",function(){
+		           $(".pop").hide();
+		        })
+				$(".pop").show();
+				$("#agree").on("click",function(){
+					$("#agree").unbind("click");
+					 agree();
+				});
+				return false;
+			}  else {
+				var data = {};
+				data.Token = Token;
+				data.SignatureFile = $(".sign-show img").attr("src");
+				data.SignatureType = 1;
+				data.PostalAddress = '';
+				$.ajax({
+					url : common_url + "LogSignature",
+					method : "POST",
+					dataType: "JSON", 
+					data:JSON.stringify(data),
+					contentType:"application/json",
+					success:function(data){
+						if(data.statusCode == 200000) {
+              				firstSigned = true;
+              				//$(".record-bottom").hide();
+							//跳转到中粮开始学习页面
+							/*if(_web_public_app.getUa().isApple){
+								window.webkit.messageHandlers.startStudy.postMessage(Token,LastToken);
+							}else if(_web_public_app.getUa().isAndroid){
+								window.jsObj.startStudy(Token,LastToken);
+							}*/
+
+							if(LastToken=="") {
+					    	url = zhongyang_url + "hapi.php/Study/beginStudy/token/"+Token;
+						    //此处拼接内容
+					 			window.location.href = url;
+					    } else {
+						    url = zhongyang_url + "hapi.php/Study/beginStudy/token/"+Token+"/last_token/"+LastToken;
+						    //此处拼接内容
+					 			window.location.href = url;
+					 		}
+						} else {
+							//alert(data.description);
+							$("#agree").on("click",function(){
+								$("#agree").unbind("click");
+								 agree();
+							});
+						}
+						
+					},error:function(data) {
+						//alert(JSON.stringify(data));
+					}
+				});
+			}
+		}
+	}
+
+</script>
+</html>
