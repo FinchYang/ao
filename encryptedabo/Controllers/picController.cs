@@ -12,13 +12,14 @@ using Microsoft.Extensions.Logging;
 using mvc104.models;
 using Newtonsoft.Json;
 using static mvc104.global;
+using enabo;
 
 namespace mvc104.Controllers
 {
     public class picController : Controller
     {
         public readonly ILogger<picController> _log;
-        private readonly aboContext _db1 = new aboContext();
+        private readonly enaboContext _db1 = new enaboContext();
         static string _picpath = "pictures";
 
         protected override void Dispose(bool disposing)
@@ -93,7 +94,7 @@ namespace mvc104.Controllers
             }
             try
             {
-                using (var ddbb = new aboContext())
+                using (var ddbb = new enaboContext())
                 {
                     var already = ddbb.Businesspic.FirstOrDefault(i => i.Businesstype == (int)accinfo.businessType && i.Identity == accinfo.Identity && i.Pictype == (short)input.picType);
                     if (already == null)

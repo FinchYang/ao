@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using enexp;
 
 namespace exportdb
 {
@@ -100,7 +101,7 @@ namespace exportdb
             if (!Directory.Exists(dbtofp)) Directory.CreateDirectory(dbtofp);
             var fname = Path.Combine(dbtofp, dbtofilefname);
 
-            using (var db = new aboContext())
+            using (var db = new enaboContext())
             {
                 //冗余传输，防止边界平台not delivery
                 var rebusi = db.Business.Where(async => async.Integrated == true

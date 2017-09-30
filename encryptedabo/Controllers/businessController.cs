@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using mvc104.models;
 using Newtonsoft.Json;
 using static mvc104.global;
+using enabo;
 
 namespace mvc104.Controllers
 {
@@ -19,7 +20,7 @@ namespace mvc104.Controllers
     {
         public readonly ILogger<businessController> _log;
 
-        private readonly aboContext _db1 = new aboContext();
+        private readonly enaboContext _db1 = new enaboContext();
 
 
         protected override void Dispose(bool disposing)

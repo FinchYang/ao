@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace eximp
+namespace convert.enabo
 {
     public partial class Business
     {

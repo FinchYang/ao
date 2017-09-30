@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace enabo
+namespace convert.abo
 {
     public partial class Businesspic
     {

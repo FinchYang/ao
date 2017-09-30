@@ -21,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Threading;
 using System.Data;
 using mvc104.abm;
+using enabo;
 
 namespace mvc104.Controllers
 {
@@ -28,7 +29,7 @@ namespace mvc104.Controllers
     {
         public readonly ILogger<examController> _log;
 
-        private readonly aboContext _db1 = new aboContext();
+        private readonly enaboContext _db1 = new enaboContext();
 
         protected override void Dispose(bool disposing)
         {

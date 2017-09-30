@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace exportdb
+namespace enexp
 {
     public partial class Businesspichis
     {

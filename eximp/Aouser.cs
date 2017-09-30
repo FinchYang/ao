@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace importdata
+namespace eximp
 {
     public partial class Aouser
     {

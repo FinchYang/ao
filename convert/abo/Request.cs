@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace eximp
+namespace convert.abo
 {
     public partial class Request
     {

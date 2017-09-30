@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace exportdb
+namespace enexp
 {
-    public partial class aboContext : DbContext
+    public partial class enaboContext : DbContext
     {
         public virtual DbSet<Aouser> Aouser { get; set; }
         public virtual DbSet<Business> Business { get; set; }
@@ -16,7 +16,7 @@ namespace exportdb
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-            optionsBuilder.UseMySql(@"Server=192.168.10.94;User Id=studyin;Password=yunyi@6688A;Database=abo");
+            optionsBuilder.UseMySql(@"Server=192.168.10.94;User Id=studyin;Password=yunyi@6688A;Database=enabo");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -182,6 +182,10 @@ namespace exportdb
                 entity.Property(e => e.QuasiDrivingLicense)
                     .HasColumnName("quasiDrivingLicense")
                     .HasColumnType("varchar(45)");
+
+                entity.Property(e => e.Reason)
+                    .HasColumnName("reason")
+                    .HasColumnType("varchar(545)");
 
                 entity.Property(e => e.Time).HasColumnName("time");
             });

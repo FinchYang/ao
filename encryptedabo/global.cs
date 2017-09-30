@@ -8,6 +8,7 @@ using mvc104.models;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 using static mvc104.global;
+using enabo;
 
 namespace mvc104
 {
@@ -82,7 +83,7 @@ namespace mvc104
             }
             await Task.Run(() =>
             {
-                using (var logdb = new aboContext())
+                using (var logdb = new enaboContext())
                 {
                     logdb.Request.Add(new Request
                     {

@@ -19,13 +19,13 @@ namespace mvc104.Controllers
         public readonly ILogger<livingController> _log;
         private readonly string facepath = "face";
         private readonly string residencepicturepath = "residentpicture";
-        private readonly aboContext _db1 = new aboContext();
+     //   private readonly aboContext _db1 = new aboContext();
      
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _db1.Dispose();
+         //       _db1.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -34,90 +34,90 @@ namespace mvc104.Controllers
             _log = log;
         }
 
-        [Route("FaceCompare")]
-        [HttpPost]
-        public commonresponse FaceCompare([FromBody]facerequest input)
-        {
-            if (input == null)
-            {
-                return new commonresponse { status = responseStatus.requesterror };
-            }
-            highlevel.infolog(_log, "FaceCompare", input.image.Length.ToString());
-            var accinfo = highlevel.GetInfoByToken(Request.Headers);
-            if (accinfo.status != responseStatus.ok) return accinfo;
+        //[Route("FaceCompare")]
+        //[HttpPost]
+        //public commonresponse FaceCompare([FromBody]facerequest input)
+        //{
+        //    if (input == null)
+        //    {
+        //        return new commonresponse { status = responseStatus.requesterror };
+        //    }
+        //    highlevel.infolog(_log, "FaceCompare", input.image.Length.ToString());
+        //    var accinfo = highlevel.GetInfoByToken(Request.Headers);
+        //    if (accinfo.status != responseStatus.ok) return accinfo;
 
-            if (string.IsNullOrEmpty(input.image))
-            {
-                return new commonresponse { status = responseStatus.imageerror };
-            }
-            var fp = Path.Combine(facepath, accinfo.Identity);
-            if (!Directory.Exists(fp)) Directory.CreateDirectory(fp);
-            var now = DateTime.Now;
-            var fbase = string.Format("{0}-{1}-{2}-{3}-{4}-{5}.jpg", now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
-            var fname = Path.Combine(fp, fbase);
-            try
-            {
-                var index = input.image.IndexOf("base64,");
-                _log.LogInformation("length: {0}", input.image.Length);
-                System.IO.File.WriteAllBytes(fname, Convert.FromBase64String(input.image.Substring(index + 7)));
-            }
-            catch (Exception ex)
-            {
-                _log.LogInformation("error: {0}", ex);
-                return new commonresponse { status = responseStatus.fileprocesserror };
-            }
+        //    if (string.IsNullOrEmpty(input.image))
+        //    {
+        //        return new commonresponse { status = responseStatus.imageerror };
+        //    }
+        //    var fp = Path.Combine(facepath, accinfo.Identity);
+        //    if (!Directory.Exists(fp)) Directory.CreateDirectory(fp);
+        //    var now = DateTime.Now;
+        //    var fbase = string.Format("{0}-{1}-{2}-{3}-{4}-{5}.jpg", now.Year, now.Month, now.Day, now.Hour, now.Minute, now.Second);
+        //    var fname = Path.Combine(fp, fbase);
+        //    try
+        //    {
+        //        var index = input.image.IndexOf("base64,");
+        //        _log.LogInformation("length: {0}", input.image.Length);
+        //        System.IO.File.WriteAllBytes(fname, Convert.FromBase64String(input.image.Substring(index + 7)));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _log.LogInformation("error: {0}", ex);
+        //        return new commonresponse { status = responseStatus.fileprocesserror };
+        //    }
 
-            try
-            {
-                var api_id = "9a4c8ff73d6642d886c537403a0a736d";
-                var api_secret = "d5f2e07d025b4bc8bdc8e4774f904fbf";
+        //    try
+        //    {
+        //        var api_id = "9a4c8ff73d6642d886c537403a0a736d";
+        //        var api_secret = "d5f2e07d025b4bc8bdc8e4774f904fbf";
 
-                var ret = living(api_id, api_secret, fname);
-                _log.LogInformation("living check ret={0}", ret);
-                var retsta = JsonConvert.DeserializeObject<okcheck>(ret);
-                if (retsta.status != "OK")
-                {
-                    return new commonresponse { status = responseStatus.livingerror, content = ret };
-                }
-                var retok = JsonConvert.DeserializeObject<okcheck2>(ret);
-                var score = double.Parse(retok.score);
-                if (score >= 0.98)
-                {
-                    return new commonresponse { status = responseStatus.livingerror, content = retok.score };
-                }
+        //        var ret = living(api_id, api_secret, fname);
+        //        _log.LogInformation("living check ret={0}", ret);
+        //        var retsta = JsonConvert.DeserializeObject<okcheck>(ret);
+        //        if (retsta.status != "OK")
+        //        {
+        //            return new commonresponse { status = responseStatus.livingerror, content = ret };
+        //        }
+        //        var retok = JsonConvert.DeserializeObject<okcheck2>(ret);
+        //        var score = double.Parse(retok.score);
+        //        if (score >= 0.98)
+        //        {
+        //            return new commonresponse { status = responseStatus.livingerror, content = retok.score };
+        //        }
 
-                var theuser = _db1.Aouser.FirstOrDefault(c => c.Identity == accinfo.Identity);
-                if (theuser == null)
-                {
-                    return new commonresponse { status = responseStatus.nouser, content = accinfo.Identity };
-                }
-                if (string.IsNullOrEmpty(theuser.Photofile))
-                {
-                    return new commonresponse { status = responseStatus.residencepictureerror };
-                }
-                var history =Path.Combine(residencepicturepath, theuser.Photofile+ ".jpg");
+        //        var theuser = _db1.Aouser.FirstOrDefault(c => c.Identity == accinfo.Identity);
+        //        if (theuser == null)
+        //        {
+        //            return new commonresponse { status = responseStatus.nouser, content = accinfo.Identity };
+        //        }
+        //        if (string.IsNullOrEmpty(theuser.Photofile))
+        //        {
+        //            return new commonresponse { status = responseStatus.residencepictureerror };
+        //        }
+        //        var history =Path.Combine(residencepicturepath, theuser.Photofile+ ".jpg");
 
-                highlevel.infolog(_log,"historpic",fname);
-                var rettwo = CompareWitdIdFace(api_id, api_secret, fname, history);
-                var twoc = JsonConvert.DeserializeObject<okcheck>(rettwo);
-                if (twoc.status != "OK")
-                {
-                    return new commonresponse { status = responseStatus.compareerror, content = rettwo };
-                }
-                var twook = JsonConvert.DeserializeObject<okchecktwo>(rettwo);
-                var confidence = double.Parse(twook.confidence);
-                if (confidence <= 0.78)
-                {
-                    return new commonresponse { status = responseStatus.compareerror, content = twook.confidence };
-                }
-                return new commonresponse { status = responseStatus.ok, content = twook.confidence };
-            }
-            catch (Exception ex)
-            {
-                _log.LogInformation("error: {0}", ex);
-                return new commonresponse { status = responseStatus.fileprocesserror };
-            }
-        }
+        //        highlevel.infolog(_log,"historpic",fname);
+        //        var rettwo = CompareWitdIdFace(api_id, api_secret, fname, history);
+        //        var twoc = JsonConvert.DeserializeObject<okcheck>(rettwo);
+        //        if (twoc.status != "OK")
+        //        {
+        //            return new commonresponse { status = responseStatus.compareerror, content = rettwo };
+        //        }
+        //        var twook = JsonConvert.DeserializeObject<okchecktwo>(rettwo);
+        //        var confidence = double.Parse(twook.confidence);
+        //        if (confidence <= 0.78)
+        //        {
+        //            return new commonresponse { status = responseStatus.compareerror, content = twook.confidence };
+        //        }
+        //        return new commonresponse { status = responseStatus.ok, content = twook.confidence };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _log.LogInformation("error: {0}", ex);
+        //        return new commonresponse { status = responseStatus.fileprocesserror };
+        //    }
+        //}
 
         private string CompareWitdIdFace(string api_id, string api_secret, string path, string historypath)
         {

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace mvc104
+namespace convert.abo
 {
     public partial class aboContext : DbContext
     {

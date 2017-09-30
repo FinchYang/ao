@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace mvc104
+namespace enabo
 {
     public partial class Aouser
     {

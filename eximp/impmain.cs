@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using eximp;
 
 namespace importdata
 {
@@ -47,7 +48,7 @@ namespace importdata
             FileToDb();
             Console.WriteLine("import completed {0}!", DateTime.Now);
         }
-        static void clean(aboContext db, string identity, businessType bbtype, DateTime dsubmit)
+        static void clean(enaboContext db, string identity, businessType bbtype, DateTime dsubmit)
         {
 
             var busi = db.Business.FirstOrDefault(b => b.Identity == identity && b.Businesstype == (short)bbtype
@@ -79,7 +80,7 @@ namespace importdata
         }
         static void FileToDb()
         {
-            using (var db = new aboContext())
+            using (var db = new enaboContext())
             {
                 var filebase = "result.txt";
                 var home = Environment.GetEnvironmentVariable("HOME");

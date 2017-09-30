@@ -20,7 +20,7 @@ namespace mvc104.Controllers
         public readonly ILogger<wechatController> _log;
 
         static tokenticket _tt = new tokenticket();
-        private readonly aboContext _db1 = new aboContext();
+     //   private readonly aboContext _db1 = new aboContext();
 
 
         protected override void Dispose(bool disposing)
@@ -28,7 +28,7 @@ namespace mvc104.Controllers
             if (disposing)
             {
 
-                _db1.Dispose();
+           //     _db1.Dispose();
             }
             base.Dispose(disposing);
         }

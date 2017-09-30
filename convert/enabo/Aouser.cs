@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace enexp
+namespace convert.enabo
 {
     public partial class Aouser
     {
