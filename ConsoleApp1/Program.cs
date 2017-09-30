@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.
+//using System.Web.
 namespace ConsoleApp1
 {
     class Program
@@ -17,6 +17,7 @@ namespace ConsoleApp1
                     from num in numbers
                   //  group num by num % 5 into numGroup
                     group num by num into numGroup
+                    orderby numGroup.Key descending
                     select new { Remainder = numGroup.Key, Numbers = numGroup.Count() };
 
                 foreach (var grp in numberGroups)
@@ -31,21 +32,21 @@ namespace ConsoleApp1
             
 
         }
-        private bool CheckSignature(string signature, string timestamp, string nonce,string Token)
-        {
-            string[] ArrTmp = { Token, timestamp, nonce };
-            Array.Sort(ArrTmp); //字典排序
-            string tmpStr = string.Join("", ArrTmp);
-            tmpStr = FormsAuthentication.HashPasswordForStoringInConfigFile(tmpStr, "SHA1");
-            tmpStr = tmpStr.ToLower();
-            if (tmpStr == signature)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        //private bool CheckSignature(string signature, string timestamp, string nonce,string Token)
+        //{
+        //    string[] ArrTmp = { Token, timestamp, nonce };
+        //    Array.Sort(ArrTmp); //字典排序
+        //    string tmpStr = string.Join("", ArrTmp);
+        //    tmpStr = FormsAuthentication.HashPasswordForStoringInConfigFile(tmpStr, "SHA1");
+        //    tmpStr = tmpStr.ToLower();
+        //    if (tmpStr == signature)
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
     }
 }

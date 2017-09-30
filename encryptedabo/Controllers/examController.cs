@@ -116,6 +116,7 @@ namespace mvc104.Controllers
                     var ah = abdb.History.Select(ab =>ab.Finishdate).ToList();
                     var aaaaa = from one in ah
                             group one by one.ToString("yyyy-MM-dd") into onegroup
+                            orderby onegroup.Key descending
                             select new aaa {day= onegroup.Key,count= onegroup.Count() };
                          //   var  memday=DateTime.Parse( aaaaa.First().day);
                    foreach(var cc in aaaaa){
@@ -148,7 +149,8 @@ namespace mvc104.Controllers
                     var ah = abdb.Request.Where(a =>a.Method.Contains("InspectPostStudyStatus")).Select(b =>b.Time).ToList();
                     var aaaaa = from one in ah
                             group one by one.ToString("yyyy-MM-dd") into onegroup
-                            select new aaa {day= onegroup.Key,count= onegroup.Count() };
+                                orderby onegroup.Key descending
+                                select new aaa {day= onegroup.Key,count= onegroup.Count() };
                    foreach(var cc in aaaaa){
                        ret.labels.Add(new labels{label=cc.day});
                          ret.values.Add(new values{value=cc.count.ToString()});

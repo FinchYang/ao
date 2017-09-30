@@ -105,7 +105,7 @@ namespace exportdb
             {
                 //冗余传输，防止边界平台not delivery
                 var rebusi = db.Business.Where(async => async.Integrated == true
-             //    && async.Exporttime.CompareTo(date.AddDays(-1)) >= 0
+                 && async.Exporttime.CompareTo(date.AddDays(-1)) >= 0
                 );
                 Console.WriteLine("redundant is {1}, {2} records need to  be archived", ",", date, rebusi.Count());
                 foreach (var rere in rebusi)

@@ -148,7 +148,8 @@ namespace mvc104.Controllers
                 var fname = Path.Combine(fpath, picType + ".jpg");
                 
                 var index = picstr.IndexOf("base64,");
-                System.IO.File.WriteAllBytes(fname, Convert.FromBase64String(CryptographyHelpers.StudyEncrypt(picstr.Substring(index + 7))));
+             //   System.IO.File.WriteAllBytes(fname, Convert.FromBase64String(CryptographyHelpers.StudyEncrypt(picstr.Substring(index + 7))));
+                System.IO.File.WriteAllText(fname, CryptographyHelpers.StudyEncrypt(picstr.Substring(index + 7)));
             }
             catch (Exception ex)
             {
