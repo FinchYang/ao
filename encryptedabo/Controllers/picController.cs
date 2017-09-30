@@ -47,8 +47,8 @@ namespace mvc104.Controllers
             {
                 var fname = Path.Combine(_picpath, accinfo.photofile, accinfo.businessType.ToString(), picType + ".jpg");
               //  highlevel.infolog(_log, "downloadpic", fname);
-                var bbytes = CryptographyHelpers.StudyFileDecrypt(fname);
-                var retstr ="data:image/jpeg;base64," +Convert.ToBase64String(bbytes);
+                var bbytes = CryptographyHelpers.StudyFileDecryptStr(fname);
+                var retstr ="data:image/jpeg;base64," + bbytes;
                 try
                 {
                     var he = Request.Host.ToString();

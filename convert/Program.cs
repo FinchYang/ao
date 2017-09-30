@@ -9,7 +9,9 @@ namespace convert
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("begin!"+DateTime.Now);
+            dbcon();
+            Console.WriteLine("end!" + DateTime.Now);
         }
         private static string GetToken()
         {
@@ -22,22 +24,119 @@ namespace convert
             {
                 using(var enabo=new enabo.enaboContext())
                 {
-                    var abousers = abo.Aouser.Where(a => a.Identity.Length == 18);
-                    foreach(var auser in abousers)
+                    //var abousers = abo.Aouser.Where(a => a.Identity.Length == 18);
+                    //foreach(var auser in abousers)
+                    //{
+                    //    var photofile = GetToken();
+                    //    var enid = CryptographyHelpers.StudyEncrypt(auser.Identity);
+                    //    var lastuser = enabo.Aouser.FirstOrDefault(a => a.Identity == enid);
+                    //    if (lastuser == null)
+                    //    {
+                    //        enabo.Aouser.Add(new convert.enabo.Aouser
+                    //        {
+                    //            Identity = enid,
+                    //            Photofile = photofile,
+                    //            Name = auser.Name,
+                    //            Phone = auser.Phone,
+                    //            Verificationcode = auser.Verificationcode,
+                    //            Newphone = auser.Newphone,
+                    //            Blacklist = auser.Blacklist
+                    //        });
+                    //    }
+                    //    else
+                    //    {
+                    //        lastuser.Verificationcode = auser.Verificationcode;
+                    //        lastuser.Newphone = auser.Newphone;
+                    //        lastuser.Blacklist = auser.Blacklist;
+                    //    }
+                    //    enabo.SaveChanges();
+                    //    filecon(auser.Identity, photofile);
+                    //}
+
+                    //var abbusiness=abo.Business.Where(a => a.Identity.Length == 18);
+                    //foreach(var busi in abbusiness)
+                    //{
+                    //    var enid = CryptographyHelpers.StudyEncrypt(busi.Identity);
+                    //    enabo.Business.Add(new convert.enabo.Business
+                    //    {
+                    //        Identity = enid,
+                    //        Businesstype=busi.Businesstype,
+                    //        Completed=busi.Completed,
+                    //        Time=busi.Time,
+                    //        Postaddr=busi.Postaddr,
+                    //        Acceptingplace=busi.Acceptingplace,
+                    //        QuasiDrivingLicense=busi.QuasiDrivingLicense,
+                    //        Status=busi.Status,
+                    //        Waittime=busi.Waittime,
+                    //        Processtime=busi.Processtime,
+                    //        Finishtime=busi.Finishtime,
+                    //        Integrated=busi.Integrated,
+                    //        Reason=busi.Reason,
+                    //        Losttime=busi.Losttime,
+                    //        Exporttime=busi.Exporttime,
+                    //        Abroadorservice=busi.Abroadorservice,
+                    //        Province=busi.Province,
+                    //        County=busi.County,
+                    //        City=busi.City,
+                    //    });
+                    //    enabo.SaveChanges();
+                    //}
+
+                    Console.WriteLine("beging  businesspic");
+                    var abpic=abo.Businesspic.Where(a => a.Identity.Length == 18);
+                    foreach(var pic  in abpic)
                     {
-                        var photofile = GetToken();
-                        enabo.Aouser.Add(new convert.enabo.Aouser
+                        var enid = CryptographyHelpers.StudyEncrypt(pic.Identity);
+                        try
                         {
-                            Identity = CryptographyHelpers.StudyEncrypt(auser.Identity),
-                            Photofile = photofile,
-                            Name=auser.Name,
-                            Phone=auser.Phone,
-                            Verificationcode=auser.Verificationcode,
-                            Newphone=auser.Newphone,
-                            Blacklist=auser.Blacklist
+                            var thepic = enabo.Businesspic.FirstOrDefault(a => a.Identity == pic.Identity
+                             && a.Businesstype == pic.Businesstype && a.Pictype == pic.Pictype);
+                            if (thepic != null) continue;
+                            enabo.Businesspic.Add(new convert.enabo.Businesspic
+                            {
+                                Identity = enid,
+                                Businesstype = pic.Businesstype,
+                                Pictype = pic.Pictype,
+                                Uploaded = pic.Uploaded,
+                                Time = pic.Time,
+                            });
+                            enabo.SaveChanges();
+                        }
+                        catch(Exception ex) { }
+                    }
+                    Console.WriteLine("beging  businesspichis");
+                    var  abpichis=abo.Businesspichis.Where(a => a.Identity.Length == 18);
+                    foreach(var pichis in abpichis)
+                    {
+                        var enid = CryptographyHelpers.StudyEncrypt(pichis.Identity);
+                        enabo.Businesspichis.Add(new convert.enabo.Businesspichis
+                        {
+                            Identity=enid,
+                            Businesstype = pichis.Businesstype,
+                            Pictype = pichis.Pictype,
+                            Uploaded = pichis.Uploaded,
+                            Time = pichis.Time,
                         });
                         enabo.SaveChanges();
-                        filecon(auser.Identity, photofile);
+                    }
+                    Console.WriteLine("beging  businesshis");
+                    var abbusihis=abo.Businesshis.Where(a => a.Identity.Length == 18);
+                    foreach(var busihis in abbusihis)
+                    {
+                        var enid = CryptographyHelpers.StudyEncrypt(busihis.Identity);
+                        enabo.Businesshis.Add(new convert.enabo.Businesshis
+                        {
+                            Identity=enid,
+                            Businesstype=busihis.Businesstype,
+                            Completed=busihis.Completed,
+                            Time=busihis.Time,
+                            Postaddr=busihis.Postaddr,
+                            Acceptingplace=busihis.Acceptingplace,
+                            QuasiDrivingLicense=busihis.QuasiDrivingLicense,
+                            Reason=busihis.Reason,
+
+                        });
+                        enabo.SaveChanges();
                     }
                 }
             }

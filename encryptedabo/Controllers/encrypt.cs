@@ -17,7 +17,14 @@ internal static class CryptographyHelpers
     {
         return CryptographyHelpers.Decrypt(_key, _salt, cryptograph);
     }
-    public static byte[] StudyFileDecrypt(string cypherfile)
+        public static string StudyFileDecryptStr(string cypherfile)
+        {
+            var mm = System.IO.File.ReadAllText(cypherfile);
+            var originfile = StudyDecrypt(mm);
+            return originfile;
+
+        }
+        public static byte[] StudyFileDecrypt(string cypherfile)
     {
         var mm = System.IO.File.ReadAllText(cypherfile);
         var originfile = StudyDecrypt(mm);

@@ -96,7 +96,7 @@ namespace exportdb
             var dir = string.Format("{0}-{1}-{2}-{3}-{4}-{5}", date.Year, date.Month.ToString("D2"), date.Day.ToString("D2"),
             date.Hour.ToString("D2"), date.Minute.ToString("D2"), date.Second.ToString("D2"));
             var dbtofilefname = "abo.txt";
-            var home = "/home/driverbusiness";// Environment.GetEnvironmentVariable("HOME");
+            var home = "/home/endriver";// Environment.GetEnvironmentVariable("HOME");
             var dbtofp = Path.Combine(home, dbtofilePath);
             if (!Directory.Exists(dbtofp)) Directory.CreateDirectory(dbtofp);
             var fname = Path.Combine(dbtofp, dbtofilefname);
@@ -105,7 +105,7 @@ namespace exportdb
             {
                 //冗余传输，防止边界平台not delivery
                 var rebusi = db.Business.Where(async => async.Integrated == true
-                 && async.Exporttime.CompareTo(date.AddDays(-1)) >= 0
+             //    && async.Exporttime.CompareTo(date.AddDays(-1)) >= 0
                 );
                 Console.WriteLine("redundant is {1}, {2} records need to  be archived", ",", date, rebusi.Count());
                 foreach (var rere in rebusi)

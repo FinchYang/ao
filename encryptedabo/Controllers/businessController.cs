@@ -381,7 +381,7 @@ namespace mvc104.Controllers
                 a.StartInfo.UseShellExecute = true;
                 a.StartInfo.Arguments =
                 string.Format(" {0} {1}", phone, vcode);
-                a.StartInfo.FileName = "/home/driverbusiness/bin/sendmsg";
+                a.StartInfo.FileName = "/home/endriver/bin/sendmsg";
                 a.Start();
                 a.WaitForExit();
             }
