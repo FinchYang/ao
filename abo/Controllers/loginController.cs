@@ -102,7 +102,7 @@ namespace mvc104.Controllers
                 content = "unknown",
                 token = token,
                 okpic = picsl.ToArray()
-            };
+            };             
             try
             {
                 if (businessType == businessType.overage)
@@ -125,12 +125,13 @@ namespace mvc104.Controllers
                         if (birth.AddYears(60) > DateTime.Now) return new loginresponse { status = responseStatus.forbidden };
                     }
                 }
+              
                 var theuser = _db1.Aouser.FirstOrDefault(i => i.Identity == identify);
                 if (theuser == null)
                 {
                     _db1.Aouser.Add(new Aouser
                     {
-                        Identity = identify,Blacklist=false,
+                        Identity = identify,   Blacklist=false,
                         Phone = phone,
                         Name = name
                     });
@@ -218,7 +219,7 @@ namespace mvc104.Controllers
                 {
                     he += "--" + a.Key + "=" + a.Value;
                 }
-                Task.Run(() => highlevel.LogRequest(he + name + phone + identify + JsonConvert.SerializeObject(response),
+                Task.Run(() => highlevel.LogRequest(he + name + phone + identify+ JsonConvert.SerializeObject(response),
                  "login", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)businessType));
             }
             catch (Exception ex) { _log.LogError("dblog error:", ex); }

@@ -195,7 +195,7 @@ namespace mvc104.Controllers
                 var fpath = Path.Combine(_picpath, identity, btype.ToString());
                 if (!Directory.Exists(fpath)) Directory.CreateDirectory(fpath);
                 var fname = Path.Combine(fpath, picType + ".jpg");
-                //   highlevel.infolog(_log, "savepic", fname);
+                
                 var index = picstr.IndexOf("base64,");
                 System.IO.File.WriteAllBytes(fname, Convert.FromBase64String(picstr.Substring(index + 7)));
                 //   System.IO.File.WriteAllBytes(fname,new byte[1]);
