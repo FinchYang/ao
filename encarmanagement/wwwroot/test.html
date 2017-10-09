@@ -1,0 +1,316 @@
+﻿
+<!doctype html>
+<html>
+<head>
+       <meta charset="UTF-8">
+    <title>驾管业务全程网办</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css">
+    <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
+     <!-- <script type="text/javascript" src="http://static.fusioncharts.com/code/latest/fusioncharts.js"></script>
+    <script type="text/javascript" src="http://static.fusioncharts.com/code/latest/themes/fusioncharts.theme.fint.js?cacheBust=56"></script> -->
+    <script type="text/javascript" src="fusioncharts-suite-xt/js/fusioncharts.js"></script>
+    <script type="text/javascript" src="fusioncharts-suite-xt/js/themes/fusioncharts.theme.fint.js?cacheBust=56"></script>
+
+    <style>
+        .sdulli{
+            font-size:.9em
+        }
+    </style>
+</head>
+<body>
+      <div data-role="page" id="aboall" data-theme="e">
+        <div data-role="header">
+            <h1>查看全程网办综合统计数据</h1>
+        </div><!-- /header -->
+        <div role="main" class="ui-content">
+             <p ></p>
+            <ul class="sdulli" id="aboallul">            </ul>
+    <script>
+        if (typeof (EventSource) !== "undefined") {
+           var source = new EventSource("http://app.ytjj.gov.cn/sdyycjg/aboallStatistics");
+           //   var source = new EventSource("http://localhost:8080/aboallStatistics");
+            source.onmessage = function (event) {
+                console.log(event.data);
+                console.dir(event);
+                document.getElementById("aboallul").innerHTML = event.data + "<br>";
+            };
+        }       
+    </script>
+            <p><a href="#foo" data-transition="turn">查看分类数据统计</a></p>
+        </div><!-- /content -->
+        <div data-role="footer">
+            <h4>山东云一提供技术支持</h4>
+        </div><!-- /footer -->
+
+    </div><!-- /page -->
+    <div data-role="page" id="foo" data-theme="a">
+        <div data-role="header">
+            <h1>驾管业务全程网办数据统计</h1>
+        </div><!-- /header -->
+        <div role="main" class="ui-content">
+            <p id="foop">完整业务处理中数据统计</p>            
+            <ul class="sdulli" id="foopul" ></ul>
+            <p> <a href="#bar" data-transition="turn">查看处理完成数据统计</a>。。。<a href="#aboall" data-transition="turn"> 上一页</a></p>
+        </div><!-- /content -->
+        <div data-role="footer">
+            <h4>山东云一提供技术支持</h4>
+        </div><!-- /footer -->
+    </div><!-- /page -->
+    <!-- Start of second page -->
+    <div data-role="page" id="bar" data-theme="c">
+        <div data-role="header">
+            <h1>驾管业务全程网办数据统计</h1>
+        </div><!-- /header -->
+        <div role="main" class="ui-content">
+            <p id="barp">完整业务处理完成数据统计</p>
+            <ul class="sdulli" id="barpul"  >            </ul>
+            <p><a href="#abstudy" data-transition="turn">查看AB证审验教育数据统计</a>。。。<a href="#foo" data-transition="turn">上一页</a></p>
+        </div><!-- /content -->
+        <div data-role="footer">
+            <h4>山东云一提供技术支持</h4>
+        </div><!-- /footer -->
+    </div><!-- /page -->
+
+      <div data-role="page" id="abstudy" data-theme="b">
+        <div data-role="header">
+            <h1>AB证审验教育数据统计</h1>
+        </div><!-- /header -->
+        <div role="main" class="ui-content">
+            <!-- <p id="barp">完整业务处理完成数据统计</p> -->
+            <ul class="sdulli" id="abul"  >            </ul>
+            <div id="result"></div>
+    <script>
+        if (typeof (EventSource) !== "undefined") {
+           var source = new EventSource("http://app.ytjj.gov.cn/sdyycjg/abStatistics1");
+         //       var source = new EventSource("http://localhost:8080/abStatistics1");
+            source.onmessage = function (event) {
+                console.log(event.data);
+                console.dir(event);
+                document.getElementById("abul").innerHTML = event.data + "<br>";
+            };
+        }
+        else {
+            document.getElementById("result").innerHTML = "抱歉，你的浏览器不支持 server-sent 事件...";
+        }
+    </script>
+            <!-- <p><a href="#aboall" data-transition="turn">查看全程网办综合统计数据</a>。。。<a href="#bar" data-transition="turn">上一页</a></p> -->
+             <p><a href="#chart-" data-transition="turn">查看AB审验每日学习完成</a>。。。<a href="#bar" data-transition="turn">上一页</a></p>
+        </div><!-- /content -->
+        <div data-role="footer">
+            <h4>山东云一提供技术支持</h4>
+        </div><!-- /footer -->
+
+    </div><!-- /page -->
+    
+    <div data-role="page" id="chart-">
+        <div data-role="header">
+            <h1>AB审验每日学习完成</h1>
+        </div>
+        <div role="main" class="ui-content" >
+             <div id="chart-container" >
+        </div>
+         <p><a href="#chart-curriculum" data-transition="turn">查看AB审验每日课程完成</a>。。。<a href="#abstudy" data-transition="turn">上一页</a></p>
+        
+        </div>
+       <div data-role="footer">
+            <h4>山东云一提供技术支持</h4>
+        </div>
+    </div>
+ <div data-role="page" id="chart-curriculum">
+        <div data-role="header">
+            <h1>AB审验每日课程完成</h1>
+        </div>
+        <div role="main" class="ui-content">
+            <div id="div-curriculum">
+            </div>
+            <p><a href="#aboall" data-transition="turn">查看全程网办综合统计数据</a>。。。<a href="#chart-" data-transition="turn">上一页</a></p>
+
+        </div>
+        <div data-role="footer">
+            <h4>山东云一提供技术支持</h4>
+        </div>
+    </div>
+    <script>
+      jQuery.noConflict(); 
+jQuery( document ).ready(function( $ ) {     
+             console.log(" window.location.search: " + window.location.search);
+            var  a=new Date().toLocaleString();
+             $(".ui-content").find("ul").before("<p>"+a+"</p>");
+            $.ajax({               
+                   url: "/sdyycjg/searchStatistics",
+                data: {
+                    startdate: "1999-1-1",
+                    enddate: "2999-1-1"
+                }
+            }).done(function (json) {
+                if (json.status) alert("Sorry, there was a problem!" + json.content);
+                else {
+                    $("#barpul").html(json.comhtml);
+                    $("#foopul").html(json.onhtml);
+                }
+            })
+                .fail(function (xhr, status, errorThrown) {
+                    alert("Sorry, there was a problem!");
+                    console.log("Error: " + errorThrown);
+                    console.log("Status: " + status);
+                    console.dir(xhr);
+                })
+                .always(function (xhr, status) {  });
+
+     $.ajax({
+                    url: "/sdyycjg/AbOkDailyCount", ///sdyycjg
+                }).done(function(json) {
+                    if (json.status) alert("Sorry, there was a problem!" + json.content);
+                    else {
+                        var category = json.labels;
+                        var data = json.values;
+                        FusionCharts.ready(function() {
+                            var fusioncharts = new FusionCharts({
+                                type: 'scrollColumn2d',
+                                renderAt: 'chart-container',
+                                width: '330',
+                                height: '350',
+                                dataFormat: 'json',
+                                dataSource: {
+                                    "chart": {
+                                        "caption": "每日学习完成记录",
+                                        "subcaption": "始于 2017/7/7",
+                                        "xaxisname": "日期",
+                                        "yaxisname": "学完次数",
+                                        "showvalues": "1",
+                                        "placeValuesInside": "1",
+                                        "rotateValues": "1",
+                                        "valueFontColor": "#ffffff",
+                                        "numberprefix": "",
+
+                                        //Cosmetics
+                                        "baseFontColor": "#333333",
+                                         "baseFont": "Helvetica Neue,Arial",
+                                        "captionFontSize": "14",
+                                        "subcaptionFontSize": "14",
+                                        "subcaptionFontBold": "0",
+                                        "showborder": "0",
+                                        "paletteColors": "#0075c2",
+                                        "bgcolor": "#FFFFFF",
+                                        "showalternatehgridcolor": "0",
+                                        "showplotborder": "0",
+                                        "labeldisplay": "WRAP",
+                                        "divlinecolor": "#CCCCCC",
+                                        "showcanvasborder": "0",
+                                        "linethickness": "3",
+                                        "plotfillalpha": "100",
+                                        "plotgradientcolor": "",
+                                        "numVisiblePlot": "5",
+                                        "divlineAlpha": "100",
+                                        "divlineColor": "#999999",
+                                        "divlineThickness": "1",
+                                        "divLineIsDashed": "1",
+                                        "divLineDashLen": "1",
+                                        "divLineGapLen": "1",
+                                        "scrollheight": "10",
+                                        "flatScrollBars": "1",
+                                        "scrollShowButtons": "0",
+                                        "scrollColor": "#cccccc",
+                                        "showHoverEffect": "1",
+                                    },
+                                    "categories": [{
+                                        "category": category
+                                    }],
+                                    "dataset": [{
+                                        "data": data
+                                    }]
+                                }
+                            });
+                            fusioncharts.render();
+                        });
+                    }
+                })
+                .fail(function(xhr, status, errorThrown) {
+                    alert("Sorry, there was a problem!");
+                    console.log("Error: " + errorThrown);
+                    console.log("Status: " + status);
+                    console.dir(xhr);
+                })
+                .always(function(xhr, status) {
+                });
+
+  $.ajax({
+                    url: "/sdyycjg/AbUsageAmount", ///sdyycjg
+                }).done(function(json) {
+                    if (json.status) alert("Sorry, there was a problem!" + json.content);
+                    else {
+                        var category = json.labels;
+                        var data = json.values;
+                        FusionCharts.ready(function() {
+                            var fusioncharts = new FusionCharts({
+                                type: 'scrollColumn2d',
+                                renderAt: 'div-curriculum',
+                                width: '330',
+                                height: '350',
+                                dataFormat: 'json',
+                                dataSource: {
+                                    "chart": {
+                                        "caption": "每日课程学习完成记录",
+                                        "subcaption": "始于 2017/7/6",
+                                        "xaxisname": "日期",
+                                        "yaxisname": "学完课时",
+                                        "showvalues": "1",
+                                        "placeValuesInside": "1",
+                                        "rotateValues": "1",
+                                        "valueFontColor": "#000000",
+                                        "numberprefix": "",
+
+                                        //Cosmetics
+                                        "baseFontColor": "#68228b",
+                                        "baseFont": "Helvetica Neue,Arial",
+                                        "captionFontSize": "14",
+                                        "subcaptionFontSize": "14",
+                                        "subcaptionFontBold": "0",
+                                        "showborder": "0",
+                                        "paletteColors": "#33cc00",
+                                        "bgcolor": "#FFFFcc",
+                                        "showalternatehgridcolor": "1",
+                                        "showplotborder": "0",
+                                        "labeldisplay": "WRAP",
+                                        "showcanvasborder": "0",
+                                        "linethickness": "3",
+                                        "plotfillalpha": "100",
+                                        "plotgradientcolor": "#ff0000",
+                                        "numVisiblePlot": "5",
+                                        "divlineAlpha": "100",
+                                        "divlineColor": "#0088ff",
+                                        "divlineThickness": "1",
+                                        "divLineIsDashed": "1",
+                                        "divLineDashLen": "1",
+                                        "divLineGapLen": "1",
+                                        "scrollheight": "10",
+                                        "flatScrollBars": "1",
+                                        "scrollShowButtons": "0",
+                                        "scrollColor": "#ffff00",
+                                        "showHoverEffect": "1",
+                                    },
+                                    "categories": [{
+                                        "category": category
+                                    }],
+                                    "dataset": [{
+                                        "data": data
+                                    }]
+                                }
+                            });
+                            fusioncharts.render();
+                        });
+                    }
+                })
+                .fail(function(xhr, status, errorThrown) {
+                    alert("Sorry, there was a problem!");
+                    console.log("Error: " + errorThrown);
+                    console.log("Status: " + status);
+                    console.dir(xhr);
+                })
+                .always(function(xhr, status) {});
+        });
+    </script>
+</body>
+</html>
