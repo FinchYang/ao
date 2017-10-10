@@ -6,15 +6,15 @@ namespace mvc104.models
     public enum businessType
     {
          unknown,
-        scrap,//
+        scrap,//注销登记-车辆报废
 
-        newplate,//
-        changeplate,//
-        newlicense,//
-        changelicense,//
+        newplate,//补领机动车号牌
+        changeplate,//换领机动车号牌
+        newlicense,//补领机动车行驶证
+        changelicense,//换领机动车行驶证
 
-        newtag,//
-        changetag,//
+        newtag,//补领检验合格标志
+        changetag,//换领检验合格标志
         changecontact
 
     };

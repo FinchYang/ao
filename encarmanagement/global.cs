@@ -146,14 +146,15 @@ namespace mvc104
 
             businesscount.Add(businessType.unknown, 5);
 
-            //businesscount.Add(businessType.ChangeLicense, 6);//变更户籍姓名
-            //businesscount.Add(businessType.delay, 6);//延期换证?
-            //businesscount.Add(businessType.lost, 6);//遗失补证
-            //businesscount.Add(businessType.damage, 5);//损毁换证
-            //businesscount.Add(businessType.overage, 6);//超龄换证?
+            businesscount.Add(businessType.newplate, 5);//补领机动车号牌
+            businesscount.Add(businessType.scrap, 0);//注销登记-车辆报废
+            businesscount.Add(businessType.changeplate, 6);//换领机动车号牌
+            businesscount.Add(businessType.newlicense, 6);//补领机动车行驶证
+            businesscount.Add(businessType.changelicense, 7);//换领机动车行驶证
 
-            //businesscount.Add(businessType.expire, 6);//期满换证??6,7??
-            //businesscount.Add(businessType.changeaddr, 5);//变更户籍地址
+            businesscount.Add(businessType.newtag, 8);//补领检验合格标志
+            businesscount.Add(businessType.changetag, 9);//换领检验合格标志
+
             //businesscount.Add(businessType.basicinfo, 4);//基本信息证明
             //businesscount.Add(businessType.first, 4);//初领、增加机动车驾驶证自愿业务退办
             //businesscount.Add(businessType.network, 4);// 网约车安全驾驶证明

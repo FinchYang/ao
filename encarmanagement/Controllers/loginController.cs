@@ -115,30 +115,23 @@ namespace mvc104.Controllers
                 }
                 else
                 {
-                    _log.LogWarning("businessType={0},Scrapplace={1}", businessType, 333);
-                    //var pics = _db1.Carbusinesspic.Where(c => c.Businesstype == btype
-                    // && c.Identity==encryptedIdentity
-                    //  && c.Uploaded == true);
-                    //response.businessstatus = (businessstatus)business.Status;
-                    //  response.finish_time = business.Finishtime;
-                    //    response.wait_time = business.Waittime;
-                    //    response.process_time = business.Processtime;
-                    //      if (!string.IsNullOrEmpty(business.Reason)) response.content = business.Reason;
-                    //if (pics.Count() < global.businesscount[businessType] || response.businessstatus == businessstatus.failure)
-                    //{
-                    //    foreach (var a in pics)
-                    //    {
-                    //        picsl.Add(a.Pictype);
-                    //    }
-                    //    response.okpic = picsl.ToArray();
-                    //    if(response.businessstatus == businessstatus.failure)  response.submitted = true;
-                    //}
-                    //else
-                    //{
-                    //    response.submitted = true;
-                    //}
                     _log.LogWarning("businessType={0},Scrapplace={1}", businessType, business.Scrapplace);
-                    if(businessType==businessType.scrap&&business.Scrapplace!=0) response.submitted = true;
+                    
+                    var pics = _db1.Carbusinesspic.Where(c => c.Businesstype == btype
+                     && c.Identity == encryptedIdentity
+                      && c.Uploaded == true);
+                    response.businessstatus = (businessstatus)business.Status;
+                    response.finish_time = business.Finishtime;
+                    response.wait_time = business.Waittime;
+                    response.process_time = business.Processtime;
+                    if (!string.IsNullOrEmpty(business.Reason)) response.content = business.Reason;
+                    if (response.businessstatus == businessstatus.failure) response.submitted = true;
+                    else
+                    {
+                        if (businessType != businessType.scrap && pics.Count() >= global.businesscount[businessType]) response.submitted = true;
+                        if (businessType == businessType.scrap && business.Scrapplace != 0) response.submitted = true;
+                    }
+                  
                 }
                 if (theuser != null&&theuser.Blacklist==true)
                 {

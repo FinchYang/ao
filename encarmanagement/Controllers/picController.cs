@@ -13,20 +13,21 @@ using mvc104.models;
 using Newtonsoft.Json;
 using static mvc104.global;
 using enabo;
+using encm.cars;
 
 namespace mvc104.Controllers
 {
     public class picController : Controller
     {
         public readonly ILogger<picController> _log;
-        private readonly enaboContext _db1 = new enaboContext();
+    //    private readonly carsContext _db1 = new carsContext();
         static string _picpath = "pictures";
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                _db1.Dispose();
+            //    _db1.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -94,12 +95,12 @@ namespace mvc104.Controllers
             }
             try
             {
-                using (var ddbb = new enaboContext())
+                using (var ddbb = new carsContext())
                 {
-                    var already = ddbb.Businesspic.FirstOrDefault(i => i.Businesstype == (int)accinfo.businessType && i.Identity == accinfo.Identity && i.Pictype == (short)input.picType);
+                    var already = ddbb.Carbusinesspic.FirstOrDefault(i => i.Businesstype == (int)accinfo.businessType && i.Identity == accinfo.Identity && i.Pictype == (short)input.picType);
                     if (already == null)
                     {
-                        var newpic = new Businesspic
+                        var newpic = new Carbusinesspic
                         {
                             Identity = accinfo.Identity,
                             Businesstype = (short)accinfo.businessType,
@@ -108,7 +109,7 @@ namespace mvc104.Controllers
                             Time = DateTime.Now
                         };
                         //  highlevel.infolog(_log, "uploadpic", JsonConvert.SerializeObject(newpic));
-                        var ret = ddbb.Businesspic.Add(newpic);
+                        var ret = ddbb.Carbusinesspic.Add(newpic);
                         //  highlevel.infolog(_log, "uploadpic88", JsonConvert.SerializeObject(ret.Entity));
 
                     }

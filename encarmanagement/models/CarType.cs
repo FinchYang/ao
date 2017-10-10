@@ -2,6 +2,7 @@
 {
     public enum CarType
     {
+        unknown,
         other,
         importCar,//
         danger,//
@@ -11,8 +12,19 @@
     };
     public enum ScrapPlace
     {
-        other,
+        unknown,
         wanTong,//
         xinGuang
+    };
+
+    public enum PlateType
+    {
+        unknown,
+        big,//
+        small,
+        ordinary,
+        lightweight,
+        low,
+        trailer
     };
 }

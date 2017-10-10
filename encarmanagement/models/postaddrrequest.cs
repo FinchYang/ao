@@ -12,9 +12,12 @@ namespace mvc104.models
     }
     public class getaddrresponse : commonresponse
     {
-        public string postaddr { get; set; }
-        public string acceptingplace { get; set; } 
-        public string quasiDrivingLicense { get; set; }
+        public string detailedAddress { get; set; }
+        public string plateNumber1 { get; set; }
+        public string plateNumber2 { get; set; }
+        public ScrapPlace scrapPlace { get; set; }
+        public CarType carType { get; set; }
+        public PlateType plateType { get; set; }
         public string province { get; set; } 
         public string city { get; set; } 
         public string county { get; set; } 
@@ -22,8 +25,11 @@ namespace mvc104.models
     public class Postaddrrequest
     {
         public string detailedAddress { get; set; }
+        public string plateNumber1 { get; set; }
+        public string plateNumber2 { get; set; }
         public ScrapPlace scrapPlace { get; set; }
         public CarType carType { get; set; }
+        public PlateType plateType { get; set; }
         public string province { get; set; }
         public string city { get; set; }
         public string county { get; set; }

@@ -7,6 +7,7 @@ namespace encm.cars
     public partial class carsContext : DbContext
     {
         public virtual DbSet<Carbusiness> Carbusiness { get; set; }
+        public virtual DbSet<Carbusinesshis> Carbusinesshis { get; set; }
         public virtual DbSet<Carbusinesspic> Carbusinesspic { get; set; }
         public virtual DbSet<Carslog> Carslog { get; set; }
         public virtual DbSet<Caruser> Caruser { get; set; }
@@ -79,6 +80,19 @@ namespace encm.cars
                     .HasColumnName("losttime")
                     .HasDefaultValueSql("2000-01-01 00:00:00");
 
+                entity.Property(e => e.Platenumber1)
+                    .HasColumnName("platenumber1")
+                    .HasColumnType("varchar(45)");
+
+                entity.Property(e => e.Platenumber2)
+                    .HasColumnName("platenumber2")
+                    .HasColumnType("varchar(45)");
+
+                entity.Property(e => e.Platetype)
+                    .HasColumnName("platetype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("0");
+
                 entity.Property(e => e.Postaddr)
                     .HasColumnName("postaddr")
                     .HasColumnType("varchar(450)");
@@ -98,6 +112,112 @@ namespace encm.cars
                 entity.Property(e => e.Reason)
                     .HasColumnName("reason")
                     .HasColumnType("varchar(450)");
+
+                entity.Property(e => e.Scrapplace)
+                    .HasColumnName("scrapplace")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.Status)
+                    .HasColumnName("status")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.Time).HasColumnName("time");
+
+                entity.Property(e => e.Waittime)
+                    .HasColumnName("waittime")
+                    .HasDefaultValueSql("2000-01-01 00:00:00");
+            });
+
+            modelBuilder.Entity<Carbusinesshis>(entity =>
+            {
+                entity.HasKey(e => e.Ordinal)
+                    .HasName("ordinal_UNIQUE");
+
+                entity.ToTable("carbusinesshis");
+
+                entity.Property(e => e.Ordinal)
+                    .HasColumnName("ordinal")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Acceptingplace)
+                    .HasColumnName("acceptingplace")
+                    .HasColumnType("varchar(145)");
+
+                entity.Property(e => e.Businesstype)
+                    .HasColumnName("businesstype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.Cartype)
+                    .HasColumnName("cartype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.City)
+                    .HasColumnName("city")
+                    .HasColumnType("varchar(145)");
+
+                entity.Property(e => e.Completed)
+                    .HasColumnName("completed")
+                    .HasColumnType("tinyint(1)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.County)
+                    .HasColumnName("county")
+                    .HasColumnType("varchar(145)");
+
+                entity.Property(e => e.Exporttime)
+                    .HasColumnName("exporttime")
+                    .HasDefaultValueSql("2000-01-01 00:00:00");
+
+                entity.Property(e => e.Finishtime)
+                    .HasColumnName("finishtime")
+                    .HasDefaultValueSql("2000-01-01 00:00:00");
+
+                entity.Property(e => e.Identity)
+                    .IsRequired()
+                    .HasColumnName("identity")
+                    .HasColumnType("varchar(50)");
+
+                entity.Property(e => e.Integrated)
+                    .HasColumnName("integrated")
+                    .HasColumnType("tinyint(1)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.Platenumber1)
+                    .HasColumnName("platenumber1")
+                    .HasColumnType("varchar(45)");
+
+                entity.Property(e => e.Platenumber2)
+                    .HasColumnName("platenumber2")
+                    .HasColumnType("varchar(45)");
+
+                entity.Property(e => e.Platetype)
+                    .HasColumnName("platetype")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("0");
+
+                entity.Property(e => e.Postaddr)
+                    .HasColumnName("postaddr")
+                    .HasColumnType("varchar(145)");
+
+                entity.Property(e => e.Processtime)
+                    .HasColumnName("processtime")
+                    .HasDefaultValueSql("2000-01-01 00:00:00");
+
+                entity.Property(e => e.Province)
+                    .HasColumnName("province")
+                    .HasColumnType("varchar(145)");
+
+                entity.Property(e => e.QuasiDrivingLicense)
+                    .HasColumnName("quasiDrivingLicense")
+                    .HasColumnType("varchar(45)");
+
+                entity.Property(e => e.Reason)
+                    .HasColumnName("reason")
+                    .HasColumnType("varchar(545)");
 
                 entity.Property(e => e.Scrapplace)
                     .HasColumnName("scrapplace")
