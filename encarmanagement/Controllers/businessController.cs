@@ -181,7 +181,8 @@ namespace mvc104.Controllers
                 theuser.Platenumber1 = input.plateNumber1;
                 theuser.Platenumber2 = input.plateNumber2;
                 theuser.Platetype = (short)input.plateType;
-
+                if (!string.IsNullOrEmpty(input.acceptingplace))
+                    theuser.Acceptingplace = input.acceptingplace;
                 if (!string.IsNullOrEmpty(input.province))
                     theuser.Province = input.province;
                 if (!string.IsNullOrEmpty(input.city))

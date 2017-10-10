@@ -25,6 +25,7 @@ namespace mvc104.models
     public class Postaddrrequest
     {
         public string detailedAddress { get; set; }
+        public string acceptingplace { get; set; }
         public string plateNumber1 { get; set; }
         public string plateNumber2 { get; set; }
         public ScrapPlace scrapPlace { get; set; }

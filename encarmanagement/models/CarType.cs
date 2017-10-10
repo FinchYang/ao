@@ -10,21 +10,4 @@
         middle,
         small
     };
-    public enum ScrapPlace
-    {
-        unknown,
-        wanTong,//
-        xinGuang
-    };
-
-    public enum PlateType
-    {
-        unknown,
-        big,//
-        small,
-        ordinary,
-        lightweight,
-        low,
-        trailer
-    };
 }
