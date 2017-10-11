@@ -27,7 +27,7 @@ namespace exportdb
             date.Hour.ToString("D2"), date.Minute.ToString("D2"), date.Second.ToString("D2"));
 
             var dbtofilefname = "cars.txt";
-            var home = "/home/carsbusiness";// Environment.GetEnvironmentVariable("HOME");
+            var home = "/home/carbusiness";// Environment.GetEnvironmentVariable("HOME");
             var dbtofp = Path.Combine(home, dbtofilePath);
             if (!Directory.Exists(dbtofp)) Directory.CreateDirectory(dbtofp);
             var fname = Path.Combine(dbtofp, dbtofilefname);
@@ -58,8 +58,8 @@ namespace exportdb
                         if (!string.IsNullOrEmpty(rere.Postaddr)) addr += rere.Postaddr;
                         var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}",
                          rere.Identity, ((businessType)rere.Businesstype).ToString(), addr, rere.Acceptingplace,
-                         rere.QuasiDrivingLicense, aouser.Phone, aouser.Name, rere.Losttime.ToString("yyyy/MM/dd HH:mm:ss"),
-                         rere.Abroadorservice, rere.Exporttime.ToString("yyyy/MM/dd HH:mm:ss"),aouser.Photofile);
+                         rere.Cartype, aouser.Phone, aouser.Name, rere.Platetype,
+                         rere.Platenumber1+rere.Platenumber2, rere.Exporttime.ToString("yyyy/MM/dd HH:mm:ss"),aouser.Photofile);
                         File.AppendAllText(fname, line + "\r\n");
                     }
                 }
@@ -85,8 +85,8 @@ namespace exportdb
                         if (!string.IsNullOrEmpty(re.Postaddr)) addr += re.Postaddr;
                         var line = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}",
                          re.Identity, ((businessType)re.Businesstype).ToString(), addr, re.Acceptingplace,
-                         re.QuasiDrivingLicense, aouser.Phone, aouser.Name, re.Losttime.ToString("yyyy/MM/dd HH:mm:ss")
-                         , re.Abroadorservice, date.ToString("yyyy/MM/dd HH:mm:ss"),aouser.Photofile);
+                         re.Cartype, aouser.Phone, aouser.Name, re.Platetype
+                         , re.Platenumber1 + re.Platenumber2, date.ToString("yyyy/MM/dd HH:mm:ss"),aouser.Photofile);
                         File.AppendAllText(fname, line + "\r\n");
                         re.Integrated = true;
 
@@ -98,7 +98,7 @@ namespace exportdb
             }
             var exp = Path.Combine(home, exportPath);
             if (!Directory.Exists(exp)) Directory.CreateDirectory(exp);
-            var zipfname = Path.Combine(exp, dir + "-abo");
+            var zipfname = Path.Combine(exp, dir + "-cars");
 
             var a = new System.Diagnostics.Process();
             a.StartInfo.UseShellExecute = true;
