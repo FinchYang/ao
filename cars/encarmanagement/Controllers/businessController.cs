@@ -97,8 +97,7 @@ namespace mvc104.Controllers
             }
             catch (Exception ex) { _log.LogError("dblog error:", ex); }
             return highlevel.commonreturn(responseStatus.ok);
-        }
-        
+        }      
   
       
        
@@ -116,8 +115,8 @@ namespace mvc104.Controllers
                 {
                     return highlevel.commonreturn(responseStatus.iderror);
                 }
-                 Task.Run(() => highlevel.LogRequest( accinfo.Identity+accinfo.businessType+JsonConvert.SerializeObject(addrbusi),
-                 "getaddr", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
+                 //Task.Run(() => highlevel.LogRequest( accinfo.Identity+accinfo.businessType+JsonConvert.SerializeObject(addrbusi),
+                 //"getaddr", Request.HttpContext.Connection.RemoteIpAddress.ToString(), (short)accinfo.businessType));
                 if (!string.IsNullOrEmpty(addrbusi.Postaddr))
                     ret.detailedAddress = addrbusi.Postaddr;
                 if (!string.IsNullOrEmpty(addrbusi.Platenumber1))

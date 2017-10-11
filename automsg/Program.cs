@@ -36,11 +36,11 @@ namespace exportdb
                                 }
 
                         }
-                        if (now.Minute < 10)
-                        {
-                            var cc = abdb.Request.Where(b => b.Time > now.AddHours(-1)).Count();
-                            sendautomsg(string.Format("last-hour-had-{0}-requests", cc));
-                        }
+                        // if (now.Minute < 10)//report per hour
+                        // {
+                        //     var cc = abdb.Request.Where(b => b.Time > now.AddHours(-1)).Count();
+                        //     sendautomsg(string.Format("last-hour-had-{0}-requests", cc));
+                        // }
                     }
                 }
                 catch (Exception ex)
@@ -59,7 +59,7 @@ namespace exportdb
         private static void sendautomsgone(string v, string phone)
         {
             var cmd =
-            string.Format(" {0} \"{1}\"", phone, v + getdate(DateTime.Now));
+            string.Format(" {0} \"{1}\"", phone, v );
             Console.WriteLine(cmd);
             var a = new System.Diagnostics.Process();
             a.StartInfo.FileName = "/home/driverbusiness/bin/sendmsg";

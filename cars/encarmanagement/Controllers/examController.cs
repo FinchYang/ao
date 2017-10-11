@@ -42,40 +42,8 @@ namespace mvc104.Controllers
         public examController(ILogger<examController> log)
         {
             _log = log;
-        }
-
-        private string GetToken()
-        {
-            var seed = Guid.NewGuid().ToString("N");
-            return seed;
-        }
-
-        private string exam()
-        {
-
-            var url = string.Format("http://jisujiakao.market.alicloudapi.com/driverexam/query?pagenum=1&pagesize=1&sort=rand&subject=1&type=A1",
-            "wx774a9869c14f1647", "7f94f888c5e5c32bba9239230f46a827");
-            try
-            {
-                var handler = new HttpClientHandler() { AutomaticDecompression = DecompressionMethods.GZip };
-
-                using (var restget = new HttpClient(handler))
-                {
-                    var auth = new List<string>();
-                    auth.Add("APPCODE a7686da69b354d78b1cd97b49ebd4490");
-                    restget.DefaultRequestHeaders.Add("Authorization", auth);
-                    var response = restget.GetAsync(url).Result;
-                    string srcString = response.Content.ReadAsStringAsync().Result;
-
-                    return srcString;
-                }
-            }
-            catch (Exception ex)
-            {
-                highlevel.errorlog(_log, "exam", ex);
-                return "000001";
-            }
-        }
+        }   
+      
         public class ssresponse : commonresponse
         {
             public aboss ongoing { get; set; } = new aboss();
@@ -84,8 +52,7 @@ namespace mvc104.Controllers
             public string comhtml { get; set; }
         }
         public class aballresponse : commonresponse
-        {
-          
+        {          
             public List<values> values { get; set; }
               public List<labels> labels { get; set; }
         }
@@ -104,7 +71,34 @@ namespace mvc104.Controllers
           public class values{
             public string value { get; set; }
         }
-           [Route("AbOkDailyCount")]
+        [Route("CheckBorder")]
+        [HttpGet]
+        public aballresponse CheckBorder()
+        {
+            var ret = new aballresponse { status = 0, values = new List<values>(), labels = new List<labels>() };
+            try
+            {
+                using (var abdb = new mvc104.abm.studyinContext())
+                {
+                    var ah = abdb.History.Select(ab => ab.Finishdate).ToList();
+                    var aaaaa = from one in ah
+                                group one by one.ToString("yyyy-MM-dd") into onegroup
+                                orderby onegroup.Key descending
+                                select new aaa { day = onegroup.Key, count = onegroup.Count() };
+                    foreach (var cc in aaaaa)
+                    {
+                        ret.labels.Add(new labels { label = cc.day });
+                        ret.values.Add(new values { value = cc.count.ToString() });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ret.content += ex.Message;
+            }
+            return ret;
+        }
+        [Route("AbOkDailyCount")]
         [HttpGet]
         public aballresponse AbOkDailyCount()
         {          
