@@ -41,7 +41,8 @@ namespace exportdb
                 Console.WriteLine("redundant is {1}, {2} records need to  be archived", ",", date, rebusi.Count());
                 foreach (var rere in rebusi)
                 {
-                    var picsr = db.Carbusinesspic.Where(c => c.Businesstype == rere.Businesstype && c.Identity == rere.Identity && c.Uploaded == true);
+                    var picsr = db.Carbusinesspic.Where(c => c.Businesstype == rere.Businesstype 
+                    && c.Identity == rere.Identity && c.Uploaded == true);
 
                     if (picsr.Count() >= global.businesscount[(businessType)rere.Businesstype])
                     {
@@ -49,7 +50,7 @@ namespace exportdb
                         if (aouser == null || string.IsNullOrEmpty(aouser.Name)) continue;
 
                         var bt = (businessType)rere.Businesstype;                                 
-
+                        if(bt!=businessType.scrap)
                         NewMethod(aouser.Photofile, bt.ToString(), home);
                         var addr = string.Empty;
                         if (!string.IsNullOrEmpty(rere.Province)) addr += rere.Province;
@@ -68,16 +69,17 @@ namespace exportdb
                 Console.WriteLine("today is {1}, {2} records need to  be archived", ",", date, theuser.Count());
                 foreach (var re in theuser)
                 {
-                    var pics = db.Carbusinesspic.Where(c => c.Businesstype == re.Businesstype && c.Identity == re.Identity && c.Uploaded == true);
+                    var pics = db.Carbusinesspic.Where(c => c.Businesstype == re.Businesstype
+                    && c.Identity == re.Identity && c.Uploaded == true);
 
                     if (pics.Count() >= global.businesscount[(businessType)re.Businesstype])
                     {
 
                         var aouser = db.Caruser.FirstOrDefault(aa => aa.Identity == re.Identity);
                         if (aouser == null || string.IsNullOrEmpty(aouser.Name)) continue;
-                        var bt = (businessType)re.Businesstype;                        
-
-                        NewMethod(aouser.Photofile, bt.ToString(), home);
+                        var bt = (businessType)re.Businesstype;
+                        if (bt != businessType.scrap)
+                            NewMethod(aouser.Photofile, bt.ToString(), home);
                         var addr = string.Empty;
                         if (!string.IsNullOrEmpty(re.Province)) addr += re.Province;
                         if (!string.IsNullOrEmpty(re.City)) addr += re.City;

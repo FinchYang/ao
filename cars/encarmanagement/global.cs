@@ -164,7 +164,7 @@ namespace mvc104
 
             //businesscount.Add(businessType.inspectDelay, 6);//延期审验
             //businesscount.Add(businessType.bodyDelay, 6);//延期提交身体证明
-            //businesscount.Add(businessType.changeContact, 4);//变更联系方式
+            businesscount.Add(businessType.changecontact, 4);//变更联系方式
         }
     }
 }

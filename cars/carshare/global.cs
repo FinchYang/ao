@@ -41,7 +41,7 @@ namespace carshare
 
             businesscount.Add(businessType.newtag, 8);//补领检验合格标志
             businesscount.Add(businessType.changetag, 9);//换领检验合格标志
-            businesscount.Add(businessType.changecontact, 0);//
+            businesscount.Add(businessType.changecontact, 4);//
         }
     }
 }

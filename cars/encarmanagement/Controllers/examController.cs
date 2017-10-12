@@ -22,6 +22,7 @@ using System.Threading;
 using System.Data;
 using mvc104.abm;
 using enabo;
+using encm.cars;
 
 namespace mvc104.Controllers
 {
@@ -157,8 +158,43 @@ namespace mvc104.Controllers
             }            
           
             return ret;
-        }       
+        }
+        [Route("carStatistics")]
+        [HttpGet]
+        public string carStatistics()
+        {
+            var start = DateTime.Now.AddYears(-100);
+            var end = DateTime.Now;
+            var onhtml = string.Empty;
+            var busicount = 0;
+            var combusi = 0;
+            var userscount = 0;
+            var success = 0;
+            var intebusi = 0;
+            try
+            {
+                using(var cardb=new carsContext())
+                {
+                    userscount = cardb.Caruser.Count();
+                    busicount = cardb.Carbusiness.Count();
+                    intebusi = cardb.Carbusiness.Count(b => b.Integrated == true);
+                    combusi = cardb.Carbusinesshis.Count();
+                    success = cardb.Carbusinesshis.Count(a => a.Completed == false);
+                }              
+            }
+            catch (Exception ex)
+            {
+            }
 
+            onhtml += "<li>进行中业务量: " + busicount + "</li>";
+            onhtml += "<li>进行中完整业务量: " + intebusi + "</li>";
+            onhtml += "<li>办结业务量: " + combusi + "</li>";
+            onhtml += "<li>成功办结业务量: " + success + "</li>";
+            onhtml += "<li>登录用户总数: " + userscount + "</li>";
+
+            Response.ContentType = "text/event-stream";
+            return "data:" + onhtml + "\n\n";
+        }
         [Route("aboallStatistics")]
         [HttpGet]
         public string aboallStatistics()
