@@ -154,16 +154,6 @@ namespace mvc104
 
             businesscount.Add(businessType.newtag, 8);//补领检验合格标志
             businesscount.Add(businessType.changetag, 9);//换领检验合格标志
-
-            //businesscount.Add(businessType.basicinfo, 4);//基本信息证明
-            //businesscount.Add(businessType.first, 4);//初领、增加机动车驾驶证自愿业务退办
-            //businesscount.Add(businessType.network, 4);// 网约车安全驾驶证明
-
-            //businesscount.Add(businessType.three, 4);//三年无重大事故证明
-            //businesscount.Add(businessType.five, 4);//五年安全驾驶证明
-
-            //businesscount.Add(businessType.inspectDelay, 6);//延期审验
-            //businesscount.Add(businessType.bodyDelay, 6);//延期提交身体证明
             businesscount.Add(businessType.changecontact, 4);//变更联系方式
         }
     }

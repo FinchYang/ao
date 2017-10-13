@@ -19,7 +19,7 @@ namespace importdata
             finish, //户口簿本人信息变更页  
             failure
         };
-        static string importPath = "ftp/get/netban";
+        static string importPath = "ftp/get/cars";
 
         static void Main(string[] args)
         {
@@ -55,7 +55,7 @@ namespace importdata
             using (var db = new carsContext())
             {
                 var filebase = "result.txt";
-                var home = Environment.GetEnvironmentVariable("HOME");
+                var home = "/home/carbusiness";// Environment.GetEnvironmentVariable("HOME");
                 var fname = Path.Combine(home, importPath, filebase);
                 if (!File.Exists(fname))
                 {
