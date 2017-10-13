@@ -11,6 +11,7 @@ namespace encm.cars
         public virtual DbSet<Carbusinesspic> Carbusinesspic { get; set; }
         public virtual DbSet<Carslog> Carslog { get; set; }
         public virtual DbSet<Caruser> Caruser { get; set; }
+        public virtual DbSet<Operator> Operator { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -331,6 +332,33 @@ namespace encm.cars
                 entity.Property(e => e.Verificationcode)
                     .HasColumnName("verificationcode")
                     .HasColumnType("varchar(45)");
+            });
+
+            modelBuilder.Entity<Operator>(entity =>
+            {
+                entity.ToTable("operator");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasColumnType("varchar(50)");
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .HasColumnType("varchar(45)");
+
+                entity.Property(e => e.Password)
+                    .IsRequired()
+                    .HasColumnName("password")
+                    .HasColumnType("varchar(45)");
+
+                entity.Property(e => e.Phone)
+                    .HasColumnName("phone")
+                    .HasColumnType("varchar(45)");
+
+                entity.Property(e => e.Scrapplace)
+                    .HasColumnName("scrapplace")
+                    .HasColumnType("smallint(2)")
+                    .HasDefaultValueSql("0");
             });
         }
     }

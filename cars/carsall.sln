@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.15
+VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "carsexp", "carsexp\carsexp.csproj", "{EDC1590B-F241-470F-88E9-6301B33F1D25}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "carshare", "carshare\carshare.csproj", "{2D4748AD-C651-4B90-BB6E-5E0D4AC5A2E6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "carimp", "carimp\carimp.csproj", "{D4F68C7F-E085-4B56-809A-03A019624C07}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "six2015", "E:\study\six2015\six2015\six2015.csproj", "{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{D4F68C7F-E085-4B56-809A-03A019624C07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4F68C7F-E085-4B56-809A-03A019624C07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4F68C7F-E085-4B56-809A-03A019624C07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
