@@ -13,9 +13,12 @@ using Microsoft.Extensions.Logging;
 using mvc104.models;
 using Newtonsoft.Json;
 
+using System.Xml.Serialization;
+using System.Text.RegularExpressions;
+
 namespace mvc104.Controllers
 {
-    public class wechatController : Controller
+    public partial class wechatController : Controller
     {
         public readonly ILogger<wechatController> _log;
 
@@ -27,7 +30,7 @@ namespace mvc104.Controllers
         {
             if (disposing)
             {
-
+             //   XmlSerializer a = new XmlSerializer();
            //     _db1.Dispose();
             }
             base.Dispose(disposing);
@@ -36,7 +39,81 @@ namespace mvc104.Controllers
         {
             _log = log;
         }
+        
+            [Route("wx")]
+            
+        [HttpPost]
+        public string wxpost()
+        {
+            try
+            {
+              //  _log.LogWarning("ContentLength={0},", Request.ContentLength);
+              //  _log.LogWarning("ContentType={0},", Request.ContentType);
+              ////  _log.LogWarning("Body.Length={0},", Request.Body.Length);
 
+              //  _log.LogWarning("Headers={0},", Request.Headers);
+              //  _log.LogWarning("Query={0},", Request.Query);
+              //  _log.LogWarning("QueryString={0},", Request.QueryString);
+              //  _log.LogWarning("Scheme={0},", Request.Scheme);
+              //  _log.LogWarning("Protocol={0},", Request.Protocol);
+              //  _log.LogWarning("PathBase={0},", Request.PathBase);
+              //  _log.LogWarning("Path={0},", Request.Path);
+              //  _log.LogWarning("Method={0},", Request.Method);
+              //  _log.LogWarning("Host={0},", Request.Host);
+
+              //  _log.LogWarning("Cookies.Count={0},", Request.Cookies.Count);
+               
+              //  _log.LogWarning(" Request.Body.CanRead={0},", Request.Body.CanRead);
+              //  _log.LogWarning("Request.HasFormContentType={0},", Request.HasFormContentType);
+
+                var x = new XmlSerializer(typeof(wxpostreq),new XmlRootAttribute ("xml"));
+              var req= (wxpostreq)x.Deserialize(Request.Body);
+                _log.LogWarning("json={0},", JsonConvert.SerializeObject(req));
+                var ret = new wxpostreq
+                {
+                    FromUserName = req.ToUserName,
+                    ToUserName = req.FromUserName,
+                    CreateTime = req.CreateTime,
+                    MsgType = req.MsgType,
+                    Content = "what a nice day!"
+                };
+                //   var  retstream=new StreamWriter()
+
+                using (StringWriter sw = new StringWriter())
+                {
+                    x.Serialize(sw, ret);
+                    string str = sw.ToString();
+                    _log.LogWarning("str={0},", str);
+                    string strRegex = @"^<?.*?>";
+                    Regex myRegex = new Regex(strRegex, RegexOptions.None);
+                     string strReplace = @"";
+                    str= myRegex.Replace(str, strReplace).TrimStart();
+                    _log.LogWarning("str={0},", str);
+                    string strRegex1 = @"^<.*>";
+                    Regex myRegex1 = new Regex(strRegex1, RegexOptions.None);
+                    string strReplace1 = @"<xml>";
+                    str = myRegex1.Replace(str, strReplace1).TrimStart();
+                    _log.LogWarning("str={0},", str);
+                    return str;
+                }
+            }
+            catch(Exception ex)
+            {
+                _log.LogError("error:{0}", ex.Message);
+               // return ex.Message;
+            }
+            return "success";
+         //   return Task.CompletedTask;
+            //  return "hah";
+        }
+      
+        [Route("wx")]
+        [HttpGet]
+        public string wx(string signature,string timestamp,string nonce,string echostr)
+        {
+            _log.LogWarning("signature={0},{1},{2},echostr={3}", signature, timestamp, nonce, echostr);
+            return echostr;
+        }
         [Route("getwxconfig")]
         [HttpGet]
         public commonresponse getwxconfig(string url)
