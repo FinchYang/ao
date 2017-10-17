@@ -73,7 +73,7 @@ namespace perfectmsg
                 var sendcount = 0;
                 var needsend = msgdb.Drivermsg.Where(c => c.Sendflag == false
                   && c.Count < 100
-                  && c.Timestamp.CompareTo(DateTime.Now.AddMonths(-1))<0
+                  && c.Timestamp.CompareTo(DateTime.Now.AddMonths(-1))>=0
                   );
                 foreach(var m in needsend)
                 {

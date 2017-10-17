@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "carimp", "carimp\carimp.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "six2015", "E:\study\six2015\six2015\six2015.csproj", "{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "perfectmsg", "perfectmsg\perfectmsg.csproj", "{6DA83EFD-5B78-4647-ADA6-0DD68B46A8ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "perfectmsg", "perfectmsg\perfectmsg.csproj", "{6DA83EFD-5B78-4647-ADA6-0DD68B46A8ED}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "abmsg", "..\abmsg\abmsg.csproj", "{4314D013-5C5F-40D6-AA2F-5CAC8184A759}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{6DA83EFD-5B78-4647-ADA6-0DD68B46A8ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DA83EFD-5B78-4647-ADA6-0DD68B46A8ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6DA83EFD-5B78-4647-ADA6-0DD68B46A8ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4314D013-5C5F-40D6-AA2F-5CAC8184A759}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4314D013-5C5F-40D6-AA2F-5CAC8184A759}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4314D013-5C5F-40D6-AA2F-5CAC8184A759}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4314D013-5C5F-40D6-AA2F-5CAC8184A759}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

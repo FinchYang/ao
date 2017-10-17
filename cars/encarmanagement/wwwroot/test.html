@@ -20,12 +20,13 @@
 <body>
     <div data-role="page" id="home">
         <div data-role="header">
-            <h1>欢迎来到我的主页</h1>
+            <h1>统计数据 & 运营监控</h1>
             <div data-role="navbar">
                 <ul>
                     <li><a href="#foo" data-icon="home">AB</a></li>
                     <li><a href="#driverall" data-icon="arrow-r">车管</a></li>
-                    <li><a href="#car" data-icon="search">驾管</a></li>
+                    <li><a href="#border" data-icon="search">边界平台</a></li>
+                    <li><a href="#msg" data-icon="search">短信</a></li>
                 </ul>
             </div>
         </div>
@@ -48,6 +49,111 @@
             <h4>山东云一提供技术支持</h4>
         </div><!-- /footer -->
     </div> 
+    <div data-role="page" id="border">
+        <div data-role="header">
+            <h1>边界平台数据传输情况</h1>
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#home" data-icon="home">首页</a></li>
+                    <li><a href="#foo" data-icon="home">AB</a></li>
+                    <li><a href="#driverall" data-icon="arrow-r">车管</a></li>                  
+                    <li><a href="#msg" data-icon="search">短信</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div data-role="content" id="borderdiv">
+            <p>我的内容..</p>
+        </div>
+
+        <div data-role="footer">
+            <h1>山东云一提供技术支持</h1>
+        </div>
+    </div> 
+    <div data-role="page" id="msg">
+        <div data-role="header">
+            <h1>短信发送情况总览</h1>
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#home" data-icon="home">首页</a></li>
+                    <li><a href="#abmsg" data-icon="home">ab</a></li>
+                    <li><a href="#carmsg" data-icon="arrow-r">car</a></li>
+                    <li><a href="#drivermsg" data-icon="search">driver</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div data-role="content">
+            <ul id="msgallul"></ul>
+</div>
+
+        <div data-role="footer">
+            <h1>山东云一提供技术支持</h1>
+        </div>
+    </div> 
+    <div data-role="page" id="carmsg">
+        <div data-role="header">
+            <h1>car message</h1>
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#msg" data-icon="home">上层菜单</a></li>
+                    <li><a href="#abmsg" data-icon="home">ab</a></li>
+                    <li><a href="#carmsg" data-icon="arrow-r">car</a></li>
+                    <li><a href="#drivermsg" data-icon="search">driver</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div data-role="content" id="carmsgdiv">
+            <p>我的内容..</p>
+        </div>
+
+        <div data-role="footer">
+            <h1>山东云一提供技术支持</h1>
+        </div>
+    </div> 
+    <div data-role="page" id="drivermsg">
+        <div data-role="header">
+            <h1>driver message</h1>
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#msg" data-icon="home">上层菜单</a></li>
+                    <li><a href="#abmsg" data-icon="home">ab</a></li>
+                    <li><a href="#carmsg" data-icon="arrow-r">car</a></li>
+                    <li><a href="#drivermsg" data-icon="search">driver</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div data-role="content" id="drivermsgdiv">
+            <p>我的内容..</p>
+        </div>
+
+        <div data-role="footer">
+            <h1>山东云一提供技术支持</h1>
+        </div>
+    </div> 
+    <div data-role="page" id="abmsg">
+        <div data-role="header">
+            <h1>ab message</h1>
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#msg" data-icon="home">上层菜单</a></li>
+                    <li><a href="#abmsg" data-icon="home">ab</a></li>
+                    <li><a href="#carmsg" data-icon="arrow-r">car</a></li>
+                    <li><a href="#drivermsg" data-icon="search">driver</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div data-role="content" id="abmsgdiv">
+            <p>我的内容..</p>
+        </div>
+
+        <div data-role="footer">
+            <h1>山东云一提供技术支持</h1>
+        </div>
+    </div> 
     <div data-role="page" id="driver">
         <div data-role="header">
             <h1>欢迎来到我的主页</h1>
@@ -55,7 +161,6 @@
                 <ul>
                     <li><a href="#home" data-icon="home">首页</a></li>
                     <li><a href="#driverall" data-icon="home">综合</a></li>
-                    <li><a href="#two" data-icon="arrow-r">边界</a></li>
                     <li><a href="#" data-icon="search">详细</a></li>
                 </ul>
             </div>
@@ -66,7 +171,7 @@
         </div>
 
         <div data-role="footer">
-            <h1>我的页脚</h1>
+            <h1>山东云一提供技术支持</h1>
         </div>
     </div> 
     <div data-role="page" id="driverall">
@@ -76,7 +181,6 @@
                 <ul>
                     <li><a href="#home" data-icon="home">首页</a></li>
                     <li><a href="#driverall" data-icon="home">综合</a></li>
-                    <li><a href="#two" data-icon="arrow-r">边界</a></li>
                     <li><a href="#" data-icon="search">详细</a></li>
                 </ul>
             </div>
@@ -184,27 +288,14 @@
             <div role="main" class="ui-content">
                 <div id="div-curriculum">
                 </div>
-                <p><a href="#checkborder" data-transition="turn">查看边界平台文件传输</a>。。。<a href="#chart-" data-transition="turn">上一页</a></p>
+                <p><a href="#home" data-transition="turn">查看驾管业务综合数据</a>。。。<a href="#chart-" data-transition="turn">上一页</a></p>
 
             </div>
             <div data-role="footer">
                 <h4>山东云一提供技术支持</h4>
             </div>
         </div>
-        <div data-role="page" id="checkborder">
-            <div data-role="header">
-                <h1>边界平台文件传输</h1>
-            </div>
-            <div role="main" class="ui-content">
-                <div id="div-checkborder">
-                </div>
-                <p><a href="#home" data-transition="turn">查看驾管业务综合数据</a>。。。<a href="#chart-curriculum" data-transition="turn">上一页</a></p>
-
-            </div>
-            <div data-role="footer">
-                <h4>山东云一提供技术支持</h4>
-            </div>
-        </div>
+     
         <script>
                     jQuery.noConflict();
                     jQuery(document).ready(function ($) {
@@ -394,7 +485,7 @@
                                 FusionCharts.ready(function () {
                                     var fusioncharts = new FusionCharts({
                                         type: 'scrollColumn2d',
-                                        renderAt: 'div-checkborder',
+                                        renderAt: 'borderdiv',
                                         width: '330',
                                         height: '350',
                                         dataFormat: 'json',
@@ -444,6 +535,196 @@
                                             }],
                                             "dataset": [{
                                                 "data": data
+                                            }]
+                                        }
+                                    });
+                                    fusioncharts.render();
+                                });
+                            }
+                        })
+                            .fail(function (xhr, status, errorThrown) {
+                                alert("Sorry, there was a problem!");
+                                console.log("Error: " + errorThrown);
+                                console.log("Status: " + status);
+                                console.dir(xhr);
+                            })
+                            .always(function (xhr, status) { });
+
+                        $.ajax({
+                            url: "/sdyycg/CheckMsg", ///sdyycjg
+                        }).done(function (json) {
+                            if (json.status) alert("Sorry, there was a problem!" + json.content);
+                            else {
+                                $("#msgallul").html(json.recap);
+                                var category = json.carchartdata.labels;
+                                var data = json.carchartdata.values;
+                                FusionCharts.ready(function () {
+                                    var fusioncharts = new FusionCharts({
+                                        type: 'scrollColumn2d',
+                                        renderAt: 'carmsgdiv',
+                                        width: '330',
+                                        height: '350',
+                                        dataFormat: 'json',
+                                        dataSource: {
+                                            "chart": {
+                                                "caption": "总短信量"+json.carall,
+                                                "subcaption": "总成功量" + json.carsuccess,
+                                                "xaxisname": "日期",
+                                                "yaxisname": "成功量",
+                                                "showvalues": "1",
+                                                "placeValuesInside": "1",
+                                                "rotateValues": "1",
+                                                "valueFontColor": "#000000",
+                                                "numberprefix": "",
+
+                                                //Cosmetics
+                                                "baseFontColor": "#68228b",
+                                                "baseFont": "Helvetica Neue,Arial",
+                                                "captionFontSize": "14",
+                                                "subcaptionFontSize": "14",
+                                                "subcaptionFontBold": "0",
+                                                "showborder": "0",
+                                                "paletteColors": "#33cc00",
+                                                "bgcolor": "#FFFFcc",
+                                                "showalternatehgridcolor": "1",
+                                                "showplotborder": "0",
+                                                "labeldisplay": "WRAP",
+                                                "showcanvasborder": "0",
+                                                "linethickness": "3",
+                                                "plotfillalpha": "100",
+                                                "plotgradientcolor": "#234561",
+                                                "numVisiblePlot": "5",
+                                                "divlineAlpha": "100",
+                                                "divlineColor": "#0088ff",
+                                                "divlineThickness": "1",
+                                                "divLineIsDashed": "1",
+                                                "divLineDashLen": "1",
+                                                "divLineGapLen": "1",
+                                                "scrollheight": "10",
+                                                "flatScrollBars": "1",
+                                                "scrollShowButtons": "0",
+                                                "scrollColor": "#ffff00",
+                                                "showHoverEffect": "1",
+                                            },
+                                            "categories": [{
+                                                "category": category
+                                            }],
+                                            "dataset": [{
+                                                "data": data
+                                            }]
+                                        }
+                                    });
+                                    fusioncharts.render();
+
+                                    var fusioncharts = new FusionCharts({
+                                        type: 'scrollColumn2d',
+                                        renderAt: 'drivermsgdiv',
+                                        width: '330',
+                                        height: '350',
+                                        dataFormat: 'json',
+                                        dataSource: {
+                                            "chart": {
+                                                "caption": "总短信量" + json.driverall,
+                                                "subcaption": "总成功量" + json.driversuccess,
+                                                "xaxisname": "日期",
+                                                "yaxisname": "成功量",
+                                                "showvalues": "1",
+                                                "placeValuesInside": "1",
+                                                "rotateValues": "1",
+                                                "valueFontColor": "#000000",
+                                                "numberprefix": "",
+
+                                                //Cosmetics
+                                                "baseFontColor": "#68228b",
+                                                "baseFont": "Helvetica Neue,Arial",
+                                                "captionFontSize": "14",
+                                                "subcaptionFontSize": "14",
+                                                "subcaptionFontBold": "0",
+                                                "showborder": "0",
+                                                "paletteColors": "#33cc00",
+                                                "bgcolor": "#FFFFcc",
+                                                "showalternatehgridcolor": "1",
+                                                "showplotborder": "0",
+                                                "labeldisplay": "WRAP",
+                                                "showcanvasborder": "0",
+                                                "linethickness": "3",
+                                                "plotfillalpha": "100",
+                                                "plotgradientcolor": "#456123",
+                                                "numVisiblePlot": "5",
+                                                "divlineAlpha": "100",
+                                                "divlineColor": "#0088ff",
+                                                "divlineThickness": "1",
+                                                "divLineIsDashed": "1",
+                                                "divLineDashLen": "1",
+                                                "divLineGapLen": "1",
+                                                "scrollheight": "10",
+                                                "flatScrollBars": "1",
+                                                "scrollShowButtons": "0",
+                                                "scrollColor": "#ffff00",
+                                                "showHoverEffect": "1",
+                                            },
+                                            "categories": [{
+                                                "category": json.driverchartdata.labels
+                                            }],
+                                            "dataset": [{
+                                                "data": json.driverchartdata.values
+                                            }]
+                                        }
+                                    });
+                                    fusioncharts.render();
+
+                                    var fusioncharts = new FusionCharts({
+                                        type: 'scrollColumn2d',
+                                        renderAt: 'abmsgdiv',
+                                        width: '330',
+                                        height: '350',
+                                        dataFormat: 'json',
+                                        dataSource: {
+                                            "chart": {
+                                                "caption": "总短信量" + json.aball,
+                                                "subcaption": "总成功量" + json.absuccess,
+                                                "xaxisname": "日期",
+                                                "yaxisname": "成功量",
+                                                "showvalues": "1",
+                                                "placeValuesInside": "1",
+                                                "rotateValues": "1",
+                                                "valueFontColor": "#000000",
+                                                "numberprefix": "",
+
+                                                //Cosmetics
+                                                "baseFontColor": "#68228b",
+                                                "baseFont": "Helvetica Neue,Arial",
+                                                "captionFontSize": "14",
+                                                "subcaptionFontSize": "14",
+                                                "subcaptionFontBold": "0",
+                                                "showborder": "0",
+                                                "paletteColors": "#33cc00",
+                                                "bgcolor": "#FFFFcc",
+                                                "showalternatehgridcolor": "1",
+                                                "showplotborder": "0",
+                                                "labeldisplay": "WRAP",
+                                                "showcanvasborder": "0",
+                                                "linethickness": "3",
+                                                "plotfillalpha": "100",
+                                                "plotgradientcolor": "#345612",
+                                                "numVisiblePlot": "5",
+                                                "divlineAlpha": "100",
+                                                "divlineColor": "#0088ff",
+                                                "divlineThickness": "1",
+                                                "divLineIsDashed": "1",
+                                                "divLineDashLen": "1",
+                                                "divLineGapLen": "1",
+                                                "scrollheight": "10",
+                                                "flatScrollBars": "1",
+                                                "scrollShowButtons": "0",
+                                                "scrollColor": "#ffff00",
+                                                "showHoverEffect": "1",
+                                            },
+                                            "categories": [{
+                                                "category": json.abchartdata.labels
+                                            }],
+                                            "dataset": [{
+                                                "data": json.abchartdata.values
                                             }]
                                         }
                                     });

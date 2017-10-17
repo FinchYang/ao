@@ -23,6 +23,7 @@ using System.Data;
 using mvc104.abm;
 using enabo;
 using encm.cars;
+using encm.msg;
 
 namespace mvc104.Controllers
 {
@@ -72,6 +73,113 @@ namespace mvc104.Controllers
           public class values{
             public string value { get; set; }
         }
+        public class msgres:commonresponse
+        {
+            public string recap { get; set; }
+            public int aball { get; set; }
+            public int driverall { get; set; }
+            public int carall { get; set; }
+            public int absuccess { get; set; }
+            public int driversuccess { get; set; }
+            public int carsuccess { get; set; }
+            public chartdata abchartdata { get; set; }
+            public chartdata driverchartdata { get; set; }
+            public chartdata carchartdata { get; set; }
+            public int aballtoday { get; set; }
+            public int driveralltoday { get; set; }
+            public int caralltoday { get; set; }
+            public int absuccesstoday { get; set; }
+            public int driversuccesstoday { get; set; }
+            public int carsuccesstoday { get; set; }
+        }
+        public class chartdata
+        {
+            public List<values> values { get; set; }
+            public List<labels> labels { get; set; }
+        }
+        [Route("CheckMsg")]
+        [HttpGet]
+        public msgres CheckMsg()
+        {
+            var ret = new msgres { status = 0,
+                aball = 0, driverall = 0, carall = 0,
+                absuccess = 0,
+                carsuccess = 0,
+                driversuccess = 0,
+                abchartdata = new chartdata { values = new List<values>(), labels = new List<labels>() },
+                carchartdata = new chartdata { values = new List<values>(), labels = new List<labels>() },
+                driverchartdata = new chartdata { values = new List<values>(), labels = new List<labels>() },
+                recap = string.Empty
+            };
+            try
+            {
+                using (var msgdb = new messageContext())
+                {
+                   ret.aball= msgdb.Abmsg.Count();
+                    ret.driverall = msgdb.Drivermsg.Count();
+                    ret.carall = msgdb.Carmsg.Count();
+
+                    ret.absuccess = msgdb.Abmsg.Count(c => c.Sendflag);
+                    ret.carsuccess = msgdb.Carmsg.Count(c => c.Sendflag);
+                    ret.driversuccess = msgdb.Drivermsg.Count(c => c.Sendflag);
+
+                    {
+                        var ab = msgdb.Abmsg.Where(c => c.Sendflag).Select(c => c.Timestamp);//.ToList();
+                        var aaaaa = from one in ab
+                                    group one by one.ToString("yyyy-MM-dd") into onegroup
+                                    orderby onegroup.Key descending
+                                    select new aaa { day = onegroup.Key, count = onegroup.Count() };
+                        foreach (var cc in aaaaa)
+                        {
+                            ret.abchartdata.labels.Add(new labels { label = cc.day });
+                            ret.abchartdata.values.Add(new values { value = cc.count.ToString() });
+                        }
+                    }
+                    {
+                        var ab = msgdb.Carmsg.Where(c => c.Sendflag).Select(c => c.Timestamp);//.ToList();
+                        var aaaaa = from one in ab
+                                    group one by one.ToString("yyyy-MM-dd") into onegroup
+                                    orderby onegroup.Key descending
+                                    select new aaa { day = onegroup.Key, count = onegroup.Count() };
+                        foreach (var cc in aaaaa)
+                        {
+                            ret.carchartdata.labels.Add(new labels { label = cc.day });
+                            ret.carchartdata.values.Add(new values { value = cc.count.ToString() });
+                        }
+                    }
+                    {
+                        var ab = msgdb.Drivermsg.Where(c => c.Sendflag).Select(c => c.Timestamp);//.ToList();
+                        var aaaaa = from one in ab
+                                    group one by one.ToString("yyyy-MM-dd") into onegroup
+                                    orderby onegroup.Key descending
+                                    select new aaa { day = onegroup.Key, count = onegroup.Count() };
+                        foreach (var cc in aaaaa)
+                        {
+                            ret.driverchartdata.labels.Add(new labels { label = cc.day });
+                            ret.driverchartdata.values.Add(new values { value = cc.count.ToString() });
+                        }
+                    }
+                    ret.recap += "<li>车管总短信量: " + ret.carall + "</li>";
+                    ret.recap += "<li>车管总成功量: " + ret.carsuccess + "</li>";
+                    ret.recap += "<li>驾管总短信量: " + ret.driverall + "</li>";
+                    ret.recap += "<li>驾管总成功量: " + ret.driversuccess + "</li>";
+                    ret.recap += "<li>AB总短信量: " + ret.aball + "</li>";
+                    ret.recap += "<li>AB总成功量: " + ret.absuccess + "</li>";
+                    ret.recap += "<li>车管今日短信量: " + ret.carall + "</li>";
+                    ret.recap += "<li>车管今日成功量: " + ret.carsuccess + "</li>";
+                    ret.recap += "<li>驾管今日短信量: " + ret.driverall + "</li>";
+                    ret.recap += "<li>驾管今日成功量: " + ret.driversuccess + "</li>";
+                    ret.recap += "<li>AB今日短信量: " + ret.aball + "</li>";
+                    ret.recap += "<li>AB今日成功量: " + ret.absuccess + "</li>";
+                }
+            }
+            catch (Exception ex)
+            {
+                ret.content += ex.Message;
+            }
+            return ret;
+        }
+
         [Route("CheckBorder")]
         [HttpGet]
         public aballresponse CheckBorder()

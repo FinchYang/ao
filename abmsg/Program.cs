@@ -1,5 +1,6 @@
-﻿using carshare;
-using perfectmsg.msg;
+﻿
+
+using abmsg.msg;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,8 +11,51 @@ namespace perfectmsg
 {
     class Program
     {
-        public static string msgfile="/home/carbusiness/ftp/get/cars/carover.txt";
+        public static string msgfile= "/home/inspect/ftp/get/studyover.txt";
+        public static string msgfilenew = "/home/inspect/ftp/get/contentPhone.txt";
+        static void impfile(string file, string tag)
+        {
+            var msgs = File.ReadAllLines(file);
+            var count = 0;
+            using (var db = new messageContext())
+            {
+                foreach (var msg in msgs)
+                {
+                    var fields = msg.Split('|');
+                    if (fields.Length < 5)
+                    {
+                        Console.WriteLine("bad line: {0}", msg);
+                        continue;
+                    }
+                    var ordinal = fields[0];
+                   
+                    short busitype = 0;
+                    short.TryParse(fields[1], out busitype);
 
+                    var success = true;
+                    if (fields[2] == "2") success = false;
+
+                    var phone = fields[3];
+                    var content = fields[4];
+                    var dbmsg = db.Abmsg.FirstOrDefault(c => c.Ordinal == ordinal);
+                    if (dbmsg == null)
+                    {
+                        count++;
+                        db.Abmsg.Add(new Abmsg
+                        {
+                            Ordinal = ordinal,
+                            Content = content,
+                            Busiflag = success,
+                            Busitype = busitype,
+                            Timestamp = DateTime.Now,
+                            Phone = phone,
+                        });
+                        db.SaveChanges();
+                    }
+                }
+            }
+            Console.WriteLine("{2},{0} message added this time,{1}", count, DateTime.Now,tag);
+        }
         static void Main(string[] args)
         {
             //import msg data
@@ -21,57 +65,21 @@ namespace perfectmsg
             }
             else
             {
-                var msgs = File.ReadAllLines(msgfile);
-
-                var count = 0;
-                using (var db = new messageContext())
-                {
-                    foreach (var msg in msgs)
-                    {
-                        var fields = msg.Split('|');
-                        if (fields.Length < 5)
-                        {
-                            Console.WriteLine("bad line: {0}", msg);
-                            continue;
-                        }
-                        var ordinal = 0;
-                        if (!int.TryParse(fields[0], out ordinal))
-                        {
-                            Console.WriteLine("bad ordinal line: {0}", msg);
-                            continue;
-                        }
-                        short busitype = 0;
-                        short.TryParse(fields[1], out busitype);
-
-                        var success = true;
-                        if (fields[2] == "2") success = false;
-
-                        var phone = fields[3];
-                        var content = fields[4];
-                        var dbmsg = db.Carmsg.FirstOrDefault(c =>c.Ordinal==ordinal);
-                        if (dbmsg == null)
-                        {
-                            count++;
-                            db.Carmsg.Add(new Carmsg
-                            {
-                                Ordinal=ordinal,
-                                Content=content,Busiflag= success,
-                                Busitype=busitype,
-                                Timestamp=DateTime.Now,
-                                Phone=phone,
-                            });
-                            db.SaveChanges();
-                        }
-                    }
-                }
-                Console.WriteLine("{0} message added this time,{1}",count, DateTime.Now);
+                impfile(msgfile, "over");
             }
-
+            if (!File.Exists(msgfilenew))
+            {
+                Console.WriteLine("file {0} doesn't exist,{1}", msgfile, DateTime.Now);
+            }
+            else
+            {
+                impfile(msgfilenew, "new");
+            }
             //send message
-            using(var msgdb=new messageContext())
+            using (var msgdb=new messageContext())
             {
                 var sendcount = 0;
-                var needsend = msgdb.Carmsg.Where(c => c.Sendflag == false
+                var needsend = msgdb.Abmsg.Where(c => c.Sendflag == false
                   && c.Count < 100
                   && c.Timestamp.CompareTo(DateTime.Now.AddMonths(-1))>=0
                   );
