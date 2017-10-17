@@ -23,18 +23,44 @@
             <h1>统计数据 & 运营监控</h1>
             <div data-role="navbar">
                 <ul>
-                    <li><a href="#foo" data-icon="home">AB</a></li>
-                    <li><a href="#driverall" data-icon="arrow-r">车管</a></li>
+                    <li><a href="#datail" data-icon="arrow-r">详细数据</a></li>
                     <li><a href="#border" data-icon="search">边界平台</a></li>
                     <li><a href="#msg" data-icon="search">短信</a></li>
                 </ul>
             </div>
         </div>
 
-        <div data-role="content">
-            <ul class="sdulli" id="aboallul">            </ul>
+        <div data-role="content" id="allalldiv">
+         
+                <b>驾管业务</b>
+                <ul class="sdulli" id="aboallul">            </ul>
+                <b>车管业务</b>
+                <ul class="sdulli" id="carallul">            </ul>
+                <b>AB 审验</b>
+                <ul class="sdulli" id="abul">            </ul>
+         
+            <div id="result"></div>
             <script>
                 if (typeof (EventSource) !== "undefined") {
+                    var absource = new EventSource("http://app.ytjj.gov.cn/sdyycjg/abStatistics1");
+                    absource.onmessage = function (event) {
+                        console.log(event.data);
+                        console.dir(event);
+                        document.getElementById("abul").innerHTML = event.data + "<br>";
+                    };
+                }
+                else {
+                    document.getElementById("result").innerHTML = "抱歉，你的浏览器不支持 server-sent 事件...";
+                }
+           
+                if (typeof (EventSource) !== "undefined") {
+                    var carsource = new EventSource("http://app.ytjj.gov.cn/sdyycg/carStatistics");
+                    carsource.onmessage = function (event) {
+                        console.log(event.data);
+                        console.dir(event);
+                        document.getElementById("carallul").innerHTML = event.data + "<br>";
+                    };
+              
                     var source = new EventSource("http://app.ytjj.gov.cn/sdyycjg/aboallStatistics");
                     source.onmessage = function (event) {
                         console.log(event.data);
@@ -43,7 +69,6 @@
                     };
                 }
             </script>
-            <p><a href="#foo" data-transition="turn">查看驾管分类数据统计</a></p>
         </div><!-- /content -->
         <div data-role="footer">
             <h4>山东云一提供技术支持</h4>
@@ -55,8 +80,7 @@
             <div data-role="navbar">
                 <ul>
                     <li><a href="#home" data-icon="home">首页</a></li>
-                    <li><a href="#foo" data-icon="home">AB</a></li>
-                    <li><a href="#driverall" data-icon="arrow-r">车管</a></li>                  
+                    <li><a href="#datail" data-icon="arrow-r">详细数据</a></li>               
                     <li><a href="#msg" data-icon="search">短信</a></li>
                 </ul>
             </div>
@@ -154,68 +178,22 @@
             <h1>山东云一提供技术支持</h1>
         </div>
     </div> 
-    <div data-role="page" id="driver">
-        <div data-role="header">
-            <h1>欢迎来到我的主页</h1>
-            <div data-role="navbar">
-                <ul>
-                    <li><a href="#home" data-icon="home">首页</a></li>
-                    <li><a href="#driverall" data-icon="home">综合</a></li>
-                    <li><a href="#" data-icon="search">详细</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div data-role="content">
-            <p>我的内容..</p>
-        </div>
-
-        <div data-role="footer">
-            <h1>山东云一提供技术支持</h1>
-        </div>
-    </div> 
-    <div data-role="page" id="driverall">
-        <div data-role="header">
-            <h1>欢迎来到我的主页</h1>
-            <div data-role="navbar">
-                <ul>
-                    <li><a href="#home" data-icon="home">首页</a></li>
-                    <li><a href="#driverall" data-icon="home">综合</a></li>
-                    <li><a href="#" data-icon="search">详细</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div data-role="content">
-            <h1>车管业务综合统计数据</h1>
-            <ul class="sdulli" id="dirverallul">            </ul>
-            <script>
-                if (typeof (EventSource) !== "undefined") {
-                    var source = new EventSource("http://app.ytjj.gov.cn/sdyycg/carStatistics");
-                    source.onmessage = function (event) {
-                        console.log(event.data);
-                        console.dir(event);
-                        document.getElementById("dirverallul").innerHTML = event.data + "<br>";
-                    };
-                }
-            </script>
-        </div>
-
-        <div data-role="footer">
-            <h4>山东云一提供技术支持</h4>
-        </div>
-    </div> 
-   
-
-      
-        <div data-role="page" id="foo" data-theme="a">
+           
+        <div data-role="page" id="datail" data-theme="a">
             <div data-role="header">
                 <h1>驾管业务全程网办数据统计</h1>
+                <!--<div data-role="navbar">
+                    <ul>
+                        <li><a href="#home" data-icon="home">首页</a></li>
+                        <li><a href="#border" data-icon="search">边界平台</a></li>
+                        <li><a href="#msg" data-icon="search">短信</a></li>
+                    </ul>
+                </div>-->
             </div><!-- /header -->
             <div role="main" class="ui-content">
                 <p id="foop">驾管业务处理中数据统计</p>
-                <ul class="sdulli" id="foopul"></ul>
-                <p> <a href="#bar" data-transition="turn">驾管处理完成数据统计</a>。。。<a href="#home" data-transition="turn"> 上一页</a></p>
+                <ol class="sdulli" id="foopul"></ol>
+                <p> <a href="#bar" data-transition="turn">驾管处理完成数据统计</a>。。。<a href="#home" data-transition="turn"> 回首页</a></p>
             </div><!-- /content -->
             <div data-role="footer">
                 <h4>山东云一提供技术支持</h4>
@@ -228,45 +206,14 @@
             </div><!-- /header -->
             <div role="main" class="ui-content">
                 <p id="barp">驾管处理完成数据统计</p>
-                <ul class="sdulli" id="barpul">            </ul>
-                <p><a href="#abstudy" data-transition="turn">AB证审验教育数据统计</a>。。。<a href="#foo" data-transition="turn">上一页</a></p>
+                <ol class="sdulli" id="barpul">            </ol>
+                <p><a href="#chart-" data-transition="turn">AB审验每日学习完成</a>。。。<a href="#datail" data-transition="turn">上一页</a></p>
             </div><!-- /content -->
             <div data-role="footer">
                 <h4>山东云一提供技术支持</h4>
             </div><!-- /footer -->
         </div><!-- /page -->
-
-        <div data-role="page" id="abstudy" data-theme="b">
-            <div data-role="header">
-                <h1>AB证审验教育数据统计</h1>
-            </div><!-- /header -->
-            <div role="main" class="ui-content">
-                <!-- <p id="barp">完整业务处理完成数据统计</p> -->
-                <ul class="sdulli" id="abul">            </ul>
-                <div id="result"></div>
-                <script>
-                    if (typeof (EventSource) !== "undefined") {
-                        var source = new EventSource("http://app.ytjj.gov.cn/sdyycjg/abStatistics1");
-                        //       var source = new EventSource("http://localhost:8080/abStatistics1");
-                        source.onmessage = function (event) {
-                            console.log(event.data);
-                            console.dir(event);
-                            document.getElementById("abul").innerHTML = event.data + "<br>";
-                        };
-                    }
-                    else {
-                        document.getElementById("result").innerHTML = "抱歉，你的浏览器不支持 server-sent 事件...";
-                    }
-                </script>
-                <!-- <p><a href="#aboall" data-transition="turn">查看全程网办综合统计数据</a>。。。<a href="#bar" data-transition="turn">上一页</a></p> -->
-                <p><a href="#chart-" data-transition="turn">查看AB审验每日学习完成</a>。。。<a href="#bar" data-transition="turn">上一页</a></p>
-            </div><!-- /content -->
-            <div data-role="footer">
-                <h4>山东云一提供技术支持</h4>
-            </div><!-- /footer -->
-
-        </div><!-- /page -->
-
+    
         <div data-role="page" id="chart-">
             <div data-role="header">
                 <h1>AB审验每日学习完成</h1>
@@ -274,7 +221,7 @@
             <div role="main" class="ui-content">
                 <div id="chart-container">
                 </div>
-                <p><a href="#chart-curriculum" data-transition="turn">查看AB审验每日课程完成</a>。。。<a href="#abstudy" data-transition="turn">上一页</a></p>
+                <p><a href="#chart-curriculum" data-transition="turn">查看AB审验每日课程完成</a>。。。<a href="#bar" data-transition="turn">上一页</a></p>
 
             </div>
             <div data-role="footer">
@@ -288,7 +235,7 @@
             <div role="main" class="ui-content">
                 <div id="div-curriculum">
                 </div>
-                <p><a href="#home" data-transition="turn">查看驾管业务综合数据</a>。。。<a href="#chart-" data-transition="turn">上一页</a></p>
+                <p><a href="#home" data-transition="turn">回首页</a>。。。<a href="#chart-" data-transition="turn">上一页</a></p>
 
             </div>
             <div data-role="footer">
@@ -301,7 +248,7 @@
                     jQuery(document).ready(function ($) {
                         console.log(" window.location.search: " + window.location.search);
                         var a = new Date().toLocaleString();
-                        $(".ui-content").find("ul").before("<p>" + a + "</p>");
+                        $(".ui-content").find("ol").before("<p>" + a + "</p>");
                         $.ajax({
                             url: "/sdyycjg/searchStatistics",
                             data: {
