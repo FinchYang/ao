@@ -1,5 +1,5 @@
-﻿using carshare;
-using perfectmsg.msg;
+﻿
+using pmsg.msg;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +10,7 @@ namespace perfectmsg
 {
     class Program
     {
-        public static string msgfile="/home/carbusiness/ftp/get/cars/carover.txt";
+        public static string msgfile= "/home/endriver/ftp/get/netban/aboover.txt";
 
         static void Main(string[] args)
         {
@@ -48,11 +48,11 @@ namespace perfectmsg
 
                         var phone = fields[3];
                         var content = fields[4];
-                        var dbmsg = db.Carmsg.FirstOrDefault(c =>c.Ordinal==ordinal);
+                        var dbmsg = db.Drivermsg.FirstOrDefault(c =>c.Ordinal==ordinal);
                         if (dbmsg == null)
                         {
                             count++;
-                            db.Carmsg.Add(new Carmsg
+                            db.Drivermsg.Add(new Drivermsg
                             {
                                 Ordinal=ordinal,
                                 Content=content,Busiflag= success,
@@ -71,7 +71,7 @@ namespace perfectmsg
             using(var msgdb=new messageContext())
             {
                 var sendcount = 0;
-                var needsend = msgdb.Carmsg.Where(c => c.Sendflag == false
+                var needsend = msgdb.Drivermsg.Where(c => c.Sendflag == false
                   && c.Count < 100
                   && c.Timestamp.CompareTo(DateTime.Now.AddMonths(-1))<0
                   );
