@@ -80,13 +80,76 @@
             <div data-role="navbar">
                 <ul>
                     <li><a href="#home" data-icon="home">首页</a></li>
-                    <li><a href="#datail" data-icon="arrow-r">详细数据</a></li>               
-                    <li><a href="#msg" data-icon="search">短信</a></li>
+                    <li><a href="#carborder" data-icon="search">car</a></li>               
+                    <li><a href="#driverborder" data-icon="search">driver</a></li>
+                    <li><a href="#abborder" data-icon="search">ab</a></li>
                 </ul>
             </div>
         </div>
 
         <div data-role="content" id="borderdiv">
+            <p id="carbordertoday">我的内容..</p>
+            <p id="driverbordertoday">我的内容..</p>
+            <p id="abbordertoday">我的内容..</p>
+        </div>r
+
+        <div data-role="footer">
+            <h1>山东云一提供技术支持</h1>
+        </div>
+    </div> 
+    <div data-role="page" id="carborder">
+        <div data-role="header">
+            <h1>car</h1>
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#border" data-icon="home">上层目录</a></li>
+                    <li><a href="#abborder" data-icon="search">ab</a></li>
+                    <li><a href="#driverborder" data-icon="search">driver</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div data-role="content" id="carborderdiv">
+            <p>我的内容..</p>
+        </div>
+
+        <div data-role="footer">
+            <h1>山东云一提供技术支持</h1>
+        </div>
+    </div> 
+    <div data-role="page" id="driverborder">
+        <div data-role="header">
+            <h1>driver</h1>
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#border" data-icon="home">上层目录</a></li>
+                    <li><a href="#abborder" data-icon="search">ab</a></li>
+                    <li><a href="#carborder" data-icon="search">car</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div data-role="content" id="driverborderdiv">
+            <p>我的内容..</p>
+        </div>
+
+        <div data-role="footer">
+            <h1>山东云一提供技术支持</h1>
+        </div>
+    </div> 
+    <div data-role="page" id="abborder">
+        <div data-role="header">
+            <h1>ab</h1>
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#border" data-icon="home">上层目录</a></li>
+                    <li><a href="#driverborder" data-icon="search">driver</a></li>
+                    <li><a href="#carborder" data-icon="search">car</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div data-role="content" id="abborderdiv">
             <p>我的内容..</p>
         </div>
 
@@ -100,8 +163,8 @@
             <div data-role="navbar">
                 <ul>
                     <li><a href="#home" data-icon="home">首页</a></li>
-                    <li><a href="#abmsg" data-icon="home">ab</a></li>
-                    <li><a href="#carmsg" data-icon="arrow-r">car</a></li>
+                    <li><a href="#abmsg" data-icon="search">ab</a></li>
+                    <li><a href="#carmsg" data-icon="search">car</a></li>
                     <li><a href="#drivermsg" data-icon="search">driver</a></li>
                 </ul>
             </div>
@@ -121,8 +184,8 @@
             <div data-role="navbar">
                 <ul>
                     <li><a href="#msg" data-icon="home">上层菜单</a></li>
-                    <li><a href="#abmsg" data-icon="home">ab</a></li>
-                    <li><a href="#carmsg" data-icon="arrow-r">car</a></li>
+                    <li><a href="#abmsg" data-icon="search">ab</a></li>
+                    <li><a href="#carmsg" data-icon="search">car</a></li>
                     <li><a href="#drivermsg" data-icon="search">driver</a></li>
                 </ul>
             </div>
@@ -142,8 +205,8 @@
             <div data-role="navbar">
                 <ul>
                     <li><a href="#msg" data-icon="home">上层菜单</a></li>
-                    <li><a href="#abmsg" data-icon="home">ab</a></li>
-                    <li><a href="#carmsg" data-icon="arrow-r">car</a></li>
+                    <li><a href="#abmsg" data-icon="search">ab</a></li>
+                    <li><a href="#carmsg" data-icon="search">car</a></li>
                     <li><a href="#drivermsg" data-icon="search">driver</a></li>
                 </ul>
             </div>
@@ -163,8 +226,8 @@
             <div data-role="navbar">
                 <ul>
                     <li><a href="#msg" data-icon="home">上层菜单</a></li>
-                    <li><a href="#abmsg" data-icon="home">ab</a></li>
-                    <li><a href="#carmsg" data-icon="arrow-r">car</a></li>
+                    <li><a href="#abmsg" data-icon="search">ab</a></li>
+                    <li><a href="#carmsg" data-icon="search">car</a></li>
                     <li><a href="#drivermsg" data-icon="search">driver</a></li>
                 </ul>
             </div>
@@ -421,7 +484,156 @@
                                 console.dir(xhr);
                             })
                             .always(function (xhr, status) { });
+                        $.ajax({
+                            url: "/sdyycg/CheckBorder", //
+                        }).done(function (json) {
+                            if (json.status) alert("Sorry, there was a problem!" + json.content);
+                            else {
+                                var category = json.labels;
+                                var data = json.values;
+                                $("#carbordertoday").html("今日车管业务数据传输次数："+data[0].value);
+                                FusionCharts.ready(function () {
+                                    var fusioncharts = new FusionCharts({
+                                        type: 'scrollColumn2d',
+                                        renderAt: 'carborderdiv',
+                                        width: '330',
+                                        height: '350',
+                                        dataFormat: 'json',
+                                        dataSource: {
+                                            "chart": {
+                                                "caption": "car文件传输",
+                                                "subcaption": "每小时传输一次数据",
+                                                "xaxisname": "日期",
+                                                "yaxisname": "传输次数",
+                                                "showvalues": "1",
+                                                "placeValuesInside": "1",
+                                                "rotateValues": "1",
+                                                "valueFontColor": "#000000",
+                                                "numberprefix": "",
 
+                                                //Cosmetics
+                                                "baseFontColor": "#68228b",
+                                                "baseFont": "Helvetica Neue,Arial",
+                                                "captionFontSize": "14",
+                                                "subcaptionFontSize": "14",
+                                                "subcaptionFontBold": "0",
+                                                "showborder": "0",
+                                                "paletteColors": "#33cc00",
+                                                "bgcolor": "#FFFFcc",
+                                                "showalternatehgridcolor": "1",
+                                                "showplotborder": "0",
+                                                "labeldisplay": "WRAP",
+                                                "showcanvasborder": "0",
+                                                "linethickness": "3",
+                                                "plotfillalpha": "100",
+                                                "plotgradientcolor": "#456123",
+                                                "numVisiblePlot": "5",
+                                                "divlineAlpha": "100",
+                                                "divlineColor": "#0088ff",
+                                                "divlineThickness": "1",
+                                                "divLineIsDashed": "1",
+                                                "divLineDashLen": "1",
+                                                "divLineGapLen": "1",
+                                                "scrollheight": "10",
+                                                "flatScrollBars": "1",
+                                                "scrollShowButtons": "0",
+                                                "scrollColor": "#ffff00",
+                                                "showHoverEffect": "1",
+                                            },
+                                            "categories": [{
+                                                "category": category
+                                            }],
+                                            "dataset": [{
+                                                "data": data
+                                            }]
+                                        }
+                                    });
+                                    fusioncharts.render();
+                                });
+                            }
+                        })
+                            .fail(function (xhr, status, errorThrown) {
+                                alert("Sorry, there was a problem!");
+                                console.log("Error: " + errorThrown);
+                                console.log("Status: " + status);
+                                console.dir(xhr);
+                            })
+                            .always(function (xhr, status) { });
+                        $.ajax({
+                            url: "/sdyycjg/CheckBorderAb", ///sdyycjg
+                        }).done(function (json) {
+                            if (json.status) alert("Sorry, there was a problem!" + json.content);
+                            else {
+                                var category = json.labels;
+                                var data = json.values;
+                                $("#abbordertoday").html("今日AB业务数据传输次数：" + data[0].value);
+                                FusionCharts.ready(function () {
+                                    var fusioncharts = new FusionCharts({
+                                        type: 'scrollColumn2d',
+                                        renderAt: 'abborderdiv',
+                                        width: '330',
+                                        height: '350',
+                                        dataFormat: 'json',
+                                        dataSource: {
+                                            "chart": {
+                                                "caption": "ab文件传输",
+                                                "subcaption": "每小时传输一次数据",
+                                                "xaxisname": "日期",
+                                                "yaxisname": "传输次数",
+                                                "showvalues": "1",
+                                                "placeValuesInside": "1",
+                                                "rotateValues": "1",
+                                                "valueFontColor": "#000000",
+                                                "numberprefix": "",
+
+                                                //Cosmetics
+                                                "baseFontColor": "#68228b",
+                                                "baseFont": "Helvetica Neue,Arial",
+                                                "captionFontSize": "14",
+                                                "subcaptionFontSize": "14",
+                                                "subcaptionFontBold": "0",
+                                                "showborder": "0",
+                                                "paletteColors": "#33cc00",
+                                                "bgcolor": "#FFFFcc",
+                                                "showalternatehgridcolor": "1",
+                                                "showplotborder": "0",
+                                                "labeldisplay": "WRAP",
+                                                "showcanvasborder": "0",
+                                                "linethickness": "3",
+                                                "plotfillalpha": "100",
+                                                "plotgradientcolor": "#987654",
+                                                "numVisiblePlot": "5",
+                                                "divlineAlpha": "100",
+                                                "divlineColor": "#0088ff",
+                                                "divlineThickness": "1",
+                                                "divLineIsDashed": "1",
+                                                "divLineDashLen": "1",
+                                                "divLineGapLen": "1",
+                                                "scrollheight": "10",
+                                                "flatScrollBars": "1",
+                                                "scrollShowButtons": "0",
+                                                "scrollColor": "#ffff00",
+                                                "showHoverEffect": "1",
+                                            },
+                                            "categories": [{
+                                                "category": category
+                                            }],
+                                            "dataset": [{
+                                                "data": data
+                                            }]
+                                        }
+                                    });
+                                    fusioncharts.render();
+                                });
+                            }
+                        })
+                            .fail(function (xhr, status, errorThrown) {
+                                alert("Sorry, there was a problem!");
+                                console.log("Error: " + errorThrown);
+                                console.log("Status: " + status);
+                                console.dir(xhr);
+                            })
+                            .always(function (xhr, status) { });
                         $.ajax({
                             url: "/sdyycjg/CheckBorder", ///sdyycjg
                         }).done(function (json) {
@@ -429,10 +641,11 @@
                             else {
                                 var category = json.labels;
                                 var data = json.values;
+                                $("#driverbordertoday").html("今日驾管业务数据传输次数："+data[0].value);
                                 FusionCharts.ready(function () {
                                     var fusioncharts = new FusionCharts({
                                         type: 'scrollColumn2d',
-                                        renderAt: 'borderdiv',
+                                        renderAt: 'driverborderdiv',
                                         width: '330',
                                         height: '350',
                                         dataFormat: 'json',

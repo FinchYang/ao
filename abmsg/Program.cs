@@ -69,7 +69,7 @@ namespace perfectmsg
             }
             if (!File.Exists(msgfilenew))
             {
-                Console.WriteLine("file {0} doesn't exist,{1}", msgfile, DateTime.Now);
+                Console.WriteLine("file {0} doesn't exist,{1}", msgfilenew, DateTime.Now);
             }
             else
             {

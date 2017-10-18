@@ -17,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "perfectmsg", "perfectmsg\pe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "abmsg", "..\abmsg\abmsg.csproj", "{4314D013-5C5F-40D6-AA2F-5CAC8184A759}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ab", "ab", "{109FC974-1F25-412A-82C3-4305824B6FCB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "study", "E:\study\study\study.csproj", "{039A9715-4408-466F-91CB-F3C5DC05EC26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,9 +55,16 @@ Global
 		{4314D013-5C5F-40D6-AA2F-5CAC8184A759}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4314D013-5C5F-40D6-AA2F-5CAC8184A759}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4314D013-5C5F-40D6-AA2F-5CAC8184A759}.Release|Any CPU.Build.0 = Release|Any CPU
+		{039A9715-4408-466F-91CB-F3C5DC05EC26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{039A9715-4408-466F-91CB-F3C5DC05EC26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{039A9715-4408-466F-91CB-F3C5DC05EC26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{039A9715-4408-466F-91CB-F3C5DC05EC26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{039A9715-4408-466F-91CB-F3C5DC05EC26} = {109FC974-1F25-412A-82C3-4305824B6FCB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {83C8BE7E-6EDD-4B6A-AA2E-B4A2EF71A8E1}

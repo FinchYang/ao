@@ -83,7 +83,7 @@ namespace importdata
             using (var db = new enaboContext())
             {
                 var filebase = "result.txt";
-                var home = Environment.GetEnvironmentVariable("HOME");
+                var home = "/home/endriver";// Environment.GetEnvironmentVariable("HOME");
                 var fname = Path.Combine(home, importPath, filebase);
                 if (!File.Exists(fname))
                 {

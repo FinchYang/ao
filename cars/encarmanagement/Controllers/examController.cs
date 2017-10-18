@@ -106,6 +106,12 @@ namespace mvc104.Controllers
                 absuccess = 0,
                 carsuccess = 0,
                 driversuccess = 0,
+                aballtoday = 0,
+                driveralltoday = 0,
+                caralltoday = 0,
+                absuccesstoday = 0,
+                carsuccesstoday = 0,
+                driversuccesstoday = 0,
                 abchartdata = new chartdata { values = new List<values>(), labels = new List<labels>() },
                 carchartdata = new chartdata { values = new List<values>(), labels = new List<labels>() },
                 driverchartdata = new chartdata { values = new List<values>(), labels = new List<labels>() },
@@ -123,6 +129,16 @@ namespace mvc104.Controllers
                     ret.carsuccess = msgdb.Carmsg.Count(c => c.Sendflag);
                     ret.driversuccess = msgdb.Drivermsg.Count(c => c.Sendflag);
 
+                    var today = DateTime.Now;
+                    var tod = new DateTime(today.Year, today.Month, today.Day);
+                    ret.aballtoday = msgdb.Abmsg.Count(c=>c.Timestamp.CompareTo(tod)>=0);
+                    ret.driveralltoday = msgdb.Drivermsg.Count(c => c.Timestamp.CompareTo(tod) >= 0);
+                    ret.caralltoday = msgdb.Carmsg.Count(c => c.Timestamp.CompareTo(tod) >= 0);
+
+                    ret.absuccesstoday = msgdb.Abmsg.Count(c => c.Sendflag
+                    && c.Timestamp.CompareTo(tod) >= 0);
+                    ret.carsuccesstoday = msgdb.Carmsg.Count(c => c.Sendflag && c.Timestamp.CompareTo(tod) >= 0);
+                    ret.driversuccesstoday = msgdb.Drivermsg.Count(c => c.Sendflag && c.Timestamp.CompareTo(tod) >= 0);
                     {
                         var ab = msgdb.Abmsg.Where(c => c.Sendflag).Select(c => c.Timestamp);//.ToList();
                         var aaaaa = from one in ab
@@ -165,12 +181,12 @@ namespace mvc104.Controllers
                     ret.recap += "<li>驾管总成功量: " + ret.driversuccess + "</li>";
                     ret.recap += "<li>AB总短信量: " + ret.aball + "</li>";
                     ret.recap += "<li>AB总成功量: " + ret.absuccess + "</li>";
-                    ret.recap += "<li>车管今日短信量: " + ret.carall + "</li>";
-                    ret.recap += "<li>车管今日成功量: " + ret.carsuccess + "</li>";
-                    ret.recap += "<li>驾管今日短信量: " + ret.driverall + "</li>";
-                    ret.recap += "<li>驾管今日成功量: " + ret.driversuccess + "</li>";
-                    ret.recap += "<li>AB今日短信量: " + ret.aball + "</li>";
-                    ret.recap += "<li>AB今日成功量: " + ret.absuccess + "</li>";
+                    ret.recap += "<li>车管今日短信量: " + ret.caralltoday + "</li>";
+                    ret.recap += "<li>车管今日成功量: " + ret.carsuccesstoday + "</li>";
+                    ret.recap += "<li>驾管今日短信量: " + ret.driveralltoday + "</li>";
+                    ret.recap += "<li>驾管今日成功量: " + ret.driversuccesstoday + "</li>";
+                    ret.recap += "<li>AB今日短信量: " + ret.aballtoday + "</li>";
+                    ret.recap += "<li>AB今日成功量: " + ret.absuccesstoday + "</li>";
                 }
             }
             catch (Exception ex)
@@ -187,24 +203,24 @@ namespace mvc104.Controllers
             var ret = new aballresponse { status = 0, values = new List<values>(), labels = new List<labels>() };
             try
             {
-                using (var abdb = new mvc104.abm.studyinContext())
+                var getpath = "/home/carbusiness/ftp/get/back";
+                var gt = new DirectoryInfo(getpath).GetFiles().Where(a => a.Name.Contains("carsresult"));
+
+                var aaaaa = from one in gt
+                            group one by one.Name.Substring(0, 10) into onegroup
+                            orderby onegroup.Key descending
+                            select new { day = onegroup.Key, count = onegroup.Count() };
+                foreach (var cc in aaaaa)
                 {
-                    var ah = abdb.History.Select(ab => ab.Finishdate).ToList();
-                    var aaaaa = from one in ah
-                                group one by one.ToString("yyyy-MM-dd") into onegroup
-                                orderby onegroup.Key descending
-                                select new aaa { day = onegroup.Key, count = onegroup.Count() };
-                    foreach (var cc in aaaaa)
-                    {
-                        ret.labels.Add(new labels { label = cc.day });
-                        ret.values.Add(new values { value = cc.count.ToString() });
-                    }
+                    ret.labels.Add(new labels { label = cc.day });
+                    ret.values.Add(new values { value = cc.count.ToString() });
                 }
             }
             catch (Exception ex)
             {
                 ret.content += ex.Message;
             }
+
             return ret;
         }
         [Route("AbOkDailyCount")]

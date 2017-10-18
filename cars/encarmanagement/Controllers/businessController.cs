@@ -51,9 +51,7 @@ namespace mvc104.Controllers
                 {
                     return highlevel.commonreturn(responseStatus.iderror);
                 }
-                theuser.Integrated = false;
-                 theuser.Status = (short)businessstatus.unknown;
-                 theuser.Exporttime=new DateTime(2000,1,1);
+              
                 var reason = string.Empty;
                 if (!string.IsNullOrEmpty(theuser.Reason)) reason = theuser.Reason;
                 _db.Carbusinesshis.Add(new Carbusinesshis
@@ -72,7 +70,9 @@ namespace mvc104.Controllers
                     Scrapplace=theuser.Scrapplace,
                     Reason = reason
                 });
-               
+                theuser.Integrated = false;
+                theuser.Status = (short)businessstatus.unknown;
+                theuser.Exporttime = new DateTime(2000, 1, 1);
                 var pics = _db.Carbusinesspic.Where(i => i.Identity == accinfo.Identity && i.Businesstype == (short)accinfo.businessType);
                 foreach (var p in pics)
                 {
