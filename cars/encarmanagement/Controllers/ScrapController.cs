@@ -385,7 +385,7 @@ namespace mvc104.Controllers
         [HttpGet]
         public commonresponse getScrapDoneList(string startdate="2000-1-1",string enddate="2222-2-2",
             CarType carType=CarType.unknown,
-            int  startnum=0,int endnum=-1)
+            int  startnum=1,int endnum=-1)
         {
             try
             {
@@ -421,6 +421,7 @@ namespace mvc104.Controllers
                     return new commonresponse { status = responseStatus.enddateerror, content = responseStatus.enddateerror.ToString() };
                 }
                 var scraps = new List<Scrap>();
+                var count = 0;
                 using (var db = new carsContext())
                 {
                     var ss = db.Carbusinesshis.Where(a => a.Businesstype == (short)businessType.scrap
@@ -433,12 +434,14 @@ namespace mvc104.Controllers
                     {
                         ss = ss.Where(c => c.Cartype == (short)carType                            );
                     }
+                    count = ss.Count();
                     if (endnum != -1)
                         ss = ss.Take(endnum);
-                    var index = 1;
+                    ss = ss.Skip(startnum - 1);
+                  //  var index = 1;
                     foreach (var s in ss)
                     {
-                        if (index++ < startnum) continue;
+                      //  if (index++ < startnum) continue;
                         var user = db.Caruser.FirstOrDefault(a => a.Identity == s.Identity);
                         if (user == null) continue;
                         scraps.Add(new Scrap
@@ -454,7 +457,7 @@ namespace mvc104.Controllers
                 }
                 Task.Run(() => highlevel.LogRequest("getScrapDoneList",
                        "getScrapDoneList", Request.HttpContext.Connection.RemoteIpAddress.ToString(), 0));
-                return new ScrapListRes { status = responseStatus.ok, scraps = scraps };
+                return new ScrapListRes { status = responseStatus.ok, scraps = scraps,count=count };
             }
             catch (Exception ex)
             {
