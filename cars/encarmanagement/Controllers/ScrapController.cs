@@ -383,7 +383,9 @@ namespace mvc104.Controllers
         }
         [Route("getScrapDoneList")]
         [HttpGet]
-        public commonresponse getScrapDoneList(string startdate="2000-1-1",string enddate="2222-2-2",CarType carType=CarType.unknown)
+        public commonresponse getScrapDoneList(string startdate="2000-1-1",string enddate="2222-2-2",
+            CarType carType=CarType.unknown,
+            int  startnum=0,int endnum=-1)
         {
             try
             {
@@ -425,10 +427,18 @@ namespace mvc104.Controllers
                     &&a.Time.CompareTo(start)>=0
                     &&a.Time.CompareTo(end)<=0
                       && a.Scrapplace == (short)scrapplace
-                    && a.Cartype==(short)carType);
-
+                   // && a.Cartype==(short)carType
+                    );
+                    if (carType != CarType.unknown)
+                    {
+                        ss = ss.Where(c => c.Cartype == (short)carType                            );
+                    }
+                    if (endnum != -1)
+                        ss = ss.Take(endnum);
+                    var index = 1;
                     foreach (var s in ss)
                     {
+                        if (index++ < startnum) continue;
                         var user = db.Caruser.FirstOrDefault(a => a.Identity == s.Identity);
                         if (user == null) continue;
                         scraps.Add(new Scrap
