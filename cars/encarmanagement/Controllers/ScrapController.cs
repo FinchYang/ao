@@ -383,7 +383,7 @@ namespace mvc104.Controllers
         }
         [Route("getScrapDoneList")]
         [HttpGet]
-        public commonresponse getScrapDoneList(string startdate,string enddate,CarType carType)
+        public commonresponse getScrapDoneList(string startdate="2000-1-1",string enddate="2222-2-2",CarType carType=CarType.unknown)
         {
             try
             {
