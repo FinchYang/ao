@@ -166,7 +166,7 @@ namespace exportdb
                          , re.Abroadorservice, date.ToString("yyyy/MM/dd HH:mm:ss"),aouser.Photofile);
                         File.AppendAllText(fname, line + "\r\n");
                         re.Integrated = true;
-
+                        re.Status =(short) businessstatus.wait;
                         re.Exporttime = date;
                         re.Waittime = date;
                     }
@@ -185,7 +185,14 @@ namespace exportdb
             a.Start();
             a.WaitForExit();
         }
-
+        public enum businessstatus
+        {
+            unknown,
+            wait,//身份证正面
+            process,//身份证反面
+            finish, //户口簿本人信息变更页  
+            failure
+        };
         private static bool checkSignpic(businessType bt, string id, string home)
         {
             var picp = string.Format("{2}/server/pictures/{0}/{1}", id, bt.ToString(), home);

@@ -5,7 +5,7 @@ namespace mvc104.models
     public class loginresponse : commonresponse
     {
         public string token { get; set; }
-        public short[] okpic { get; set; }
+     //   public short[] okpic { get; set; }
         public bool submitted { get; set; }
          public bool blacklist { get; set; }
 

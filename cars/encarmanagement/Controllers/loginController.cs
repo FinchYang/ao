@@ -65,7 +65,7 @@ namespace mvc104.Controllers
             }
 
                   var btype = (short)businessType;
-            var picsl = new List<short>();
+         //   var picsl = new List<short>();
             var token = GetToken();
             var photofile = string.Empty;
             var response = new loginresponse
@@ -75,7 +75,7 @@ namespace mvc104.Controllers
                 submitted = false,
                 content = "unknown",
                 token = token,
-                okpic = picsl.ToArray()
+            //    okpic = picsl.ToArray()
             };
               var encryptedIdentity=CryptographyHelpers.StudyEncrypt(identify);
             try

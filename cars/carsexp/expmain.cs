@@ -90,7 +90,7 @@ namespace exportdb
                          , re.Platenumber1 + re.Platenumber2, date.ToString("yyyy/MM/dd HH:mm:ss"),aouser.Photofile);
                         File.AppendAllText(fname, line + "\r\n");
                         re.Integrated = true;
-
+                        re.Status = 1;
                         re.Exporttime = date;
                         re.Waittime = date;
                     }

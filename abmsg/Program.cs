@@ -54,7 +54,7 @@ namespace perfectmsg
                     }
                 }
             }
-            Console.WriteLine("{2},{0} message added this time,{1}", count, DateTime.Now,tag);
+            Console.WriteLine("{2},{0} of {3} message added this time,{1}", count, DateTime.Now,tag,msgs.Count());
         }
         static void Main(string[] args)
         {
@@ -98,7 +98,7 @@ namespace perfectmsg
                     msgdb.SaveChanges();
 
                 }
-                Console.WriteLine("{0} messages sended this time,{1}", sendcount, DateTime.Now);
+                Console.WriteLine("{0} of {2} messages sended this time,{1}", sendcount, DateTime.Now,needsend.Count());
             }
         }
       

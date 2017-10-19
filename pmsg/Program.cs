@@ -64,7 +64,7 @@ namespace perfectmsg
                         }
                     }
                 }
-                Console.WriteLine("{0} message added this time,{1}",count, DateTime.Now);
+                Console.WriteLine("{0} of {2} message added this time,{1}",count, DateTime.Now,msgs.Count());
             }
 
             //send message
@@ -90,7 +90,7 @@ namespace perfectmsg
                     msgdb.SaveChanges();
 
                 }
-                Console.WriteLine("{0} messages sended this time,{1}", sendcount, DateTime.Now);
+                Console.WriteLine("{0} of {2} messages sended this time,{1}", sendcount, DateTime.Now,needsend.Count());
             }
         }
       

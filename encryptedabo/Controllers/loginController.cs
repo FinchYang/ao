@@ -64,7 +64,7 @@ namespace mvc104.Controllers
             }
 
                   var btype = (short)businessType;
-            var picsl = new List<short>();
+          //  var picsl = new List<short>();
             var token = GetToken();
             var photofile = string.Empty;
             var response = new loginresponse
@@ -74,7 +74,7 @@ namespace mvc104.Controllers
                 submitted = false,
                 content = "unknown",
                 token = token,
-                okpic = picsl.ToArray()
+             //   okpic = picsl.ToArray()
             };
               var encryptedIdentity=CryptographyHelpers.StudyEncrypt(identify);
             try
@@ -144,11 +144,11 @@ namespace mvc104.Controllers
                           if (!string.IsNullOrEmpty(business.Reason)) response.content = business.Reason;
                     if (pics.Count() < global.businesscount[businessType] || response.businessstatus == businessstatus.failure)
                     {
-                        foreach (var a in pics)
-                        {
-                            picsl.Add(a.Pictype);
-                        }
-                        response.okpic = picsl.ToArray();
+                        //foreach (var a in pics)
+                        //{
+                        //    picsl.Add(a.Pictype);
+                        //}
+                        //response.okpic = picsl.ToArray();
                         if(response.businessstatus == businessstatus.failure)  response.submitted = true;
                     }
                     else
