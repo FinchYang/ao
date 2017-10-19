@@ -25,6 +25,7 @@
                 <ul>
                     <li><a href="#datail" data-icon="arrow-r">详细数据</a></li>
                     <li><a href="#border" data-icon="search">边界平台</a></li>
+                    <li><a href="#sysuse" data-icon="search">系统使用</a></li>
                     <li><a href="#msg" data-icon="search">短信</a></li>
                 </ul>
             </div>
@@ -73,6 +74,89 @@
         <div data-role="footer">
             <h4>山东云一提供技术支持</h4>
         </div><!-- /footer -->
+    </div> 
+    <div data-role="page" id="sysuse">
+        <div data-role="header">
+            <h1>sys use</h1>
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#home" data-icon="home">首页</a></li>
+                    <li><a href="#abuse" data-icon="search">ab</a></li>
+                    <li><a href="#caruse" data-icon="search">car</a></li>
+                    <li><a href="#driveruse" data-icon="search">driver</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div data-role="content">
+            <p id="abusep"></p>
+            <p id="carusep"></p>
+            <p id="driverusep"></p>
+        </div>
+
+        <div data-role="footer">
+            <h1>山东云一提供技术支持</h1>
+        </div>
+    </div> 
+    <div data-role="page" id="driveruse">
+        <div data-role="header">
+            <h1>driver use</h1>
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#sysuse" data-icon="home">上层菜单</a></li>
+                    <li><a href="#abuse" data-icon="search">ab</a></li>
+                    <li><a href="#caruse" data-icon="search">car</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div data-role="content" id="driverusediv">
+            <p>我的内容..</p>
+        </div>
+
+        <div data-role="footer">
+            <h1>山东云一提供技术支持</h1>
+        </div>
+    </div> 
+    <div data-role="page" id="caruse">
+        <div data-role="header">
+            <h1>car use</h1>
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#sysuse" data-icon="home">上层菜单</a></li>
+                    <li><a href="#abuse" data-icon="search">ab</a></li>
+                    <li><a href="#driveruse" data-icon="search">driver</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div data-role="content" id="carusediv">
+            <p>我的内容..</p>
+        </div>
+
+        <div data-role="footer">
+            <h1>山东云一提供技术支持</h1>
+        </div>
+    </div> 
+    <div data-role="page" id="abuse">
+        <div data-role="header">
+            <h1>ab use</h1>
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#sysuse" data-icon="home">上层菜单</a></li>
+                    <li><a href="#caruse" data-icon="search">car</a></li>
+                    <li><a href="#driveruse" data-icon="search">driver</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div data-role="content" id="abusediv">
+            <p>我的内容..</p>
+        </div>
+
+        <div data-role="footer">
+            <h1>山东云一提供技术支持</h1>
+        </div>
     </div> 
     <div data-role="page" id="border">
         <div data-role="header">
@@ -899,6 +983,238 @@
                                 console.dir(xhr);
                             })
                             .always(function (xhr, status) { });
+
+                        $.ajax({
+                            url: "/sdyycg/CheckRequestDriver", //
+                        }).done(function (json) {
+                            if (json.status) alert("Sorry, there was a problem!" + json.content);
+                            else {
+                                var category = json.labels;
+                                var data = json.values;
+                                var lasthour = 0;
+                                if (data[0].value) lasthour = data[0].value;
+                                $("#driverusep").html("驾管业务最近一小时请求数字：" + lasthour);
+                                FusionCharts.ready(function () {
+                                    var fusioncharts = new FusionCharts({
+                                        type: 'scrollColumn2d',
+                                        renderAt: 'driverusediv',
+                                        width: '330',
+                                        height: '350',
+                                        dataFormat: 'json',
+                                        dataSource: {
+                                            "chart": {
+                                                "caption": "system use of last 24 hours",
+                                                "subcaption": "-",
+                                                "xaxisname": "hour",
+                                                "yaxisname": "request count",
+                                                "showvalues": "1",
+                                                "placeValuesInside": "1",
+                                                "rotateValues": "1",
+                                                "valueFontColor": "#ffffff",
+                                                "numberprefix": "",
+                                                "baseFontColor": "#333333",
+                                                "baseFont": "Helvetica Neue,Arial",
+                                                "captionFontSize": "14",
+                                                "subcaptionFontSize": "14",
+                                                "subcaptionFontBold": "0",
+                                                "showborder": "0",
+                                                "paletteColors": "#0075c2",
+                                                "bgcolor": "#FFFFFF",
+                                                "showalternatehgridcolor": "0",
+                                                "showplotborder": "0",
+                                                "labeldisplay": "WRAP",
+                                                "divlinecolor": "#CCCCCC",
+                                                "showcanvasborder": "0",
+                                                "linethickness": "3",
+                                                "plotfillalpha": "100",
+                                                "plotgradientcolor": "#fedcba",
+                                                "numVisiblePlot": "5",
+                                                "divlineAlpha": "100",
+                                                "divlineColor": "#999999",
+                                                "divlineThickness": "1",
+                                                "divLineIsDashed": "1",
+                                                "divLineDashLen": "1",
+                                                "divLineGapLen": "1",
+                                                "scrollheight": "10",
+                                                "flatScrollBars": "1",
+                                                "scrollShowButtons": "0",
+                                                "scrollColor": "#cccccc",
+                                                "showHoverEffect": "1",
+                                            },
+                                            "categories": [{
+                                                "category": category
+                                            }],
+                                            "dataset": [{
+                                                "data": data
+                                            }]
+                                        }
+                                    });
+                                    fusioncharts.render();
+                                });
+                            }
+                        })
+                            .fail(function (xhr, status, errorThrown) {
+                                alert("Sorry, there was a problem!");
+                                console.log("Error: " + errorThrown);
+                                console.log("Status: " + status);
+                                console.dir(xhr);
+                            })
+                            .always(function (xhr, status) {
+                            });
+                        $.ajax({
+                            url: "/sdyycg/CheckRequestAb", //
+                        }).done(function (json) {
+                            if (json.status) alert("Sorry, there was a problem!" + json.content);
+                            else {
+                                var category = json.labels;
+                                var data = json.values;
+                                var lasthour = 0;
+                                if (data[0].value) lasthour = data[0].value;
+                                $("#abusep").html("AB审验最近一小时请求数字：" + lasthour);
+                                FusionCharts.ready(function () {
+                                    var fusioncharts = new FusionCharts({
+                                        type: 'scrollColumn2d',
+                                        renderAt: 'abusediv',
+                                        width: '330',
+                                        height: '350',
+                                        dataFormat: 'json',
+                                        dataSource: {
+                                            "chart": {
+                                                "caption": "system use of last 24 hours",
+                                                "subcaption": "-",
+                                                "xaxisname": "hour",
+                                                "yaxisname": "request count",
+                                                "showvalues": "1",
+                                                "placeValuesInside": "1",
+                                                "rotateValues": "1",
+                                                "valueFontColor": "#ffffff",
+                                                "numberprefix": "",
+                                                "baseFontColor": "#333333",
+                                                "baseFont": "Helvetica Neue,Arial",
+                                                "captionFontSize": "14",
+                                                "subcaptionFontSize": "14",
+                                                "subcaptionFontBold": "0",
+                                                "showborder": "0",
+                                                "paletteColors": "#0075c2",
+                                                "bgcolor": "#FFFFFF",
+                                                "showalternatehgridcolor": "0",
+                                                "showplotborder": "0",
+                                                "labeldisplay": "WRAP",
+                                                "divlinecolor": "#CCCCCC",
+                                                "showcanvasborder": "0",
+                                                "linethickness": "3",
+                                                "plotfillalpha": "100",
+                                                "plotgradientcolor": "#ba9876",
+                                                "numVisiblePlot": "5",
+                                                "divlineAlpha": "100",
+                                                "divlineColor": "#999999",
+                                                "divlineThickness": "1",
+                                                "divLineIsDashed": "1",
+                                                "divLineDashLen": "1",
+                                                "divLineGapLen": "1",
+                                                "scrollheight": "10",
+                                                "flatScrollBars": "1",
+                                                "scrollShowButtons": "0",
+                                                "scrollColor": "#cccccc",
+                                                "showHoverEffect": "1",
+                                            },
+                                            "categories": [{
+                                                "category": category
+                                            }],
+                                            "dataset": [{
+                                                "data": data
+                                            }]
+                                        }
+                                    });
+                                    fusioncharts.render();
+                                });
+                            }
+                        })
+                            .fail(function (xhr, status, errorThrown) {
+                                alert("Sorry, there was a problem!");
+                                console.log("Error: " + errorThrown);
+                                console.log("Status: " + status);
+                                console.dir(xhr);
+                            })
+                            .always(function (xhr, status) {
+                            });
+                        $.ajax({
+                            url: "/sdyycg/CheckRequestCar", //
+                        }).done(function (json) {
+                            if (json.status) alert("Sorry, there was a problem!" + json.content);
+                            else {
+                                var category = json.labels;
+                                var data = json.values;
+                                var lasthour = 0;
+                                if (data[0].value) lasthour = data[0].value;
+                                $("#carusep").html("车管业务最近一小时请求数字：" + lasthour);
+                                FusionCharts.ready(function () {
+                                    var fusioncharts = new FusionCharts({
+                                        type: 'scrollColumn2d',
+                                        renderAt: 'carusediv',
+                                        width: '330',
+                                        height: '350',
+                                        dataFormat: 'json',
+                                        dataSource: {
+                                            "chart": {
+                                                "caption": "system use of last 24 hours",
+                                                "subcaption": "-",
+                                                "xaxisname": "hour",
+                                                "yaxisname": "request count",
+                                                "showvalues": "1",
+                                                "placeValuesInside": "1",
+                                                "rotateValues": "1",
+                                                "valueFontColor": "#ffffff",
+                                                "numberprefix": "",
+                                                "baseFontColor": "#333333",
+                                                "baseFont": "Helvetica Neue,Arial",
+                                                "captionFontSize": "14",
+                                                "subcaptionFontSize": "14",
+                                                "subcaptionFontBold": "0",
+                                                "showborder": "0",
+                                                "paletteColors": "#0075c2",
+                                                "bgcolor": "#FFFFFF",
+                                                "showalternatehgridcolor": "0",
+                                                "showplotborder": "0",
+                                                "labeldisplay": "WRAP",
+                                                "divlinecolor": "#CCCCCC",
+                                                "showcanvasborder": "0",
+                                                "linethickness": "3",
+                                                "plotfillalpha": "100",
+                                                "plotgradientcolor": "#dcba98",
+                                                "numVisiblePlot": "5",
+                                                "divlineAlpha": "100",
+                                                "divlineColor": "#999999",
+                                                "divlineThickness": "1",
+                                                "divLineIsDashed": "1",
+                                                "divLineDashLen": "1",
+                                                "divLineGapLen": "1",
+                                                "scrollheight": "10",
+                                                "flatScrollBars": "1",
+                                                "scrollShowButtons": "0",
+                                                "scrollColor": "#cccccc",
+                                                "showHoverEffect": "1",
+                                            },
+                                            "categories": [{
+                                                "category": category
+                                            }],
+                                            "dataset": [{
+                                                "data": data
+                                            }]
+                                        }
+                                    });
+                                    fusioncharts.render();
+                                });
+                            }
+                        })
+                            .fail(function (xhr, status, errorThrown) {
+                                alert("Sorry, there was a problem!");
+                                console.log("Error: " + errorThrown);
+                                console.log("Status: " + status);
+                                console.dir(xhr);
+                            })
+                            .always(function (xhr, status) {
+                            });
                     });
         </script>
     </body>

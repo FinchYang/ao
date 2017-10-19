@@ -97,6 +97,90 @@ namespace mvc104.Controllers
             public List<values> values { get; set; }
             public List<labels> labels { get; set; }
         }
+        [Route("CheckRequestAb")]
+        [HttpGet]
+        public aballresponse CheckRequestAb()
+        {
+            var ret = new aballresponse { status = 0, values = new List<values>(), labels = new List<labels>() };
+            try
+            {
+                using (var driverdb = new studyinContext())
+                {
+                    var ah = driverdb.Request.Where(ab => ab.Time.CompareTo(DateTime.Now.AddDays(-1)) >= 0).Select(a => a.Time);
+                    var aaaaa = from one in ah
+                                group one by one.ToString("yyyy-MM-dd HH") + "点" into onegroup
+                                orderby onegroup.Key descending
+                                select new aaa { day = onegroup.Key, count = onegroup.Count() };
+                    foreach (var cc in aaaaa)
+                    {
+                        ret.labels.Add(new labels { label = cc.day });
+                        ret.values.Add(new values { value = cc.count.ToString() });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ret.content += ex.Message;
+            }
+
+            return ret;
+        }
+        [Route("CheckRequestCar")]
+        [HttpGet]
+        public aballresponse CheckRequestCar()
+        {
+            var ret = new aballresponse { status = 0, values = new List<values>(), labels = new List<labels>() };
+            try
+            {
+                using (var driverdb = new carsContext())
+                {
+                    var ah = driverdb.Carslog.Where(ab => ab.Time.CompareTo(DateTime.Now.AddDays(-1)) >= 0).Select(a => a.Time);
+                    var aaaaa = from one in ah
+                                group one by one.ToString("yyyy-MM-dd HH") + "点" into onegroup
+                                orderby onegroup.Key descending
+                                select new aaa { day = onegroup.Key, count = onegroup.Count() };
+                    foreach (var cc in aaaaa)
+                    {
+                        ret.labels.Add(new labels { label = cc.day });
+                        ret.values.Add(new values { value = cc.count.ToString() });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ret.content += ex.Message;
+            }
+
+            return ret;
+        }
+        [Route("CheckRequestDriver")]
+        [HttpGet]
+        public aballresponse CheckRequestDriver()
+        {
+            var ret = new aballresponse { status = 0, values = new List<values>(), labels = new List<labels>() };
+            try
+            {
+                using (var driverdb = new enaboContext())
+                {
+                    var ah = driverdb.Request.Where(ab => ab.Time.CompareTo(DateTime.Now.AddDays(-1))>=0).Select(a =>a.Time);
+                    var aaaaa = from one in ah
+                                group one by one.ToString("yyyy-MM-dd HH")+"点" into onegroup
+                                orderby onegroup.Key descending
+                                select new aaa { day = onegroup.Key, count = onegroup.Count() };
+                    foreach (var cc in aaaaa)
+                    {
+                        ret.labels.Add(new labels { label = cc.day });
+                        ret.values.Add(new values { value = cc.count.ToString() });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ret.content += ex.Message;
+            }
+
+            return ret;
+        }
         [Route("CheckMsg")]
         [HttpGet]
         public msgres CheckMsg()
@@ -232,7 +316,7 @@ namespace mvc104.Controllers
             {
                 using (var abdb = new mvc104.abm.studyinContext())
                 {
-                    var ah = abdb.History.Select(ab =>ab.Finishdate).ToList();
+                    var ah = abdb.History.Select(ab =>ab.Finishdate);
                     var aaaaa = from one in ah
                             group one by one.ToString("yyyy-MM-dd") into onegroup
                             orderby onegroup.Key descending
@@ -265,7 +349,7 @@ namespace mvc104.Controllers
             {
                 using (var abdb = new mvc104.abm.studyinContext())
                 {
-                    var ah = abdb.Request.Where(a =>a.Method.Contains("InspectPostStudyStatus")).Select(b =>b.Time).ToList();
+                    var ah = abdb.Request.Where(a =>a.Method.Contains("InspectPostStudyStatus")).Select(b =>b.Time);
                     var aaaaa = from one in ah
                             group one by one.ToString("yyyy-MM-dd") into onegroup
                                 orderby onegroup.Key descending
