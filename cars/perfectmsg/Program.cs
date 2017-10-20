@@ -68,9 +68,11 @@ namespace perfectmsg
             }
 
             //send message
-            using(var msgdb=new messageContext())
+            if (DateTime.Now.Hour > 21 || DateTime.Now.Hour < 6) return;
+            var sendcount = 0;
+            using (var msgdb=new messageContext())
             {
-                var sendcount = 0;
+               
                 var needsend = msgdb.Carmsg.Where(c => c.Sendflag == false
                   && c.Count < 100
                   && c.Timestamp.CompareTo(DateTime.Now.AddMonths(-1))>=0
@@ -91,6 +93,17 @@ namespace perfectmsg
 
                 }
                 Console.WriteLine("{0} of {2} messages sended this time,{1}", sendcount, DateTime.Now,needsend.Count());
+            }
+            if (sendcount < 1) return;
+            var recap = string.Format("本次发送车管业务短信{0}条,{1}", sendcount, DateTime.Now);
+            var phoneinfo = "18521561581";
+            try
+            {
+                send(phoneinfo, recap);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("{2},send msg {0} error, {1}", recap, ex, phoneinfo);
             }
         }
       

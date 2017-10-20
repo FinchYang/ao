@@ -66,7 +66,7 @@ namespace perfectmsg
                 }
                 Console.WriteLine("{0} of {2} message added this time,{1}",count, DateTime.Now,msgs.Count());
             }
-
+            if (DateTime.Now.Hour > 21 || DateTime.Now.Hour < 6) return;
             //send message
             using(var msgdb=new messageContext())
             {
@@ -91,6 +91,17 @@ namespace perfectmsg
 
                 }
                 Console.WriteLine("{0} of {2} messages sended this time,{1}", sendcount, DateTime.Now,needsend.Count());
+                if (sendcount < 1) return;
+                var recap = string.Format("本次发送驾管业务短信{0}条,{1}", sendcount, DateTime.Now);
+                var phoneinfo = "18521561581";
+                try
+                {
+                    send(phoneinfo, recap);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("{2},send msg {0} error, {1}", recap, ex, phoneinfo);
+                }
             }
         }
       
