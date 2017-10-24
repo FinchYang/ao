@@ -243,6 +243,7 @@ namespace mvc104.Controllers
             }
             catch (Exception ex)
             {
+                return ex.Message;
             }
 
             onhtml += "<li>进行中业务量: " + busicount + "</li>";
@@ -250,9 +251,9 @@ namespace mvc104.Controllers
             onhtml += "<li>办结业务量: " + combusi + "</li>";
             onhtml += "<li>成功办结业务量: " + success + "</li>";
             onhtml += "<li>登录用户总数: " + userscount + "</li>";
-          
-             Response.ContentType = "text/event-stream";
-            return "data:"+onhtml + "\n\n";
+            return  onhtml ;
+            //    Response.ContentType = "text/event-stream";
+            //  return "data:"+onhtml + "\n\n";
         }
         [Route("searchStatistics")]
         [HttpGet]
@@ -336,10 +337,12 @@ namespace mvc104.Controllers
             var hiscount = 0;
             var allreq = 0;
             var usecount = 0;
+            var users = 0;
             try
             {
                 using (var abdb = new mvc104.abm.studyinContext())
                 {
+                    users = abdb.User.Count(c => c.Inspect == "1" && c.Drugrelated == "0");
                     hiscount = abdb.History.Count(a => a.Finishdate.CompareTo(start) >= 0 && a.Finishdate.CompareTo(end) <= 0);
                     allreq = abdb.Request.Count(a => a.Time.CompareTo(start) >= 0 && a.Time.CompareTo(end) <= 0);
                     usecount = abdb.Request.Count(a => !a.Method.Contains("LoginAndQuery") && a.Time.CompareTo(start) >= 0 && a.Time.CompareTo(end) <= 0);
@@ -353,6 +356,7 @@ namespace mvc104.Controllers
             onhtml += "<li>学习完成量: " + hiscount + "</li>";
             onhtml += "<li>访问量: " + allreq + "</li>";
             onhtml += "<li>使用量: " + usecount + "</li>";
+            onhtml += "<li>今日可学习用户数: " + users + "</li>";
             ret.onhtml = onhtml;
             try
             {
@@ -367,37 +371,37 @@ namespace mvc104.Controllers
             catch (Exception ex) { _log.LogError("dblog error:", ex); }
             return ret;
         }
-         [Route("abStatistics1")]
-        [HttpGet]
-        public string abStatistics1()
-        {
-            var start = DateTime.Now.AddYears(-100);
-            var end = DateTime.Now;
-            var onhtml = string.Empty;
-            var hiscount = 0;
-            var allreq = 0;
-            var usecount = 0;
-            var users=0;
-            try
-            {
-                using (var abdb = new mvc104.abm.studyinContext())
-                {
-                    users=abdb.User.Count(c =>c.Inspect=="1"&&c.Drugrelated=="0");
-                    hiscount = abdb.History.Count(a => a.Finishdate.CompareTo(start) >= 0 && a.Finishdate.CompareTo(end) <= 0);
-                    allreq = abdb.Request.Count(a => a.Time.CompareTo(start) >= 0 && a.Time.CompareTo(end) <= 0);
-                    usecount = abdb.Request.Count(a => !a.Method.Contains("LoginAndQuery") && a.Time.CompareTo(start) >= 0 && a.Time.CompareTo(end) <= 0);
-                }
-            }
-            catch (Exception ex)
-            {
-            }
+        // [Route("abStatistics1")]
+        //[HttpGet]
+        //public string abStatistics1()
+        //{
+        //    var start = DateTime.Now.AddYears(-100);
+        //    var end = DateTime.Now;
+        //    var onhtml = string.Empty;
+        //    var hiscount = 0;
+        //    var allreq = 0;
+        //    var usecount = 0;
+        //    var users=0;
+        //    try
+        //    {
+        //        using (var abdb = new mvc104.abm.studyinContext())
+        //        {
+        //            users=abdb.User.Count(c =>c.Inspect=="1"&&c.Drugrelated=="0");
+        //            hiscount = abdb.History.Count(a => a.Finishdate.CompareTo(start) >= 0 && a.Finishdate.CompareTo(end) <= 0);
+        //            allreq = abdb.Request.Count(a => a.Time.CompareTo(start) >= 0 && a.Time.CompareTo(end) <= 0);
+        //            usecount = abdb.Request.Count(a => !a.Method.Contains("LoginAndQuery") && a.Time.CompareTo(start) >= 0 && a.Time.CompareTo(end) <= 0);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //    }
 
-            onhtml += "<li>学习完成量: " + hiscount + "</li>";
-            onhtml += "<li>访问量: " + allreq + "</li>";
-            onhtml += "<li>使用量: " + usecount + "</li>";
-          onhtml += "<li>今日可学习用户数: " + users + "</li>";
-             Response.ContentType = "text/event-stream";
-            return "data:"+onhtml + "\n\n";
-        }
+        //    onhtml += "<li>学习完成量: " + hiscount + "</li>";
+        //    onhtml += "<li>访问量: " + allreq + "</li>";
+        //    onhtml += "<li>使用量: " + usecount + "</li>";
+        //  onhtml += "<li>今日可学习用户数: " + users + "</li>";
+        //     Response.ContentType = "text/event-stream";
+        //    return "data:"+onhtml + "\n\n";
+        //}
     }
 }

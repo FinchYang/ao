@@ -41,35 +41,7 @@
                 <ul class="sdulli" id="abul">            </ul>
          
             <div id="result"></div>
-            <script>
-                if (typeof (EventSource) !== "undefined") {
-                    var absource = new EventSource("http://app.ytjj.gov.cn/sdyycjg/abStatistics1");
-                    absource.onmessage = function (event) {
-                        console.log(event.data);
-                        console.dir(event);
-                        document.getElementById("abul").innerHTML = event.data + "<br>";
-                    };
-                }
-                else {
-                    document.getElementById("result").innerHTML = "抱歉，你的浏览器不支持 server-sent 事件...";
-                }
-           
-                if (typeof (EventSource) !== "undefined") {
-                    var carsource = new EventSource("http://app.ytjj.gov.cn/sdyycg/carStatistics");
-                    carsource.onmessage = function (event) {
-                        console.log(event.data);
-                        console.dir(event);
-                        document.getElementById("carallul").innerHTML = event.data + "<br>";
-                    };
-              
-                    var source = new EventSource("http://app.ytjj.gov.cn/sdyycjg/aboallStatistics");
-                    source.onmessage = function (event) {
-                        console.log(event.data);
-                        console.dir(event);
-                        document.getElementById("aboallul").innerHTML = event.data + "<br>";
-                    };
-                }
-            </script>
+          
         </div><!-- /content -->
         <div data-role="footer">
             <h4>山东云一提供技术支持</h4>
@@ -390,9 +362,55 @@
             </div>
         </div>
      
-        <script>
-                    jQuery.noConflict();
-                    jQuery(document).ready(function ($) {
+    <script>
+            jQuery.noConflict();
+            jQuery(document).ready(function ($) {
+              
+    $.ajax({
+    url: "/sdyycjg/aboallStatistics",
+    }).done(function (json) {
+    if (json.status) alert("Sorry, there was a problem!" + json.content);
+    else {
+    document.getElementById("aboallul").innerHTML = json + "<br>";
+    }
+    })
+    .fail(function (xhr, status, errorThrown) {
+    alert("Sorry, there was a problem!");
+    console.log("Error: " + errorThrown);
+    console.log("Status: " + status);
+    console.dir(xhr);
+    })
+    .always(function (xhr, status) { });
+                        $.ajax({
+                            url: "/sdyycg/abStatistics",                          
+                        }).done(function (json) {
+                            if (json.status) alert("Sorry, there was a problem!" + json.content);
+                            else {
+                                document.getElementById("abul").innerHTML = json.onhtml + "<br>";
+                            }
+                        })
+                            .fail(function (xhr, status, errorThrown) {
+                                alert("Sorry, there was a problem!");
+                                console.log("Error: " + errorThrown);
+                                console.log("Status: " + status);
+                                console.dir(xhr);
+                            })
+                            .always(function (xhr, status) { });
+    $.ajax({
+    url: "/sdyycg/carStatistics",
+    }).done(function (json) {
+    if (json.status) alert("Sorry, there was a problem!" + json.content);
+    else {
+    document.getElementById("carallul").innerHTML = json + "<br>";
+    }
+    })
+    .fail(function (xhr, status, errorThrown) {
+    alert("Sorry, there was a problem!");
+    console.log("Error: " + errorThrown);
+    console.log("Status: " + status);
+    console.dir(xhr);
+    })
+    .always(function (xhr, status) { });
                         console.log(" window.location.search: " + window.location.search);
                         var a = new Date().toLocaleString();
                         $(".ui-content").find("ol").before("<p>" + a + "</p>");

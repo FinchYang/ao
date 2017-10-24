@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="73cf2681-df09-422b-9ded-51effcfefb07" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../ConsoleApp1/Program.cs" afterPath="$PROJECT_DIR$/../ConsoleApp1/Program.cs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../cars/carsall.sln" afterPath="$PROJECT_DIR$/../cars/carsall.sln" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -39,8 +40,8 @@
       <file leaf-file-name="aa.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/aa.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="230">
-              <caret line="10" column="122" lean-forward="true" selection-start-line="9" selection-start-column="3" selection-end-line="10" selection-end-column="122" />
+            <state relative-caret-position="23">
+              <caret line="24" column="10" lean-forward="false" selection-start-line="24" selection-start-column="10" selection-end-line="24" selection-end-column="10" />
               <folding />
             </state>
           </provider>
@@ -135,8 +136,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -148,6 +147,8 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -211,11 +212,13 @@
       <workItem from="1506415536357" duration="2058000" />
       <workItem from="1506469556847" duration="3353000" />
       <workItem from="1506645603801" duration="2104000" />
+      <workItem from="1508568875285" duration="1251000" />
+      <workItem from="1508570714818" duration="850000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="35433000" />
+    <option name="totallyTimeSpent" value="37534000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
@@ -671,8 +674,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/aa.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="230">
-          <caret line="10" column="122" lean-forward="true" selection-start-line="9" selection-start-column="3" selection-end-line="10" selection-end-column="122" />
+        <state relative-caret-position="23">
+          <caret line="24" column="10" lean-forward="false" selection-start-line="24" selection-start-column="10" selection-end-line="24" selection-end-column="10" />
           <folding />
         </state>
       </provider>
