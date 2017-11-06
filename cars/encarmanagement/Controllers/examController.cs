@@ -279,7 +279,34 @@ namespace mvc104.Controllers
             }
             return ret;
         }
+        [Route("CheckBorderDriver")]
+        [HttpGet]
+        public aballresponse CheckBorderDriver()
+        {
+            var ret = new aballresponse { status = 0, values = new List<values>(), labels = new List<labels>() };
+            try
+            {
+                var getpath = "/home/endriver/ftp/get/back";
+                var gt = new DirectoryInfo(getpath).GetFiles().Where(a => a.Name.Contains("over"));
 
+                var aaaaa = from one in gt
+                            group one by one.Name.Substring(0, 10) into onegroup
+                            orderby onegroup.Key descending
+                            select new aaa { day = onegroup.Key, count = onegroup.Count() };
+                foreach (var cc in aaaaa)
+                {
+                    ret.labels.Add(new labels { label = cc.day });
+                    ret.values.Add(new values { value = cc.count.ToString() });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ret.content += ex.Message;
+            }
+
+            return ret;
+        }
         [Route("CheckBorder")]
         [HttpGet]
         public aballresponse CheckBorder()
@@ -288,7 +315,7 @@ namespace mvc104.Controllers
             try
             {
                 var getpath = "/home/carbusiness/ftp/get/back";
-                var gt = new DirectoryInfo(getpath).GetFiles().Where(a => a.Name.Contains("carsresult"));
+                var gt = new DirectoryInfo(getpath).GetFiles().Where(a => a.Name.Contains("over"));
 
                 var aaaaa = from one in gt
                             group one by one.Name.Substring(0, 10) into onegroup
