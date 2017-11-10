@@ -77,6 +77,7 @@ namespace perfectmsg
                   && c.Count < 100
                   && c.Timestamp.CompareTo(DateTime.Now.AddMonths(-1))>=0
                   );
+                var allcount = needsend.Count();
                 foreach(var m in needsend)
                 {
                     try {
@@ -92,7 +93,7 @@ namespace perfectmsg
                     msgdb.SaveChanges();
 
                 }
-                Console.WriteLine("{0} of {2} messages sended this time,{1}", sendcount, DateTime.Now,needsend.Count());
+                Console.WriteLine("{0} of {2} messages sended this time,{1}", sendcount, DateTime.Now, allcount);
             }
             if (sendcount < 1) return;
             var recap = string.Format("本次发送车管业务短信{0}条,{1}", sendcount, DateTime.Now);
