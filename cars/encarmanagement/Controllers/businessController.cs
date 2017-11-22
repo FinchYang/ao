@@ -158,28 +158,30 @@ namespace mvc104.Controllers
         {
             if (input == null)
             {
+                _log.LogError("postaddr---请求出错，body is null");
                 return highlevel.commonreturn(responseStatus.requesterror);
             }
             var accinfo = highlevel.GetInfoByToken(Request.Headers);
             if (accinfo.status != responseStatus.ok) return accinfo;
 
-            if (string.IsNullOrEmpty(input.detailedAddress))
-            {
-                return highlevel.commonreturn(responseStatus.postaddrerror);
-            }
+            //if (string.IsNullOrEmpty(input.detailedAddress))
+            //{
+            //    return highlevel.commonreturn(responseStatus.postaddrerror);
+            //}
             try
             {
                 var theuser = _db.Carbusiness.FirstOrDefault(i => i.Identity == accinfo.Identity && i.Businesstype == (short)accinfo.businessType);
                 if (theuser == null)
                 {
+                    _log.LogError("postaddr---请求出错，用户 {0} 没有该笔业务 {1}",accinfo.Identity,accinfo.businessType);
                     return highlevel.commonreturn(responseStatus.iderror);
                 }
-                theuser.Postaddr = input.detailedAddress;
-                theuser.Scrapplace =(short) input.scrapPlace;
-                theuser.Cartype = (short)input.carType;
-                theuser.Platenumber1 = input.plateNumber1;
-                theuser.Platenumber2 = input.plateNumber2;
-                theuser.Platetype = (short)input.plateType;
+                theuser.Postaddr =string.IsNullOrEmpty( input.detailedAddress)?string.Empty: input.detailedAddress;
+                theuser.Scrapplace =(short) input?.scrapPlace;
+                theuser.Cartype = (short)input?.carType;
+                theuser.Platenumber1 = string.IsNullOrEmpty(input.plateNumber1) ? string.Empty : input.plateNumber1;
+                theuser.Platenumber2 = string.IsNullOrEmpty(input.plateNumber2) ? string.Empty : input.plateNumber2;
+                theuser.Platetype = (short)input?.plateType;
                 if (!string.IsNullOrEmpty(input.acceptingplace))
                     theuser.Acceptingplace = input.acceptingplace;
                 if (!string.IsNullOrEmpty(input.province))
