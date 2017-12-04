@@ -150,10 +150,10 @@ namespace mvc104
             businesscount.Add(businessType.scrap, 0);//注销登记-车辆报废
             businesscount.Add(businessType.changeplate, 6);//换领机动车号牌
             businesscount.Add(businessType.newlicense, 6);//补领机动车行驶证
-            businesscount.Add(businessType.changelicense, 5);//换领机动车行驶证
+            businesscount.Add(businessType.changelicense, 7);//换领机动车行驶证
 
             businesscount.Add(businessType.newtag, 8);//补领检验合格标志
-            businesscount.Add(businessType.changetag, 8);//换领检验合格标志
+            businesscount.Add(businessType.changetag, 9);//换领检验合格标志
             businesscount.Add(businessType.changecontact, 4);//变更联系方式
         }
     }

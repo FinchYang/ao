@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "carsexp", "carsexp\carsexp.csproj", "{EDC1590B-F241-470F-88E9-6301B33F1D25}"
 EndProject
@@ -10,8 +10,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "carshare", "carshare\carshare.csproj", "{2D4748AD-C651-4B90-BB6E-5E0D4AC5A2E6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "carimp", "carimp\carimp.csproj", "{D4F68C7F-E085-4B56-809A-03A019624C07}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "six2015", "E:\study\six2015\six2015\six2015.csproj", "{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "perfectmsg", "perfectmsg\perfectmsg.csproj", "{6DA83EFD-5B78-4647-ADA6-0DD68B46A8ED}"
 EndProject
@@ -28,8 +26,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "enexp", "..\enexp\enexp.csproj", "{99A6750B-BD16-4736-BB01-628A2E5B0E53}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pmsg", "..\pmsg\pmsg.csproj", "{CE7B969F-B10C-4752-B329-8321516054F1}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{2124DD53-5336-4CE7-9812-130590DDED8C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -143,30 +139,6 @@ Global
 		{D4F68C7F-E085-4B56-809A-03A019624C07}.Release|x64.Build.0 = Release|Any CPU
 		{D4F68C7F-E085-4B56-809A-03A019624C07}.Release|x86.ActiveCfg = Release|Any CPU
 		{D4F68C7F-E085-4B56-809A-03A019624C07}.Release|x86.Build.0 = Release|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Debug|ARM.Build.0 = Debug|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Debug|x64.Build.0 = Debug|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Debug|x86.Build.0 = Debug|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Release|ARM.ActiveCfg = Release|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Release|ARM.Build.0 = Release|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Release|iPhone.Build.0 = Release|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Release|x64.ActiveCfg = Release|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Release|x64.Build.0 = Release|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Release|x86.ActiveCfg = Release|Any CPU
-		{EF17061F-1AD5-4A13-8CEC-358DE7CA1240}.Release|x86.Build.0 = Release|Any CPU
 		{6DA83EFD-5B78-4647-ADA6-0DD68B46A8ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6DA83EFD-5B78-4647-ADA6-0DD68B46A8ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DA83EFD-5B78-4647-ADA6-0DD68B46A8ED}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -311,30 +283,6 @@ Global
 		{CE7B969F-B10C-4752-B329-8321516054F1}.Release|x64.Build.0 = Release|Any CPU
 		{CE7B969F-B10C-4752-B329-8321516054F1}.Release|x86.ActiveCfg = Release|Any CPU
 		{CE7B969F-B10C-4752-B329-8321516054F1}.Release|x86.Build.0 = Release|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Debug|ARM.Build.0 = Debug|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Debug|x64.Build.0 = Debug|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Debug|x86.Build.0 = Debug|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Release|ARM.ActiveCfg = Release|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Release|ARM.Build.0 = Release|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Release|iPhone.Build.0 = Release|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Release|x64.ActiveCfg = Release|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Release|x64.Build.0 = Release|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Release|x86.ActiveCfg = Release|Any CPU
-		{2124DD53-5336-4CE7-9812-130590DDED8C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
